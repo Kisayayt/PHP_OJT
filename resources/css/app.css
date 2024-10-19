@@ -1,0 +1,16 @@
+.header {
+    background-image: url("path_to_your_image.jpg"); /* Thay thế 'path_to_your_image.jpg' bằng đường dẫn đến hình ảnh của bạn */
+    background-size: cover;
+    background-position: center;
+    height: 300px; /* Chiều cao của header */
+    display: flex;
+    justify-content: center; /* Căn giữa theo chiều ngang */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    color: white; /* Màu chữ */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Tạo bóng cho chữ */
+}
+
+.header-title {
+    font-size: 3rem; /* Kích thước chữ */
+    text-align: center; /* Căn giữa chữ */
+}
