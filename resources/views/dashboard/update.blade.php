@@ -2,9 +2,7 @@
 
 @section('content')
     <div class="container mt-5 mb-5">
-        <h1>Cập nhật user</h1>
-        <Button onclick="window.location.href='/dashboard'" class="btn btn-primary">Back to
-            home</Button>
+
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>
@@ -14,28 +12,38 @@
                 </ul>
             </div>
         @endif
-        <form action="/insert" method="post">
+        <Button onclick="window.location.href='/dashboard'" class="btn btn-primary">Back to
+            home</Button>
+        <form action="/updated/{{ $user->id }}" method="post">
             @csrf
+            @method('put')
             <div class="row">
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="name" class="form-label">Họ và tên</label>
-                        <input type="text" class="form-control" id="name" name="name"
+                        <input value="{{ $user->name }}" type="text" class="form-control" id="name" name="name"
                             placeholder="Nhập họ và tên" required>
                     </div>
                     <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
-                        <input type="text" class="form-control" id="email" name="email" placeholder="Nhập email"
-                            required>
+                        <input value="{{ $user->email }}" type="text" class="form-control" id="email" name="email"
+                            placeholder="Nhập email" required>
                     </div>
 
                     <div class="mb-3">
                         <label for="department_id" class="form-label">Departments</label>
-                        <select class="form-select" id="department_id" name="department_id">
+                        {{-- <option value="">Select Department</option> --}}
+
+                        <select class="form-select" id="department_id" name="department_id" required>
+                            <option value="">Select Department</option>
                             @foreach ($departments as $department)
-                                <option value="{{ $department->id }}">{{ $department->name }}</option>
+                                <option value="{{ $department->id }}"
+                                    {{ $department->id == $user->department_id ? 'selected' : '' }}>
+                                    {{ $department->name }}
+                                </option>
                             @endforeach
                         </select>
+
                     </div>
                     <Button type="submit" class="btn btn-primary">Submit</Button>
 
@@ -44,18 +52,19 @@
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" name="password"
-                            placeholder="Nhập password" required>
+                        <input value="" type="password" class="form-control" id="password" name="password"
+                            placeholder="Nhập password mới">
                     </div>
                     <div class="mb-3">
                         <label for="password_confirmation" class="form-label">Confirm Password</label>
-                        <input type="password" class="form-control" name="password_confirmation" id="password_confirmation"
-                            placeholder="Nhập lại password" required>
+                        <input value="" type="password" class="form-control" name="password_confirmation"
+                            id="password_confirmation" placeholder="Nhập lại password mới">
                     </div>
+
                     <div class="mb-3">
                         <label for="phone_number" class="form-label">Phone number</label>
-                        <input type="number" class="form-control" id="phone_number" name="phone_number"
-                            placeholder="Nhập sđt" required>
+                        <input value="{{ $user->phone_number }}" type="number" class="form-control" id="phone_number"
+                            name="phone_number" placeholder="Nhập sđt" required>
                     </div>
 
                 </div>
