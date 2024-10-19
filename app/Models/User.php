@@ -17,6 +17,14 @@ class User extends Model
         'email',
         'password',
         'phone_number',
-
+        'department_id',
     ];
+
+    public function department()
+    {
+
+        return $this->belongsTo(Departments::class);
+    }
+
+    public $timestamps = true;
 }

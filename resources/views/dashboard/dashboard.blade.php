@@ -34,6 +34,8 @@
                             <th scope="col">name</th>
                             <th scope="col">email</th>
                             <th scope="col">phone number</th>
+                            <th scope="col">Phòng ban</th>
+                            <th scope="col">Update</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -43,6 +45,7 @@
                                 <td>{{ $user->name }}</td>
                                 <td>{{ $user->email }}</td>
                                 <td>{{ $user->phone_number }}</td>
+                                <td>{{ $user->department ? $user->department->name : 'N/A' }}</td>
                                 <td><Button type="button" class="btn btn-secondary">Update</Button></td>
                             </tr>
                         @endforeach

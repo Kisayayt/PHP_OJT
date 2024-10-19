@@ -7,3 +7,4 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/dashboard', [UserController::class, 'dashboard']);
 Route::get('/create', [UserController::class, 'create']);
+Route::post('/insert', [UserController::class, 'insert']);

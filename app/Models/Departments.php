@@ -17,4 +17,11 @@ class Departments extends Model
         'parent_id',
         'status',
     ];
+
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+
+    public $timestamps = true;
 }
