@@ -23,9 +23,9 @@
                     <thead>
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">name</th>
-                            <th scope="col">email</th>
-                            <th scope="col">phone number</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Phone number</th>
                             <th scope="col">Phòng ban</th>
                             <th scope="col">Update</th>
                             <th scope="col">Delete</th>

@@ -1,4 +1,4 @@
-    <div class="mb-5" style="border-top: 1px solid black ;">
+    <div class="mb-5" style="border-top: 1px solid rgba(0, 0, 0, 0.2) ; background-color: #f8f9fa">
         <div class="container">
             <div style="text-align: center ">
                 <div class="row mt-5">
