@@ -15,7 +15,8 @@
                 <form action="{{ route('users.bulkDelete') }}" method="post" id="bulkDeleteForm">
                     @csrf
                     @method('delete')
-                    <button type="submit" class="btn btn-danger" id="selectAllButton">Xóa được chọn</button>
+                    <button type="submit" class="btn btn-danger" id="selectAllButton"><i class="bi bi-x-lg"></i> Xóa được
+                        chọn</button>
                     <table class="table mt-3 mb-5">
                         <thead>
                             <tr>
@@ -39,7 +40,8 @@
                                     <td>{{ $user->email }}</td>
                                     <td>{{ $user->phone_number }}</td>
                                     <td>{{ $user->department ? $user->department->name : 'N/A' }}</td>
-                                    <td><Button onclick="window.location.href='/update/{{ $user->id }}'" type="button"
+                                    <td>
+                                        <Button onclick="window.location.href='/update/{{ $user->id }}'" type="button"
                                             class="btn btn-secondary"><i class="bi bi-arrow-up-square"></i> Update</Button>
                                     </td>
 
@@ -62,25 +64,3 @@
         </div>
     </div>
 @endsection
-
-{{-- <script>
-    document.getElementById('selectAllButton').addEventListener('click', function() {
-        const checkboxes = document.querySelectorAll('.user-checkbox');
-        const selectAllCheckbox = document.getElementById('selectAll');
-        const isChecked = selectAllCheckbox.checked;
-
-        checkboxes.forEach(checkbox => {
-            checkbox.checked = !isChecked;
-        });
-
-        selectAllCheckbox.checked = !isChecked;
-    });
-
-    const userCheckboxes = document.querySelectorAll('.user-checkbox');
-    userCheckboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-            const allChecked = [...userCheckboxes].every(i => i.checked);
-            document.getElementById('selectAll').checked = allChecked;
-        });
-    });
-</script> --}}

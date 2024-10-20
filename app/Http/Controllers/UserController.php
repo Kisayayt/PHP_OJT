@@ -67,7 +67,7 @@ class UserController extends Controller
             'email' => 'required|email:dns|unique:users,email,' . $id,
             'phone_number' => 'required|numeric|min:10',
             'password' => 'nullable|string|min:8|max:255|confirmed',
-            'department_id' => 'required',
+            'department_id' => '',
         ]);
 
 

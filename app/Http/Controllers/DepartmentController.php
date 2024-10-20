@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Departments;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class DepartmentController extends Controller
@@ -40,6 +41,13 @@ class DepartmentController extends Controller
 
     public function deleteDepartment($id)
     {
+        $users = User::where('department_id', $id)->get();
+
+        foreach ($users as $user) {
+            $user->department_id = null;
+            $user->save();
+        }
+
         $department = Departments::find($id);
         $department->delete();
         return redirect('/departmentDashboard');
@@ -93,5 +101,15 @@ class DepartmentController extends Controller
         $department = Departments::with('users', 'children')->findOrFail($id);
 
         return view('departments.details')->with('department', $department);
+    }
+
+    public function updateStatus($id)
+    {
+        $department = Departments::findOrFail($id);
+        // dd($department);
+        $department->status = $department->status ? 0 : 1;
+        $department->save();
+
+        return redirect()->back();
     }
 }

@@ -7,7 +7,7 @@
             <div class="alert alert-danger">
                 <ul>
                     @foreach ($errors->all() as $error)
-                        <p style="color: red;">{{ $error }}></p>
+                        <p style="color: red;">{{ $error }}</p>
                     @endforeach
                 </ul>
             </div>
@@ -34,7 +34,7 @@
                         <label for="department_id" class="form-label">Departments</label>
                         {{-- <option value="">Select Department</option> --}}
 
-                        <select class="form-select" id="department_id" name="department_id" required>
+                        <select class="form-select" id="department_id" name="department_id">
                             <option value="">Select Department</option>
                             @foreach ($departments as $department)
                                 <option value="{{ $department->id }}"

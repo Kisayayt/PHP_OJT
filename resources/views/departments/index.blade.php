@@ -16,7 +16,8 @@
                 <form action="{{ route('departments.bulkDelete') }}" method="post" id="bulkDeleteForm">
                     @csrf
                     @method('delete')
-                    <button type="submit" class="btn btn-danger" id="selectAllButton">Xóa được chọn</button>
+                    <button type="submit" class="btn btn-danger" id="selectAllButton"><i class="bi bi-x-lg"></i> Xóa được
+                        chọn</button>
                     <table class="table mt-3 mb-5">
                         <thead>
                             <tr>
@@ -38,7 +39,16 @@
                                     <td>{{ $department->id }}</td>
                                     <td>{{ $department->name }}</td>
                                     <td>{{ $department->parent ? $department->parent->name : 'Không có' }}</td>
-                                    <td>{{ $department->status ? 'Hoạt động' : 'Không hoạt động' }}</td>
+                                    <td>
+                                        <form action="{{ route('departments.updateStatus', $department->id) }}"
+                                            method="POST">
+                                            @csrf
+                                            <button type="submit"
+                                                class="btn w-100 {{ $department->status ? 'btn-success' : 'btn-secondary' }}">
+                                                {{ $department->status ? 'active' : 'inactive' }}
+                                            </button>
+                                        </form>
+                                    </td>
                                     <td><Button onclick="window.location.href='/updateDepartment/{{ $department->id }}'"
                                             type="button" class="btn btn-secondary"><i class="bi bi-arrow-up-square"></i>
                                             Update</Button>
