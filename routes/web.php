@@ -27,3 +27,5 @@ Route::put('/updatedDepartment/{id}', [DepartmentController::class, 'updateDepar
 
 Route::delete('/deleteDepartment/{id}', [DepartmentController::class, 'deleteDepartment']);
 Route::delete('/departments/bulk-delete', [DepartmentController::class, 'bulkDelete'])->name('departments.bulkDelete');
+
+Route::get('/departmentDashboard/{id}/details', [DepartmentController::class, 'details'])->name('departments.details');

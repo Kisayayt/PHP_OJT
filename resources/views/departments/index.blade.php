@@ -27,6 +27,7 @@
                                 <th scope="col">Status</th>
                                 <th scope="col">Update</th>
                                 <th scope="col">Delete</th>
+                                <th scope="col">Details</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -38,8 +39,9 @@
                                     <td>{{ $department->name }}</td>
                                     <td>{{ $department->parent ? $department->parent->name : 'Không có' }}</td>
                                     <td>{{ $department->status ? 'Hoạt động' : 'Không hoạt động' }}</td>
-                                    <td><Button type="button" class="btn btn-secondary"><i
-                                                class="bi bi-arrow-up-square"></i> Update</Button>
+                                    <td><Button onclick="window.location.href='/updateDepartment/{{ $department->id }}'"
+                                            type="button" class="btn btn-secondary"><i class="bi bi-arrow-up-square"></i>
+                                            Update</Button>
                                     </td>
 
                                     <form action="/deleteDepartment/{{ $department->id }}" method="post">
@@ -47,6 +49,12 @@
                                         @method('delete')
                                         <td><Button type="submit" class="btn btn-danger"><i class="bi bi-door-closed"></i>
                                                 Delete</Button>
+                                        </td>
+                                    </form>
+                                    <form action="/departmentDashboard/{{ $department->id }}/details" method="get">
+
+                                        <td><Button type="submit" class="btn btn-info"><i class="bi bi-info-circle"></i>
+                                                Details</Button>
                                         </td>
                                     </form>
                                 </tr>

@@ -10,27 +10,32 @@
             <div class="alert alert-danger">
                 <ul>
                     @foreach ($errors->all() as $error)
-                        <p style="color: red;">{{ $error }}></p>
+                        <p style="color: red;">{{ $error }}</p>
                     @endforeach
                 </ul>
             </div>
         @endif
-        <form action="/insertDepartment" method="post">
+
+        <form action="/updatedDepartment/{{ $department->id }}" method="post">
             @csrf
+            @method('put')
             <div class="row">
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="name" class="form-label">Tên phòng ban: </label>
-                        <input type="text" class="form-control" id="name" name="name"
-                            placeholder="Nhập tên phòng ban" required>
+                        <input value="{{ $department->name }}" type="text" class="form-control" id="name"
+                            name="name" placeholder="Nhập tên phòng ban" required>
                     </div>
 
                     <div class="mb-3">
                         <label for="parent_id" class="form-label">Phòng ban cha</label>
                         <select class="form-select" id="parent_id" name="parent_id">
                             <option value="">Không có</option>
-                            @foreach ($departments as $department)
-                                <option value="{{ $department->id }}">{{ $department->name }}</option>
+                            @foreach ($departments as $departmentFor)
+                                <option value="{{ $departmentFor->id }}"
+                                    {{ $departmentFor->id == $department->parent_id ? 'selected' : '' }}>
+                                    {{ $departmentFor->name }}
+                                </option>
                             @endforeach
                         </select>
                     </div>

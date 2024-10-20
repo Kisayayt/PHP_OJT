@@ -22,7 +22,6 @@
     <style>
         body {
             font-family: 'Montserrat', sans-serif;
-            /* Sử dụng font Bebas Neue */
         }
 
         h1 {
