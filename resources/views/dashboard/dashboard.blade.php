@@ -4,15 +4,7 @@
     <div class="container pt-5 mb-5">
         <div class="row">
             <div class="col-md-3">
-                <div class="list-group">
-                    <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
-                        <i class="bi bi-people"></i> Quản lí người dùng
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action"><i class="bi bi-door-closed"> </i>Quản lí
-                        phòng ban</a>
-                    <a href="#" class="list-group-item list-group-item-action"><i class="bi bi-person-check-fill"></i>
-                        Quản lí checkout</a>
-                </div>
+                @include('sidebar.sidebar')
             </div>
             {{-- Table người dùng --}}
 
@@ -54,7 +46,7 @@
                                     <form action="/deleteUser/{{ $user->id }}" method="post">
                                         @csrf
                                         @method('delete')
-                                        <td><Button type="submit" class="btn btn-danger"><i class="bi bi-person-x"></i>
+                                        <td><Button type="button" class="btn btn-danger"><i class="bi bi-person-x"></i>
                                                 Delete</Button>
                                         </td>
                                     </form>

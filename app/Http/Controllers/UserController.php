@@ -60,6 +60,7 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
+        // dd($request);
         // dd($id);
         $validatedData = $request->validate([
             'name' => 'required|max:255',

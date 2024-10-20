@@ -23,5 +23,15 @@ class Departments extends Model
         return $this->hasMany(User::class);
     }
 
+    public function parent()
+    {
+        return $this->belongsTo(Departments::class, 'parent_id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(Departments::class, 'parent_id');
+    }
+
     public $timestamps = true;
 }
