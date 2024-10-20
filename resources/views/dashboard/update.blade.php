@@ -12,7 +12,7 @@
                 </ul>
             </div>
         @endif
-        <Button onclick="window.location.href='/dashboard'" class="btn btn-primary">Back to
+        <Button onclick="window.location.href='/dashboard'" class="btn btn-primary mb-3"><i class="bi bi-house"></i> Back to
             home</Button>
         <form action="/updated/{{ $user->id }}" method="post">
             @csrf
@@ -45,7 +45,7 @@
                         </select>
 
                     </div>
-                    <Button type="submit" class="btn btn-primary">Submit</Button>
+                    <Button type="submit" class="btn btn-primary">Submit <i class="bi bi-send-plus"></i></Button>
 
 
                 </div>

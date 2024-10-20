@@ -87,4 +87,21 @@ class UserController extends Controller
 
         return redirect('/dashboard');
     }
+
+    public function deleteUser($id)
+    {
+        // dd ($id);
+        User::where('id', $id)->delete();
+        return redirect('/dashboard');
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        $userIds = $request->input('user_ids');
+        if ($userIds) {
+            User::whereIn('id', $userIds)->delete();
+        }
+        return redirect('/dashboard');
+        // dd($deletedUsers);
+    }
 }
