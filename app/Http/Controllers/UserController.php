@@ -12,7 +12,7 @@ class UserController extends Controller
     public function dashboard()
     {
 
-        $users = User::with('department')->paginate(3);
+        $users = User::with('department')->where('role', '<>', 'admin')->paginate(3);
 
         return view('dashboard.dashboard')->with('users', $users);
     }
