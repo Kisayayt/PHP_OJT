@@ -12,7 +12,7 @@ class UserController extends Controller
     public function dashboard()
     {
 
-        $users = User::with('department')->paginate(5);
+        $users = User::with('department')->paginate(3);
 
         return view('dashboard.dashboard')->with('users', $users);
     }
@@ -27,10 +27,9 @@ class UserController extends Controller
 
     public function insert(Request $request)
     {
-
         $validatedData = $request->validate([
             'name' => 'required|max:255',
-            'email' => 'required|email:dns|unique:users',
+            'email' => 'required|email|unique:users',
             'phone_number' => 'required|numeric|min:10',
             'password' => 'required|string|min:8|max:255|confirmed',
             'department_id' => 'required',

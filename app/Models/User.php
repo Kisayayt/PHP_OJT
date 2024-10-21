@@ -2,18 +2,19 @@
 
 namespace App\Models;
 
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
-class User extends Model
+class User extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     protected $table = 'users';
     protected $primaryKey = 'id';
-
     protected $fillable = [
         'name',
+        'role',
         'email',
         'password',
         'phone_number',
@@ -22,8 +23,17 @@ class User extends Model
 
     public function department()
     {
-
         return $this->belongsTo(Departments::class);
+    }
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isUser()
+    {
+        return $this->role === 'user';
     }
 
     public $timestamps = true;

@@ -10,9 +10,14 @@
     <a href="#" class="list-group-item list-group-item-action">
         <i class="bi bi-person-check-fill"></i> Quản lí checkout
     </a>
-    <a href="#" class="list-group-item list-group-item-action">
-        <i class="bi bi-box-arrow-left"></i> Logout
-    </a>
+    <form action="{{ route('logout') }}" method="post">
+        @csrf <!-- Thêm token CSRF để bảo mật -->
+        <button type="submit" class="list-group-item list-group-item-action"
+            style="border: none; background: none; cursor: pointer;">
+            <i class="bi bi-box-arrow-left"></i> Logout
+        </button>
+    </form>
+
 </div>
 
 
