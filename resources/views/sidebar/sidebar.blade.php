@@ -10,6 +10,9 @@
     <a href="#" class="list-group-item list-group-item-action">
         <i class="bi bi-person-check-fill"></i> Quản lí checkout
     </a>
+    <a href="#" class="list-group-item list-group-item-action">
+        <i class="bi bi-box-arrow-left"></i> Logout
+    </a>
 </div>
 
 

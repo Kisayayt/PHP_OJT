@@ -56,7 +56,7 @@
                                         </Button>
                                     </td>
                                     <td><Button onclick="window.location.href='/updateDepartment/{{ $department->id }}'"
-                                            type="button" class="btn btn-secondary"><i class="bi bi-arrow-up-square"></i>
+                                            type="button" class="btn btn-success"><i class="bi bi-arrow-up-square"></i>
                                             Update</Button>
                                     </td>
 
