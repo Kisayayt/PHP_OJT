@@ -27,8 +27,8 @@
                                 <th scope="col">Phòng ban cha</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">Update</th>
-                                <th scope="col">Delete</th>
                                 <th scope="col">Details</th>
+                                {{-- <th scope="col">Delete</th> --}}
                             </tr>
                         </thead>
                         <tbody>
@@ -37,36 +37,45 @@
                                     <td><input type="checkbox" name="department_ids[]" value="{{ $department->id }}"
                                             class="user-checkbox"></td>
                                     <td>{{ $department->id }}</td>
-                                    <td>{{ $department->name }}</td>
+                                    <td><Strong>{{ $department->name }}</Strong></td>
                                     <td>{{ $department->parent ? $department->parent->name : 'Không có' }}</td>
                                     <td>
-                                        <form action="{{ route('departments.updateStatus', $department->id) }}"
+                                        {{-- <form action="{{ route('departments.updateStatus', $department->id) }}"
                                             method="POST">
                                             @csrf
                                             <button type="submit"
                                                 class="btn w-100 {{ $department->status ? 'btn-success' : 'btn-secondary' }}">
                                                 {{ $department->status ? 'active' : 'inactive' }}
                                             </button>
-                                        </form>
+                                        </form> --}}
+                                        <Button
+                                            onclick="window.location.href='/departments/{{ $department->id }}/update-status'"
+                                            type="button"
+                                            class="btn {{ $department->status ? 'btn-success' : 'btn-secondary' }}">
+                                            {{ $department->status ? 'active' : 'inactive' }}
+                                        </Button>
                                     </td>
                                     <td><Button onclick="window.location.href='/updateDepartment/{{ $department->id }}'"
                                             type="button" class="btn btn-secondary"><i class="bi bi-arrow-up-square"></i>
                                             Update</Button>
                                     </td>
 
-                                    <form action="/deleteDepartment/{{ $department->id }}" method="post">
+                                    <td>
+                                        <Button
+                                            onclick="window.location.href='/departmentDashboard/{{ $department->id }}/details'"
+                                            type="button" class="btn btn-info"><i class="bi bi-info-circle"></i>Details
+                                        </Button>
+                                    </td>
+
+
+                                    {{-- <form action="/deleteDepartment/{{ $department->id }}" method="post">
                                         @csrf
                                         @method('delete')
                                         <td><Button type="submit" class="btn btn-danger"><i class="bi bi-door-closed"></i>
                                                 Delete</Button>
                                         </td>
-                                    </form>
-                                    <form action="/departmentDashboard/{{ $department->id }}/details" method="get">
+                                    </form> --}}
 
-                                        <td><Button type="submit" class="btn btn-info"><i class="bi bi-info-circle"></i>
-                                                Details</Button>
-                                        </td>
-                                    </form>
                                 </tr>
                             @endforeach
                         </tbody>

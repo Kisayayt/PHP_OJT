@@ -15,8 +15,8 @@
                 <form action="{{ route('users.bulkDelete') }}" method="post" id="bulkDeleteForm">
                     @csrf
                     @method('delete')
-                    <button type="submit" class="btn btn-danger" id="selectAllButton"><i class="bi bi-x-lg"></i> Xóa được
-                        chọn</button>
+                    {{-- <button type="submit" class="btn btn-danger" id="selectAllButton"><i class="bi bi-x-lg"></i> Xóa được
+                        chọn</button> --}}
                     <table class="table mt-3 mb-5">
                         <thead>
                             <tr>
@@ -27,33 +27,38 @@
                                 <th scope="col">Phone number</th>
                                 <th scope="col">Phòng ban</th>
                                 <th scope="col">Update</th>
-                                <th scope="col">Delete</th>
+                                {{-- <th scope="col">Delete</th> --}}
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($users as $user)
-                                <tr>
-                                    <td><input type="checkbox" name="user_ids[]" value="{{ $user->id }}"
-                                            class="user-checkbox"></td>
-                                    <td>{{ $user->id }}</td>
-                                    <td>{{ $user->name }}</td>
-                                    <td>{{ $user->email }}</td>
-                                    <td>{{ $user->phone_number }}</td>
-                                    <td>{{ $user->department ? $user->department->name : 'N/A' }}</td>
-                                    <td>
-                                        <Button onclick="window.location.href='/update/{{ $user->id }}'" type="button"
-                                            class="btn btn-secondary"><i class="bi bi-arrow-up-square"></i> Update</Button>
-                                    </td>
-
-                                    <form action="/deleteUser/{{ $user->id }}" method="post">
-                                        @csrf
-                                        @method('delete')
-                                        <td><Button type="button" class="btn btn-danger"><i class="bi bi-person-x"></i>
-                                                Delete</Button>
+                            <button type="submit" class="btn btn-danger" id="selectAllButton"><i class="bi bi-x-lg"></i>
+                                Xóa được chọn</button>
+                            <form action="{{ route('users.bulkDelete') }}" method="post" id="bulkDeleteForm">
+                                @foreach ($users as $user)
+                                    <tr>
+                                        <td><input type="checkbox" name="user_ids[]" value="{{ $user->id }}"
+                                                class="user-checkbox"></td>
+                                        <td>{{ $user->id }}</td>
+                                        <td>{{ $user->name }}</td>
+                                        <td>{{ $user->email }}</td>
+                                        <td>{{ $user->phone_number }}</td>
+                                        <td>{{ $user->department ? $user->department->name : 'N/A' }}</td>
+                                        <td>
+                                            <Button onclick="window.location.href='/update/{{ $user->id }}'"
+                                                type="button" class="btn btn-secondary"><i
+                                                    class="bi bi-arrow-up-square"></i> Update</Button>
                                         </td>
-                                    </form>
-                                </tr>
-                            @endforeach
+                                        {{-- 
+                                        <form action="/deleteUser/{{ $user->id }}" method="post">
+                                            @csrf
+                                            @method('delete')
+                                            <td><Button type="button" class="btn btn-danger"><i class="bi bi-person-x"></i>
+                                                    Delete</Button>
+                                            </td>
+                                        </form> --}}
+                                    </tr>
+                                @endforeach
+                            </form>
                         </tbody>
                     </table>
                 </form>
