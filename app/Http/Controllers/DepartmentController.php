@@ -15,6 +15,18 @@ class DepartmentController extends Controller
         return view('departments.index')->with('departments', $departments);
     }
 
+    public function search(Request $request)
+    {
+
+        $search = $request->input('search');
+        // dd($search);
+        $departments = Departments::with('parent')
+            ->where('name', 'LIKE', "%{$search}%")
+            ->paginate(5);
+
+        return view('departments.index', compact('departments'));
+    }
+
     public function insertDepartmentView()
     {
         $departments = Departments::all();

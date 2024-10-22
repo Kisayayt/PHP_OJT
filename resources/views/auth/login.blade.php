@@ -19,38 +19,33 @@
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     {{-- <link rel="stylesheet" href="css/app.css"> --}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
-    <style>
-        body {
-            font-family: 'Montserrat', sans-serif;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-        }
-
-        p {
-            font-size: 1.0rem;
-        }
-    </style>
 </head>
 
 <body>
-    @if ($errors->any())
-        <div class="header">
-            <h1 class="header-title"><i class="bi bi-kanban"></i> LOGIN</h1>
-            <form action="{{ route('login') }}" method="POST" class="login-form">
-                @csrf <!-- Thêm token CSRF -->
-                <div class="form-group">
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
-                <button type="submit">Login</button>
-            </form>
-        </div>
+
+
+    <div class="header">
+        <h1 class="header-title"><i class="bi bi-kanban"></i> LOGIN</h1>
+
+        <form action="{{ route('login') }}" method="POST" class="login-form">
+            @csrf
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            @if ($errors->any())
+
+                @foreach ($errors->all() as $error)
+                    <p style="color: red;"><Strong>{{ $error }}</Strong></p>
+                @endforeach
+            @endif
+            <button type="submit">Login</button>
+        </form>
+    </div>
 </body>
 
 </html>
@@ -59,6 +54,18 @@
 
 
 <style>
+    body {
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+    }
+
+    p {
+        font-size: 1.0rem;
+    }
+
     body,
     html {
         margin: 0;
@@ -77,7 +84,7 @@
         justify-content: center;
         align-items: center;
         color: white;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        /* text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); */
         position: relative;
     }
 
@@ -107,14 +114,19 @@
         background: rgba(255, 255, 255, 0.2);
         /* Nền trắng nhẹ với độ trong suốt */
         padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        border-radius: 20px;
         backdrop-filter: blur(10px);
         /* Làm mờ nền */
         border: 2px solid white;
         /* Viền trắng */
         z-index: 2;
+        width: 400px;
+        /* Thay đổi giá trị này để điều chỉnh chiều rộng */
+        /* Hoặc sử dụng max-width nếu bạn muốn hộp co lại trên màn hình nhỏ */
+        max-width: 90%;
+        /* Tối đa 90% chiều rộng màn hình */
     }
+
 
     .form-group {
         margin-bottom: 15px;

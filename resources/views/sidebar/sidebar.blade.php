@@ -1,10 +1,10 @@
 <div class="list-group" id="sidebar">
     <a href="{{ route('users.dashboard') }}"
-        class="list-group-item list-group-item-action {{ request()->routeIs('users.dashboard') ? 'active' : '' }}">
+        class="list-group-item list-group-item-action {{ request()->routeIs('users.dashboard') || request()->routeIs('users.search') ? 'active' : '' }}">
         <i class="bi bi-people"></i> Quản lí người dùng
     </a>
     <a href="{{ route('departments.index') }}"
-        class="list-group-item list-group-item-action {{ request()->routeIs('departments.index') ? 'active' : '' }}">
+        class="list-group-item list-group-item-action {{ request()->routeIs('departments.index') || request()->routeIs('departments.search') ? 'active' : '' }}">
         <i class="bi bi-door-closed"></i> Quản lí phòng ban
     </a>
     <a href="#" class="list-group-item list-group-item-action">

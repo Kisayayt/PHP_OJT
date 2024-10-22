@@ -23,6 +23,8 @@ Route::middleware(['auth', 'checkRole:admin'])->group(function () {
     Route::get('/create', [UserController::class, 'create']);
     Route::post('/insert', [UserController::class, 'insert']);
     Route::get('/dashboard', [UserController::class, 'dashboard'])->name('users.dashboard');
+    Route::get('/dashboard/search', [UserController::class, 'search'])->name('users.search');
+
 
     Route::get('/update/{id}', [UserController::class, 'updateView'])->name('users.updateView');
     Route::put('/updated/{id}', [UserController::class, 'update']);
@@ -32,6 +34,7 @@ Route::middleware(['auth', 'checkRole:admin'])->group(function () {
 
 
     Route::get('/departmentDashboard', [DepartmentController::class, 'departmentDashboard'])->name('departments.index');
+    Route::get('/departmentDashboard/search', [DepartmentController::class, 'search'])->name('departments.search');
     Route::get('/createDepartment', [DepartmentController::class, 'insertDepartmentView'])->name('departments.createView');
     Route::post('/insertDepartment', [DepartmentController::class, 'insertDepartment'])->name('departments.insertDepartment');
 

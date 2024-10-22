@@ -17,6 +17,18 @@ class UserController extends Controller
         return view('dashboard.dashboard')->with('users', $users);
     }
 
+    public function search(Request $request)
+    {
+
+        $search = $request->input('search');
+        $users = User::with('department')
+            ->where('role', 'user')
+            ->where('name', 'LIKE', "%{$search}%")
+            ->paginate(3);
+
+        return view('dashboard.dashboard', compact('users'));
+    }
+
     public function create()
     {
         $departments = Departments::all();

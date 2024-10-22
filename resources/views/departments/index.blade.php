@@ -6,85 +6,102 @@
             <div class="col-md-3">
                 @include('sidebar.sidebar')
             </div>
-            {{-- Table người dùng --}}
 
             <div class="col-md-9">
-                <Button style="margin-bottom: 10px" type="button" class="btn btn-primary"
-                    onclick="window.location.href='/createDepartment'"><i class="bi bi-plus-square"></i> Thêm phòng
-                    ban</Button>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="d-flex">
+                        <form action="/departmentDashboard/search" method="GET" class="form-inline">
+                            <div class="input-group">
+                                <input type="text" name="search" class="form-control"
+                                    placeholder="Tìm kiếm phòng ban..." value="{{ request('search') }}"
+                                    style="max-width: 200px;">
+                                <button type="submit" class="btn btn-primary ml-2">Tìm kiếm</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div>
+                        <Button type="button" class="btn btn-primary" onclick="window.location.href='/createDepartment'">
+                            <i class="bi bi-plus-square"></i> Thêm phòng ban
+                        </Button>
+                        <button type="submit" class="btn btn-danger" form="bulkDeleteForm">
+                            <i class="bi bi-x-lg"></i> Xóa được chọn
+                        </button>
+                    </div>
+                </div>
 
                 <form action="{{ route('departments.bulkDelete') }}" method="post" id="bulkDeleteForm">
                     @csrf
                     @method('delete')
-                    <button type="submit" class="btn btn-danger" id="selectAllButton"><i class="bi bi-x-lg"></i> Xóa được
-                        chọn</button>
+
                     <table class="table mt-3 mb-5">
                         <thead>
                             <tr>
                                 <th scope="col"><input type="checkbox" id="selectAll"></th>
                                 <th scope="col">#</th>
-                                <th scope="col">Name</th>
+                                <th scope="col">Tên</th>
                                 <th scope="col">Phòng ban cha</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">Update</th>
-                                <th scope="col">Details</th>
-                                {{-- <th scope="col">Delete</th> --}}
+                                <th scope="col">Trạng thái</th>
+                                <th scope="col">Cập nhật</th>
+                                <th scope="col">Chi tiết</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($departments as $department)
                                 <tr>
                                     <td><input type="checkbox" name="department_ids[]" value="{{ $department->id }}"
-                                            class="user-checkbox"></td>
+                                            class="department-checkbox"></td>
                                     <td>{{ $department->id }}</td>
-                                    <td><Strong>{{ $department->name }}</Strong></td>
+                                    <td><strong>{{ $department->name }}</strong></td>
                                     <td>{{ $department->parent ? $department->parent->name : 'Không có' }}</td>
                                     <td>
-                                        {{-- <form action="{{ route('departments.updateStatus', $department->id) }}"
-                                            method="POST">
-                                            @csrf
-                                            <button type="submit"
-                                                class="btn w-100 {{ $department->status ? 'btn-success' : 'btn-secondary' }}">
-                                                {{ $department->status ? 'active' : 'inactive' }}
-                                            </button>
-                                        </form> --}}
                                         <Button
                                             onclick="window.location.href='/departments/{{ $department->id }}/update-status'"
                                             type="button"
                                             class="btn {{ $department->status ? 'btn-success' : 'btn-secondary' }}">
-                                            {{ $department->status ? 'active' : 'inactive' }}
+                                            {{ $department->status ? 'Hoạt động' : 'Đình chỉ' }}
                                         </Button>
                                     </td>
-                                    <td><Button onclick="window.location.href='/updateDepartment/{{ $department->id }}'"
-                                            type="button" class="btn btn-success"><i class="bi bi-arrow-up-square"></i>
-                                            Update</Button>
+                                    <td>
+                                        <Button onclick="window.location.href='/updateDepartment/{{ $department->id }}'"
+                                            type="button" class="btn btn-success w-100">
+                                            <i class="bi bi-arrow-up-square"></i>
+                                        </Button>
                                     </td>
-
                                     <td>
                                         <Button
                                             onclick="window.location.href='/departmentDashboard/{{ $department->id }}/details'"
-                                            type="button" class="btn btn-info"><i class="bi bi-info-circle"></i>Details
+                                            type="button" class="btn btn-info w-100">
+                                            <i class="bi bi-info-circle"></i>
                                         </Button>
                                     </td>
-
-
-                                    {{-- <form action="/deleteDepartment/{{ $department->id }}" method="post">
-                                        @csrf
-                                        @method('delete')
-                                        <td><Button type="submit" class="btn btn-danger"><i class="bi bi-door-closed"></i>
-                                                Delete</Button>
-                                        </td>
-                                    </form> --}}
-
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
                 </form>
+
                 <div class="d-flex justify-content-center">
-                    {{ $departments->links() }} <!-- Đây sẽ tạo các link phân trang -->
+                    {{ $departments->links() }}
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        // Lấy checkbox chính
+        const selectAllCheckbox = document.getElementById('selectAll');
+        // Lấy tất cả các checkbox trong tbody
+        const departmentCheckboxes = document.querySelectorAll('.department-checkbox');
+
+        // Khi checkbox chính được click
+        selectAllCheckbox.addEventListener('change', function() {
+            // Kiểm tra xem checkbox chính có được chọn hay không
+            const isChecked = selectAllCheckbox.checked;
+
+            // Lặp qua tất cả các checkbox con và set trạng thái tương tự
+            departmentCheckboxes.forEach(function(checkbox) {
+                checkbox.checked = isChecked;
+            });
+        });
+    </script>
 @endsection

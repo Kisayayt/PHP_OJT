@@ -4,11 +4,11 @@
 
 <style>
     .header {
-        background-image: url('images/anhheader.jpg');
+        background-image: url('{{ asset('images/anhheader.jpg') }}');
 
         background-size: cover;
         background-position: center;
-        height: 300px;
+        height: 200px;
         display: flex;
         justify-content: center;
         align-items: center;
