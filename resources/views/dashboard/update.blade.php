@@ -12,9 +12,9 @@
                 </ul>
             </div>
         @endif
-        <Button onclick="window.location.href='/dashboard'" class="btn btn-primary mb-3"><i class="bi bi-house"></i> Back to
-            home</Button>
-        <form action="/updated/{{ $user->id }}" method="post">
+        <Button onclick="window.location.href='/dashboard'" class="btn btn-primary mb-3"><i class="bi bi-house"></i> Trở về
+            trang chủ</Button>
+        <form action="/updated/{{ $user->id }}" method="post" enctype="multipart/form-data">
             @csrf
             @method('put')
             <div class="row">
@@ -44,6 +44,10 @@
                             @endforeach
                         </select>
 
+                    </div>
+                    <div class="mb-3">
+                        <label for="avatar" class="form-label">Chọn ảnh đại diện</label>
+                        <input type="file" class="form-control" id="avatar" name="avatar" accept="image/*">
                     </div>
                     <Button type="submit" class="btn btn-primary">Submit <i class="bi bi-send-plus"></i></Button>
 

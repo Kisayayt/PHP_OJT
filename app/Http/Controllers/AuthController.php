@@ -34,7 +34,6 @@ class AuthController extends Controller
             }
         }
 
-        // Đăng nhập thất bại
         return back()->withErrors([
             'email' => 'Email hoặc mật khẩu không đúng.',
         ]);

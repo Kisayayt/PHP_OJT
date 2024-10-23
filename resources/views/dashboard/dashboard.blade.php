@@ -2,6 +2,8 @@
 
 @section('content')
     <div class="container pt-5 mb-5">
+        <h2 style="font-weight: bold">HOME</h2>
+        </h2>
         <div class="row">
             <div class="col-md-3">
                 @include('sidebar.sidebar')
@@ -33,6 +35,7 @@
                         <tr>
                             <th scope="col"><input type="checkbox" id="selectAll"></th>
                             <th scope="col">#</th>
+                            <th scope="col">Ảnh</th>
                             <th scope="col">Tên</th>
                             <th scope="col">Email</th>
                             <th scope="col">SĐT</th>
@@ -49,6 +52,11 @@
                                     <td><input type="checkbox" name="user_ids[]" value="{{ $user->id }}"
                                             class="user-checkbox"></td>
                                     <td>{{ $user->id }}</td>
+                                    {{-- @dd($user->avatar); --}}
+                                    <td>
+                                        <img src="{{ asset($user->avatar) }}" alt="{{ $user->name }}" width="50"
+                                            height="50" style="object-fit: cover;">
+                                    </td>
                                     <td><strong>{{ $user->name }}</strong></td>
                                     <td>{{ $user->email }}</td>
                                     <td>{{ $user->phone_number }}</td>

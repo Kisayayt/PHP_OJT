@@ -4,8 +4,7 @@
     <div class="container mt-5 mb-5">
         <h1 style="font-weight: bold">Cập nhật phòng ban</h1>
         <Button onclick="window.location.href='/departmentDashboard'" class="btn btn-primary mb-3"><i class="bi bi-house"></i>
-            Back to
-            home</Button>
+            Trở về trang chủ</Button>
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>

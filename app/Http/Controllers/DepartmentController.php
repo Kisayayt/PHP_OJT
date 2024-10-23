@@ -27,6 +27,13 @@ class DepartmentController extends Controller
         return view('departments.index', compact('departments'));
     }
 
+    public function getDepartmentTree()
+    {
+        $departments = Departments::with('children')->get();
+        return response()->json($departments);
+    }
+
+
     public function insertDepartmentView()
     {
         $departments = Departments::all();
@@ -102,11 +109,18 @@ class DepartmentController extends Controller
     public function bulkDelete(Request $request)
     {
         $departmentIds = $request->input('department_ids');
+
         if ($departmentIds) {
+            // Đặt department_id của người dùng về null trước khi xóa phòng ban
+            User::whereIn('department_id', $departmentIds)->update(['department_id' => null]);
+
+            // Sau đó, xóa phòng ban
             Departments::whereIn('id', $departmentIds)->delete();
         }
+
         return redirect('/departmentDashboard');
     }
+
 
     public function details($id)
     {

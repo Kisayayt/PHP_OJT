@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Departments;
 use App\Models\User;
+use App\Models\User_Attendance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+
 
 class UserController extends Controller
 {
@@ -45,7 +48,16 @@ class UserController extends Controller
             'phone_number' => 'required|numeric|min:10',
             'password' => 'required|string|min:8|max:255|confirmed',
             'department_id' => 'required',
+            'avatar' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        $avatarPath = null;
+        if ($request->hasFile('avatar')) {
+            $originalName = $request->file('avatar')->getClientOriginalName();
+            $shortName = Str::limit($originalName, 50, '');
+            $avatarPath = 'images/' . uniqid() . '_' . $shortName;
+            $request->file('avatar')->move(public_path('images'), $avatarPath);
+        }
 
         $user = User::create([
             'name' => $validatedData['name'],
@@ -53,15 +65,18 @@ class UserController extends Controller
             'phone_number' => $validatedData['phone_number'],
             'password' => Hash::make($validatedData['password']),
             'department_id' => $validatedData['department_id'],
+            'avatar' => $avatarPath,
         ]);
 
         return redirect('/dashboard');
     }
 
+
+
     public function updateView($id)
     {
         $user = User::find($id);
-        // dd($user);
+
         $departments = Departments::all();
         return view('dashboard.update', [
             'user' => $user,
@@ -71,14 +86,13 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
-        // dd($request);
-        // dd($id);
         $validatedData = $request->validate([
             'name' => 'required|max:255',
-            'email' => 'required|email:dns|unique:users,email,' . $id,
+            'email' => 'required|email|unique:users,email,' . $id,
             'phone_number' => 'required|numeric|min:10',
             'password' => 'nullable|string|min:8|max:255|confirmed',
             'department_id' => '',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
 
@@ -95,14 +109,24 @@ class UserController extends Controller
         }
 
 
+        if ($request->hasFile('avatar')) {
+            $originalName = $request->file('avatar')->getClientOriginalName();
+            $shortName = Str::limit($originalName, 50, '');
+            $avatarPath = 'images/' . uniqid() . '_' . $shortName;
+            $request->file('avatar')->move(public_path('images'), $avatarPath);
+
+            $updateData['avatar'] = $avatarPath;
+        }
+
+
         User::where('id', $id)->update($updateData);
 
-        return redirect('/dashboard');
+        return redirect('/dashboard')->with('success', 'Cập nhật thông tin người dùng thành công.');
     }
 
     public function deleteUser($id)
     {
-        // dd ($id);
+
         User::where('id', $id)->delete();
         return redirect('/dashboard');
     }
@@ -110,10 +134,15 @@ class UserController extends Controller
     public function bulkDelete(Request $request)
     {
         $userIds = $request->input('user_ids');
+
         if ($userIds) {
+
+            User_Attendance::whereIn('user_id', $userIds)->delete();
+
+
             User::whereIn('id', $userIds)->delete();
         }
-        return redirect('/dashboard');
-        // dd($deletedUsers);
+
+        return redirect('/dashboard')->with('success', 'Người dùng đã được xóa thành công.');
     }
 }

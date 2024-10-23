@@ -3,8 +3,8 @@
 @section('content')
     <div class="container mt-5 mb-5">
         <h1 style="font-weight: bold">Thêm User</h1>
-        <Button onclick="window.location.href='/dashboard'" class="btn btn-primary mb-3"><i class="bi bi-house"></i> Back to
-            home</Button>
+        <Button onclick="window.location.href='/dashboard'" class="btn btn-primary mb-3"><i class="bi bi-house"></i> Trở về
+            trang chủ</Button>
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>
@@ -14,7 +14,7 @@
                 </ul>
             </div>
         @endif
-        <form action="/insert" method="post">
+        <form action="/insert" method="post" enctype="multipart/form-data">
             @csrf
             <div class="row">
                 <div class="col-md-6">
@@ -36,6 +36,10 @@
                                 <option value="{{ $department->id }}">{{ $department->name }}</option>
                             @endforeach
                         </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="avatar" class="form-label">Chọn ảnh đại diện</label>
+                        <input type="file" class="form-control" id="avatar" name="avatar" accept="image/*">
                     </div>
                     <Button type="submit" class="btn btn-primary">Thêm người dùng <i class="bi bi-send-plus"></i></Button>
 
