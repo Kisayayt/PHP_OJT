@@ -3,7 +3,8 @@
         style="object-fit: cover; cursor: pointer;" id="profileImage">
     <div class="card-body">
         <h5 style="font-weight: bold" class="card-title">{{ auth()->user()->name }}</h5>
-        <p class="card-text">{{ auth()->user()->department->name }}</p>
+        <p class="card-text">{{ auth()->user()->department ? auth()->user()->department->name : 'Không trong ban nào' }}
+        </p>
         <div>
             <a href="{{ route('details') }}" class="btn btn-primary btn-block mt-3 w-100">Thông tin người dùng</a>
             <a href="{{ route('checkinout') }}" class="btn btn-secondary btn-block mt-2 w-100">Lịch sử

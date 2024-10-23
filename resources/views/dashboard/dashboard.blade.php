@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container pt-5 mb-5">
-        <h2 style="font-weight: bold">HOME</h2>
+        <h2 style="font-weight: bold">Trang chủ</h2>
         </h2>
         <div class="row">
             <div class="col-md-3">

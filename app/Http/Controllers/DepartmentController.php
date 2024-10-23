@@ -19,7 +19,7 @@ class DepartmentController extends Controller
     {
 
         $search = $request->input('search');
-        // dd($search);
+
         $departments = Departments::with('parent')
             ->where('name', 'LIKE', "%{$search}%")
             ->paginate(5);
@@ -75,7 +75,7 @@ class DepartmentController extends Controller
     public function updateDepartmentView($id)
     {
         $department = Departments::find($id);
-        // dd($department);
+
         $departments = Departments::all();
         return view('departments.update', [
             'department' => $department,
@@ -111,10 +111,10 @@ class DepartmentController extends Controller
         $departmentIds = $request->input('department_ids');
 
         if ($departmentIds) {
-            // Đặt department_id của người dùng về null trước khi xóa phòng ban
+
             User::whereIn('department_id', $departmentIds)->update(['department_id' => null]);
 
-            // Sau đó, xóa phòng ban
+
             Departments::whereIn('id', $departmentIds)->delete();
         }
 
@@ -131,10 +131,29 @@ class DepartmentController extends Controller
 
     public function updateStatus($id)
     {
+
         $department = Departments::findOrFail($id);
-        // dd($department);
+
+
         $department->status = $department->status ? 0 : 1;
         $department->save();
+
+
+        if ($department->status == 0) {
+
+            $subDepartments = Departments::where('parent_id', $department->id)->get();
+            foreach ($subDepartments as $subDepartment) {
+                $subDepartment->parent_id = null;
+                $subDepartment->save();
+            }
+
+
+            $users = User::where('department_id', $department->id)->get();
+            foreach ($users as $user) {
+                $user->department_id = null;
+                $user->save();
+            }
+        }
 
         return redirect()->back();
     }

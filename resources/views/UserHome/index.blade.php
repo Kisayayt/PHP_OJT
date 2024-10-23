@@ -4,8 +4,8 @@
     <div class="container mt-5 mb-5">
         <div>
             <h2 style="font-weight: bold"><i class="bi bi-house"></i> Trang chủ</h2>
-            @if ($time > 0)
-                <p>Tổng thời gian gần đây nhất: <strong>{{ $time }} giờ</strong></p>
+            @if ($lastCheckoutTime)
+                <p>Tổng thời gian gần đây nhất: <strong>{{ $lastCheckoutTime }} giờ</strong></p>
             @else
                 <p>Tổng thời gian gần đây nhất: <strong>0 giờ</strong></p>
             @endif

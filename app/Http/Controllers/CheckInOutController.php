@@ -17,11 +17,18 @@ class CheckInOutController extends Controller
             ->orderBy('created_at', 'desc')
             ->first();
 
+        $latestCheckout = User_Attendance::where('user_id', $userId)
+            ->where('type', 'out')
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        $lastCheckoutTime = $latestCheckout ? $latestCheckout->time : 0;
+
         $isCheckedIn = $latestAttendance && $latestAttendance->type == 'in';
         $time = $latestAttendance ? $latestAttendance->time : 0;
         $history = User_Attendance::where('user_id', auth()->id())->orderBy('created_at', 'desc')->paginate(7);
 
-        return view('UserHome.index', compact('isCheckedIn', 'time', 'history'));
+        return view('UserHome.index', compact('isCheckedIn', 'time', 'history', 'lastCheckoutTime'));
     }
 
     public function checkIn(Request $request)

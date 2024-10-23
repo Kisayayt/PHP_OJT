@@ -4,7 +4,7 @@
 
 <style>
     .header {
-        background-image: url('{{ asset('images/anhheader.jpg') }}');
+        background-image: url('{{ asset('images/office-employees.jpg') }}');
 
         background-size: cover;
         background-position: center;

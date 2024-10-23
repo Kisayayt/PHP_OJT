@@ -32,9 +32,16 @@ class HomeController extends Controller
             ->orderBy('created_at', 'desc')
             ->first();
 
+        $latestCheckout = User_Attendance::where('user_id', $userId)
+            ->where('type', 'out')
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        $lastCheckoutTime = $latestCheckout ? $latestCheckout->time : 0;
+
         $isCheckedIn = $latestAttendance && $latestAttendance->type == 'in';
         $time = $latestAttendance ? $latestAttendance->time : 0;
-        return view('userHome.details', compact('user', 'isCheckedIn', 'time'));
+        return view('userHome.details', compact('user', 'isCheckedIn', 'time', 'lastCheckoutTime'));
     }
 
     public function changePassword(Request $request)

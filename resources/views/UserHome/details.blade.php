@@ -4,8 +4,8 @@
     <div class="container mt-5 mb-5">
         <div>
             <h2 style="font-weight: bold"><i class="bi bi-house"></i> Chi tiết</h2>
-            @if ($time > 0)
-                <p>Tổng thời gian gần đây nhất: <strong>{{ $time }} giờ</strong></p>
+            @if ($lastCheckoutTime > 0)
+                <p>Tổng thời gian gần đây nhất: <strong>{{ $lastCheckoutTime }} giờ</strong></p>
             @else
                 <p>Tổng thời gian gần đây nhất: <strong>0 giờ</strong></p>
             @endif
@@ -55,7 +55,8 @@
                                         <strong>Email:</strong> {{ $user->email }}
                                     </li>
                                     <li class="list-group-item">
-                                        <strong>Phòng ban:</strong> {{ $user->department->name }}
+                                        <strong>Phòng ban:</strong>
+                                        {{ $user->department ? $user->department->name : 'N/A' }}
                                     </li>
                                     <li class="list-group-item">
                                         <strong>Số điện thoại:</strong> {{ $user->phone_number }}
