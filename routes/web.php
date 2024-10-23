@@ -24,6 +24,11 @@ Route::middleware(['auth', 'checkRole:user'])->group(function () {
     Route::get('/home', [CheckInOutController::class, 'showCheckInOut'])->name('checkinout');
     Route::post('/checkin', [CheckInOutController::class, 'checkIn'])->name('checkin');
     Route::post('/checkout', [CheckInOutController::class, 'checkOut'])->name('checkout');
+    Route::get('/home/details', [HomeController::class, 'details'])->name('details');
+    Route::post('/update-avatar', [HomeController::class, 'updateAvatar'])->name('update.avatar');
+
+
+    Route::post('/change-password', [HomeController::class, 'changePassword'])->name('change.password');
 });
 
 // ADMIN

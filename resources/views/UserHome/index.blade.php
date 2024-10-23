@@ -13,25 +13,7 @@
         <div class="row">
 
             <div class="col-md-3">
-                <div class="card text-center">
-                    <img src="{{ asset(auth()->user()->avatar) }}" class="card-img-top" alt="User Image" width="300"
-                        height="300" style="object-fit: cover">
-                    <div class="card-body">
-                        {{-- @dd(auth()->user()); --}}
-                        <h5 style="font-weight: bold" class="card-title">{{ auth()->user()->name }}</h5>
-                        <p class="card-text">{{ auth()->user()->department->name }}</p>
-                        <div>
-                            <a href="#" class="btn btn-primary btn-block mt-3 w-100">Thông tin người dùng</a>
-                            <a href="#history-table" class="btn btn-secondary btn-block mt-2 w-100">Lịch sử
-                                check-in/check-out</a>
-                            <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                                @csrf <!-- Thêm token CSRF -->
-                                <button type="submit" class="btn btn-danger btn-block mt-2 w-100">Đăng xuất</button>
-                            </form>
-
-                        </div>
-                    </div>
-                </div>
+                @include('Userhome.card')
             </div>
 
 
