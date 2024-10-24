@@ -7,6 +7,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CheckInOutController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ExcelExportController;
+use App\Http\Controllers\ExcelImportController;
 
 Route::get('/', function () {
     return redirect()->route('login'); // Chuyển hướng đến trang login
@@ -72,4 +74,10 @@ Route::middleware(['auth', 'checkRole:admin'])->group(function () {
     Route::get('checkinout/search', [AdminCheckInOutController::class, 'search'])->name('admin.checkinoutSearch');
 
     Route::get('/checkinout/filterByDate', [AdminCheckInOutController::class, 'filterByDate'])->name('admin.filterByDate');
+
+
+    //export
+    Route::get('/export-excel', [ExcelExportController::class, 'export'])->name('export');
+    // Route cho import
+    Route::post('/import', [ExcelImportController::class, 'import'])->name('import');
 });

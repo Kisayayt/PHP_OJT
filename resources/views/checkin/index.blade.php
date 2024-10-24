@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container pt-5 mb-5">
-        <h2 style="font-weight: bold">Trang quản lí Check-in/Check-out</h2>
+        <h2 style="font-weight: bold">Trang chủ</h2>
         <div class="row">
             <div class="col-md-3">
                 @include('sidebar.sidebar')
@@ -19,12 +19,13 @@
                         </div>
                     </form>
                     <form action="{{ route('admin.filterByDate') }}" method="GET" class="d-flex align-items-center ml-3">
+                        <button type="submit" class="btn btn-primary mr-5">Lọc</button>
                         <div class="form-group">
                             {{-- <label for="date">Chọn ngày:</label> --}}
                             <input type="date" id="date" name="date" class="form-control"
                                 value="{{ request('date') }}">
                         </div>
-                        <button type="submit" class="btn btn-primary ml-2">Lọc</button>
+
                     </form>
                 </div>
 
@@ -33,9 +34,28 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
+                            <th>#</th>
                             <th>Nhân viên</th>
                             <th>Thời gian</th>
-                            <th>Ngày/Tháng/Năm</th>
+                            <th>
+                                <a href="{{ route('admin.checkinout', [
+                                    'sort_by' => 'created_at',
+                                    'sort_direction' => request('sort_direction') == 'asc' ? 'desc' : 'asc',
+                                    'search' => request('search'),
+                                    'date' => request('date'),
+                                ]) }}"
+                                    style="color: black; text-decoration: none">
+                                    Ngày/Tháng/Năm
+
+                                    @if (request('sort_by') == 'created_at')
+                                        <i
+                                            class="bi bi-chevron-{{ request('sort_direction') == 'asc' ? 'down' : 'up' }}"></i>
+                                    @else
+                                        <i class="bi bi-chevron-up"></i>
+                                    @endif
+                                </a>
+                            </th>
+
                             <th>Tổng thời gian (giờ)</th>
                             <th>Trạng thái</th>
                         </tr>
@@ -43,6 +63,7 @@
                     <tbody>
                         @forelse ($attendanceRecords as $record)
                             <tr>
+                                <td>{{ $record->user->id }}</td>
                                 <td>{{ $record->user->name }}</td>
                                 <td>{{ $record->created_at->format('H:i') }}</td>
                                 <td>{{ $record->created_at->format('d/m/Y') }}</td>

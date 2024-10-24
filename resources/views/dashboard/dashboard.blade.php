@@ -4,6 +4,23 @@
     <div class="container pt-5 mb-5">
         <h2 style="font-weight: bold">Trang chủ</h2>
         </h2>
+        @if (session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('success') }}
+                <button type="button" class="close" data-dismiss="alert">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @endif
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <p style="color: red;">{{ $error }}</p>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <div class="row">
             <div class="col-md-3">
                 @include('sidebar.sidebar')
@@ -27,8 +44,40 @@
                         </Button>
                         <button type="submit" class="btn btn-danger" form="bulkDeleteForm"><i class="bi bi-x-lg"></i> Xóa
                             được chọn</button>
+
+                        <div class="dropdown d-inline-block ml-2">
+                            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                Xuất/Nhập
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <li>
+                                    <form action="{{ route('export') }}" method="GET">
+                                        <button type="submit" class="dropdown-item">Xuất file</button>
+                                    </form>
+                                </li>
+                                <li>
+                                    <button type="button" class="dropdown-item"
+                                        onclick="document.getElementById('import_file_input').click();">
+                                        Nhập file
+                                    </button>
+                                    <form id="import_file" action="{{ route('import') }}" method="POST"
+                                        enctype="multipart/form-data">
+                                        @csrf
+                                        <input type="file" id="import_file_input" name="import_file" class="d-none"
+                                            required onchange="this.form.submit()">
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+
+
+
                     </div>
                 </div>
+
+
+
 
                 <table class="table mt-3 mb-5 table-striped">
                     <thead>
