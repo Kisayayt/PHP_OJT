@@ -30,7 +30,7 @@
                     </div>
                 </div>
 
-                <table class="table mt-3 mb-5">
+                <table class="table mt-3 mb-5 table-striped">
                     <thead>
                         <tr>
                             <th scope="col"><input type="checkbox" id="selectAll"></th>
@@ -71,9 +71,8 @@
                         </form>
                     </tbody>
                 </table>
-
                 <div class="d-flex justify-content-center">
-                    {{ $users->links() }}
+                    {{ $users->appends(request()->input())->links() }}
                 </div>
             </div>
         </div>

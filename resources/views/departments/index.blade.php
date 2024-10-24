@@ -34,7 +34,7 @@
                     @csrf
                     @method('delete')
 
-                    <table class="table mt-3 mb-5">
+                    <table class="table mt-3 mb-5 table-striped">
                         <thead>
                             <tr>
                                 <th scope="col"><input type="checkbox" id="selectAll"></th>
@@ -82,7 +82,7 @@
                 </form>
 
                 <div class="d-flex justify-content-center">
-                    {{ $departments->links() }}
+                    {{ $departments->appends(request()->input())->links() }}
                 </div>
             </div>
         </div>

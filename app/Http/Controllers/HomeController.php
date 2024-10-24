@@ -51,12 +51,12 @@ class HomeController extends Controller
             'new_password' => 'required|string|min:8|confirmed',
         ]);
 
-        // Kiểm tra mật khẩu hiện tại
+
         if (!Hash::check($validatedData['current_password'], Auth::user()->password)) {
             return redirect()->back()->withErrors(['current_password' => 'Mật khẩu hiện tại không đúng.']);
         }
 
-        // Cập nhật mật khẩu mới
+
         $user = User::find(Auth::id());
         $user->update(['password' => Hash::make($validatedData['new_password'])]);
 
@@ -65,14 +65,14 @@ class HomeController extends Controller
 
     public function updateAvatar(Request $request)
     {
-        // Validate file
+
         $request->validate([
             'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Kích thước tối đa là 2MB
         ]);
 
         $updateData = [];
 
-        // Xử lý file nếu có
+
         if ($request->hasFile('avatar')) {
             try {
                 $originalName = $request->file('avatar')->getClientOriginalName();
@@ -86,7 +86,7 @@ class HomeController extends Controller
             }
         }
 
-        // Cập nhật thông tin người dùng
+
         $user = User::find(Auth::id());
         $user->update($updateData);
 

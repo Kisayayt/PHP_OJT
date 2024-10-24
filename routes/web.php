@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminCheckInOutController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\HomeController;
@@ -66,4 +67,9 @@ Route::middleware(['auth', 'checkRole:admin'])->group(function () {
 
 
     Route::get('/departments/{id}/update-status', [DepartmentController::class, 'updateStatus'])->name('departments.updateStatus');
+
+    Route::get('/checkinout', [AdminCheckInOutController::class, 'index'])->name('admin.checkinout');
+    Route::get('checkinout/search', [AdminCheckInOutController::class, 'search'])->name('admin.checkinoutSearch');
+
+    Route::get('/checkinout/filterByDate', [AdminCheckInOutController::class, 'filterByDate'])->name('admin.filterByDate');
 });

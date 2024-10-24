@@ -7,7 +7,8 @@
         class="list-group-item list-group-item-action {{ request()->routeIs('departments.index') || request()->routeIs('departments.search') ? 'active' : '' }}">
         <i class="bi bi-door-closed"></i> Quản lí phòng ban
     </a>
-    <a href="#" class="list-group-item list-group-item-action">
+    <a href="{{ route('admin.checkinout') }}"
+        class="list-group-item list-group-item-action {{ request()->routeIs('admin.checkinout') || request()->routeIs('admin.search') || request()->is('checkinout/search*') || request()->is('checkinout/filterByDate*') ? 'active' : '' }}">
         <i class="bi bi-person-check-fill"></i> Quản lí checkout
     </a>
     <form action="{{ route('logout') }}" method="post">
@@ -17,8 +18,8 @@
             <i class="bi bi-box-arrow-left"></i> Đăng xuất
         </button>
     </form>
-
 </div>
+
 
 
 

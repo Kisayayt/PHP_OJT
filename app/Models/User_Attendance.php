@@ -14,4 +14,9 @@ class User_Attendance extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = ['user_id', 'time', 'type'];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }
