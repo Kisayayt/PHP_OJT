@@ -31,7 +31,7 @@ class AdminCheckInOutController extends Controller
         }
 
 
-        $attendanceRecords = $query->orderBy($sortBy, $sortDirection)->paginate(5);
+        $attendanceRecords = $query->orderBy($sortBy, $sortDirection)->paginate(6);
 
         return view('checkin.index', compact('attendanceRecords'));
     }
@@ -52,7 +52,7 @@ class AdminCheckInOutController extends Controller
             ->orWhere('created_at', 'LIKE', "%{$search}%")
             ->orWhere('updated_at', 'LIKE', "%{$search}%")
             ->orderBy($sortBy, $sortDirection)
-            ->paginate(5);
+            ->paginate(6);
 
         return view('checkin.index', compact('attendanceRecords', 'sortBy', 'sortDirection'));
     }
@@ -68,11 +68,11 @@ class AdminCheckInOutController extends Controller
             $attendanceRecords = User_Attendance::with('user')
                 ->whereDate('created_at', $date)
                 ->orderBy($sortBy, $sortDirection)
-                ->paginate(5);
+                ->paginate(6);
         } else {
             $attendanceRecords = User_Attendance::with('user')
                 ->orderBy($sortBy, $sortDirection)
-                ->paginate(5);
+                ->paginate(6);
         }
 
         return view('checkin.index', compact('attendanceRecords', 'sortBy', 'sortDirection'));

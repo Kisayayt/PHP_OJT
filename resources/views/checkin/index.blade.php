@@ -18,17 +18,23 @@
                             <button type="submit" class="btn btn-primary ml-2">Tìm kiếm</button>
                         </div>
                     </form>
-                    <form action="{{ route('admin.filterByDate') }}" method="GET" class="d-flex align-items-center ml-3">
-                        <button type="submit" class="btn btn-primary mr-5">Lọc</button>
-                        <div class="form-group">
-                            {{-- <label for="date">Chọn ngày:</label> --}}
-                            <input type="date" id="date" name="date" class="form-control"
-                                value="{{ request('date') }}">
-                        </div>
 
-                    </form>
+                    <div class="d-flex align-items-center ml-auto">
+                        <form action="{{ route('admin.filterByDate') }}" method="GET" class="d-flex align-items-center">
+                            <button style="margin-right: 10px;" type="submit" class="btn btn-primary">Lọc</button>
+                            <div class="form-group mr-2">
+                                <input type="date" id="date" name="date" class="form-control"
+                                    value="{{ request('date') }}">
+                            </div>
+
+                        </form>
+
+                        <!-- Thêm style với margin-left để tạo khoảng cách cụ thể -->
+                        <form action="{{ route('exportCheck') }}" method="GET" style="margin-left: 20px;">
+                            <button type="submit" class="btn btn-success">Xuất file</button>
+                        </form>
+                    </div>
                 </div>
-
 
 
                 <table class="table table-striped">
@@ -80,7 +86,7 @@
                 </table>
 
                 <div class="d-flex justify-content-center">
-                    {{ $attendanceRecords->appends(request()->input())->links() }}
+                    {{ $attendanceRecords->onEachSide(2)->appends(request()->input())->links() }}
                 </div>
             </div>
         </div>

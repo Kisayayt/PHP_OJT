@@ -45,6 +45,7 @@ Route::middleware(['auth', 'checkRole:admin'])->group(function () {
     Route::post('/insert', [UserController::class, 'insert']);
     Route::get('/dashboard', [UserController::class, 'dashboard'])->name('users.dashboard');
     Route::get('/dashboard/search', [UserController::class, 'search'])->name('users.search');
+    Route::get('/dashboard/{id}/details', [UserController::class, 'userDetails'])->name('userDetails');
 
 
     Route::get('/update/{id}', [UserController::class, 'updateView'])->name('users.updateView');
@@ -80,4 +81,9 @@ Route::middleware(['auth', 'checkRole:admin'])->group(function () {
     Route::get('/export-excel', [ExcelExportController::class, 'export'])->name('export');
     // Route cho import
     Route::post('/import', [ExcelImportController::class, 'import'])->name('import');
+
+    Route::get('/departmentDashboard/export-excel', [ExcelExportController::class, 'exportDepartment'])->name('exportDepartment');
+    Route::post('/departmentDashboard/import-excel', [ExcelImportController::class, 'importDepartment'])->name('importDepartment');
+
+    Route::get('/checkinout/export-excel', [ExcelExportController::class, 'exportCheck'])->name('exportCheck');
 });

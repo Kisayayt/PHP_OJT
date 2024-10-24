@@ -24,6 +24,8 @@ class User extends Authenticatable
         'department_id',
     ];
 
+    protected $appends = ['isCheckedIn'];
+
     public function department()
     {
         return $this->belongsTo(Departments::class);
@@ -38,6 +40,34 @@ class User extends Authenticatable
     {
         return $this->role === 'user';
     }
+
+    public function attendances()
+    {
+        return $this->hasMany(User_Attendance::class, 'user_id');
+    }
+
+    public function getIsCheckedInAttribute()
+    {
+        $lastCheckIn = $this->attendances()
+            ->where('type', 'in')
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+
+        if (!$lastCheckIn) {
+            return false;
+        }
+
+
+        $lastCheckOut = $this->attendances()
+            ->where('type', 'out')
+            ->where('created_at', '>', $lastCheckIn->created_at)
+            ->first();
+
+        return !$lastCheckOut;
+    }
+
+
 
     public $timestamps = true;
 }

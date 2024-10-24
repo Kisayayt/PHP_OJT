@@ -67,7 +67,7 @@
 
                     <div class="mb-3">
                         <label for="phone_number" class="form-label">Phone number</label>
-                        <input value="{{ $user->phone_number }}" type="number" class="form-control" id="phone_number"
+                        <input value="{{ $user->phone_number }}" type="text" class="form-control" id="phone_number"
                             name="phone_number" placeholder="Nhập sđt" required>
                     </div>
 
@@ -77,4 +77,29 @@
         </form>
 
     </div>
+    <script>
+        const phoneInput = document.getElementById('phone_number');
+
+        phoneInput.addEventListener('input', function() {
+
+            if (this.value === '' || this.value === '+84') {
+                return;
+            }
+
+
+            if (!this.value.startsWith('+84')) {
+
+                this.value = '+84 ' + this.value.replace(/^0/, '');
+            }
+        });
+
+        phoneInput.addEventListener('keydown', function(event) {
+
+            if (event.key === 'Backspace' && this.value === '+84 ') {
+                this.value = '';
+            }
+        });
+    </script>
+
+
 @endsection

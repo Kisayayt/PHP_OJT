@@ -27,7 +27,7 @@ class ExcelImportController extends Controller
         foreach (array_slice($rows, 1) as $row) {
             $departmentId = $row[0];
 
-            // Kiểm tra department_id
+
             if (!Departments::where('id', $departmentId)->exists()) {
                 $failedImports[] = [
                     'row' => $row,
@@ -37,7 +37,7 @@ class ExcelImportController extends Controller
             }
 
             $email = $row[3];
-            // Kiểm tra nếu email đã tồn tại
+
             if (User::where('email', $email)->exists()) {
                 $failedImports[] = [
                     'row' => $row,
@@ -60,8 +60,69 @@ class ExcelImportController extends Controller
         }
 
         if (count($failedImports) > 0) {
+            return redirect()->back();
+        }
+
+        return redirect()->back()->with('success', 'Dữ liệu đã được import thành công!');
+    }
+
+    public function importDepartment(Request $request)
+    {
+
+        $request->validate([
+            'import_file' => 'required|mimes:xlsx,csv,xls',
+        ]);
+
+        if ($request->file('import_file') === null) {
+            return redirect()->back()->with('errors', 'Vui lòng chọn tệp để nhập!');
+        }
+
+
+        $spreadsheet = IOFactory::load($request->file('import_file')->getRealPath());
+        $worksheet = $spreadsheet->getActiveSheet();
+        $rows = $worksheet->toArray();
+
+        $failedImports = [];
+
+        foreach (array_slice($rows, 1) as $row) {
+            $name = $row[0];
+            $parentId = $row[1];
+            $status = 1;
+
+
+            if (Departments::where('name', $name)->exists()) {
+                $failedImports[] = [
+                    'row' => $row,
+                    'errors' => 'Tên phòng ban đã tồn tại'
+                ];
+                continue;
+            }
+
+
+            if (!is_null($parentId) && !Departments::where('id', $parentId)->exists()) {
+                $failedImports[] = [
+                    'row' => $row,
+                    'errors' => 'Parent department không tồn tại'
+                ];
+                continue;
+            }
+
+
+            $validatedData = [
+                'name' => $name,
+                'parent_id' => $parentId,
+                'status' => $status,
+            ];
+
+
+            Departments::create($validatedData);
+        }
+
+
+        if (count($failedImports) > 0) {
             return redirect()->back()->with('error', 'Một số dòng không được nhập do lỗi.');
         }
+
 
         return redirect()->back()->with('success', 'Dữ liệu đã được import thành công!');
     }

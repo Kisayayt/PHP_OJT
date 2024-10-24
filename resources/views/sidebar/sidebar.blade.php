@@ -1,6 +1,6 @@
 <div class="list-group" id="sidebar">
     <a href="{{ route('users.dashboard') }}"
-        class="list-group-item list-group-item-action {{ request()->routeIs('users.dashboard') || request()->routeIs('users.search') ? 'active' : '' }}">
+        class="list-group-item list-group-item-action {{ request()->routeIs('users.dashboard') || request()->routeIs('users.search') || request()->routeIs('userDetails') ? 'active' : '' }}">
         <i class="bi bi-people"></i> Quản lí người dùng
     </a>
     <a href="{{ route('departments.index') }}"

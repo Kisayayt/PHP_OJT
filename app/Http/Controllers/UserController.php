@@ -20,8 +20,20 @@ class UserController extends Controller
 
         $users = User::with('department')->where('role', '<>', 'admin')->paginate(3);
 
+
         return view('dashboard.dashboard')->with('users', $users);
     }
+
+    public function userDetails($id)
+    {
+        $user = User::with('department')->findOrFail($id);
+
+        return view('dashboard.details', compact('user'));
+    }
+
+
+
+
 
     public function search(Request $request)
     {
@@ -48,13 +60,28 @@ class UserController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|max:255',
             'email' => 'required|email|unique:users',
-            'phone_number' => 'required|numeric|min:10',
+            'phone_number' => 'required|string',
             'password' => 'required|string|min:8|max:255|confirmed',
             'department_id' => 'required',
             'avatar' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $avatarPath = null;
+        $phoneNumber = $request->input('phone_number');
+
+
+        $phoneNumber = str_replace(' ', '', $phoneNumber);
+
+
+        if (strpos($phoneNumber, '+84') === 0) {
+            $phoneNumber = '0' . substr($phoneNumber, 3);
+        } else {
+
+            if ($phoneNumber[0] !== '0') {
+                $phoneNumber = '0' . $phoneNumber;
+            }
+        }
+
+        $avatarPath = 'images/defaultAvatar.jpg';
         if ($request->hasFile('avatar')) {
             $originalName = $request->file('avatar')->getClientOriginalName();
             $shortName = Str::limit($originalName, 50, '');
@@ -65,7 +92,7 @@ class UserController extends Controller
         $user = User::create([
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
-            'phone_number' => $validatedData['phone_number'],
+            'phone_number' => $phoneNumber,
             'password' => Hash::make($validatedData['password']),
             'department_id' => $validatedData['department_id'],
             'avatar' => $avatarPath,
@@ -92,25 +119,38 @@ class UserController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|max:255',
             'email' => 'required|email|unique:users,email,' . $id,
-            'phone_number' => 'required|numeric|min:10',
+            'phone_number' => 'required|string',
             'password' => 'nullable|string|min:8|max:255|confirmed',
             'department_id' => '',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
 
+        $phoneNumber = $request->input('phone_number');
+
+
+        $phoneNumber = str_replace(' ', '', $phoneNumber);
+
+
+        if (strpos($phoneNumber, '+84') === 0) {
+            $phoneNumber = '0' . substr($phoneNumber, 3);
+        } else {
+            if ($phoneNumber[0] !== '0') {
+                $phoneNumber = '0' . $phoneNumber;
+            }
+        }
+
+
         $updateData = [
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
-            'phone_number' => $validatedData['phone_number'],
+            'phone_number' => $phoneNumber,
             'department_id' => $validatedData['department_id'],
         ];
-
 
         if ($request->filled('password')) {
             $updateData['password'] = Hash::make($validatedData['password']);
         }
-
 
         if ($request->hasFile('avatar')) {
             $originalName = $request->file('avatar')->getClientOriginalName();
@@ -121,11 +161,11 @@ class UserController extends Controller
             $updateData['avatar'] = $avatarPath;
         }
 
-
         User::where('id', $id)->update($updateData);
 
         return redirect('/dashboard')->with('success', 'Cập nhật thông tin người dùng thành công.');
     }
+
 
     public function deleteUser($id)
     {

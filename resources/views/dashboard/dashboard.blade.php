@@ -7,9 +7,6 @@
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 {{ session('success') }}
-                <button type="button" class="close" data-dismiss="alert">
-                    <span aria-hidden="true">&times;</span>
-                </button>
             </div>
         @endif
         @if ($errors->any())
@@ -46,7 +43,7 @@
                             được chọn</button>
 
                         <div class="dropdown d-inline-block ml-2">
-                            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton"
+                            <button class="btn btn-success dropdown-toggle" type="button" id="dropdownMenuButton"
                                 data-bs-toggle="dropdown" aria-expanded="false">
                                 Xuất/Nhập
                             </button>
@@ -70,9 +67,6 @@
                                 </li>
                             </ul>
                         </div>
-
-
-
                     </div>
                 </div>
 
@@ -90,6 +84,8 @@
                             <th scope="col">SĐT</th>
                             <th scope="col">Phòng ban</th>
                             <th scope="col">Cập nhật</th>
+                            <th scope="col">Chi tiết</th>
+                            <th scope="col">Tình trạng</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -101,7 +97,6 @@
                                     <td><input type="checkbox" name="user_ids[]" value="{{ $user->id }}"
                                             class="user-checkbox"></td>
                                     <td>{{ $user->id }}</td>
-                                    {{-- @dd($user->avatar); --}}
                                     <td>
                                         <img src="{{ asset($user->avatar) }}" alt="{{ $user->name }}" width="50"
                                             height="50" style="object-fit: cover;">
@@ -112,33 +107,51 @@
                                     <td>{{ $user->department ? $user->department->name : 'N/A' }}</td>
                                     <td>
                                         <Button onclick="window.location.href='/update/{{ $user->id }}'" type="button"
-                                            class="btn btn-success w-100"><i class="bi bi-arrow-up-square"></i>
+                                            class="btn btn-success w-100 h-100"><i
+                                                class="bi bi-arrow-up-square"></i></Button>
+                                    </td>
+                                    <td>
+                                        <Button onclick="window.location.href='/dashboard/{{ $user->id }}/details'"
+                                            type="button" class="btn btn-info w-100 h-100">
+                                            <i class="bi bi-info-circle"></i>
                                         </Button>
                                     </td>
+                                    <td>
+                                        @if ($user->isCheckedIn)
+                                            <Button type="button" class="btn btn-success w-100 h-100" disabled>
+                                                <i class="bi bi-door-closed-fill"></i>
+                                            </Button>
+                                        @else
+                                            <Button type="button" class="btn btn-danger w-100 h-100" disabled>
+                                                <i class="bi bi-door-open-fill"></i>
+                                            </Button>
+                                        @endif
+                                    </td>
+
                                 </tr>
                             @endforeach
+
                         </form>
                     </tbody>
                 </table>
                 <div class="d-flex justify-content-center">
-                    {{ $users->appends(request()->input())->links() }}
+                    {{ $users->onEachSide(2)->appends(request()->input())->links() }}
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Lấy checkbox chính
         const selectAllCheckbox = document.getElementById('selectAll');
-        // Lấy tất cả các checkbox trong tbody
+
         const departmentCheckboxes = document.querySelectorAll('.user-checkbox');
 
-        // Khi checkbox chính được click
+
         selectAllCheckbox.addEventListener('change', function() {
-            // Kiểm tra xem checkbox chính có được chọn hay không
+
             const isChecked = selectAllCheckbox.checked;
 
-            // Lặp qua tất cả các checkbox con và set trạng thái tương tự
+
             departmentCheckboxes.forEach(function(checkbox) {
                 checkbox.checked = isChecked;
             });

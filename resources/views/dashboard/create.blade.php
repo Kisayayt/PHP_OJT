@@ -42,8 +42,6 @@
                         <input type="file" class="form-control" id="avatar" name="avatar" accept="image/*">
                     </div>
                     <Button type="submit" class="btn btn-primary">Thêm người dùng <i class="bi bi-send-plus"></i></Button>
-
-
                 </div>
                 <div class="col-md-6">
                     <div class="mb-3">
@@ -58,14 +56,37 @@
                     </div>
                     <div class="mb-3">
                         <label for="phone_number" class="form-label">Phone number</label>
-                        <input type="number" class="form-control" id="phone_number" name="phone_number"
+                        <input type="text" class="form-control" id="phone_number" name="phone_number"
                             placeholder="Nhập sđt" required>
                     </div>
-
                 </div>
             </div>
-
         </form>
-
     </div>
+
+    <script>
+        const phoneInput = document.getElementById('phone_number');
+
+        phoneInput.addEventListener('input', function() {
+
+            if (this.value === '' || this.value === '+84') {
+                return;
+            }
+
+
+            if (!this.value.startsWith('+84')) {
+
+                this.value = '+84 ' + this.value.replace(/^0/, '');
+            }
+        });
+
+        phoneInput.addEventListener('keydown', function(event) {
+
+            if (event.key === 'Backspace' && this.value === '+84 ') {
+                this.value = '';
+            }
+        });
+    </script>
+
+
 @endsection
