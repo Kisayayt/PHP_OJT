@@ -41,9 +41,14 @@
                         <label for="avatar" class="form-label">Chọn ảnh đại diện</label>
                         <input type="file" class="form-control" id="avatar" name="avatar" accept="image/*">
                     </div>
-                    <Button type="submit" class="btn btn-primary">Thêm người dùng <i class="bi bi-plus-lg"></i>
+                    <Button type="submit" class="btn btn-primary">Thêm người dùng <i class="bi bi-plus-square"></i>
                 </div>
                 <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Tên tài khoản</label>
+                        <input type="text" class="form-control" id="username" name="username"
+                            placeholder="Nhập username" required>
+                    </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">Mật khẩu</label>
                         <input type="password" class="form-control" id="password" name="password"
@@ -57,8 +62,9 @@
                     <div class="mb-3">
                         <label for="phone_number" class="form-label">Số điện thoại</label>
                         <input type="text" class="form-control" id="phone_number" name="phone_number"
-                            placeholder="Nhập sđt" required>
+                            placeholder="VD: +84 123456789" required>
                     </div>
+
                 </div>
             </div>
         </form>
@@ -67,22 +73,8 @@
     <script>
         const phoneInput = document.getElementById('phone_number');
 
-        phoneInput.addEventListener('input', function() {
-
-            if (this.value === '' || this.value === '+84') {
-                return;
-            }
-
-
-            if (!this.value.startsWith('+84')) {
-
-                this.value = '+84 ' + this.value.replace(/^0/, '');
-            }
-        });
-
         phoneInput.addEventListener('keydown', function(event) {
-
-            if (event.key === 'Backspace' && this.value === '+84 ') {
+            if (event.key === 'Backspace' && this.value === '+') {
                 this.value = '';
             }
         });

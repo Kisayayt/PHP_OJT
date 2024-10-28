@@ -59,8 +59,9 @@ class UserController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|max:255',
+            'username' => 'required|max:255|unique:users',
             'email' => 'required|email|unique:users',
-            'phone_number' => 'required|string',
+            'phone_number' => 'required|string|regex:/^\+(\d{2})\s?\d{9}$/',
             'password' => 'required|string|min:8|max:255|confirmed',
             'department_id' => 'required',
             'avatar' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -68,17 +69,14 @@ class UserController extends Controller
 
         $phoneNumber = $request->input('phone_number');
 
-
+        // Xóa khoảng trắng khỏi số điện thoại
         $phoneNumber = str_replace(' ', '', $phoneNumber);
 
-
-        if (strpos($phoneNumber, '+84') === 0) {
-            $phoneNumber = '0' . substr($phoneNumber, 3);
-        } else {
-
-            if ($phoneNumber[0] !== '0') {
-                $phoneNumber = '0' . $phoneNumber;
-            }
+        // Kiểm tra và chuyển đổi mã quốc gia thành số 0
+        if (strpos($phoneNumber, '+') === 0) {
+            $phoneNumber = '0' . substr($phoneNumber, strpos($phoneNumber, '+') + 1);
+        } elseif ($phoneNumber[0] !== '0') {
+            $phoneNumber = '0' . $phoneNumber;
         }
 
         $avatarPath = 'images/defaultAvatar.jpg';
@@ -91,6 +89,7 @@ class UserController extends Controller
 
         $user = User::create([
             'name' => $validatedData['name'],
+            'username' => $validatedData['username'],
             'email' => $validatedData['email'],
             'phone_number' => $phoneNumber,
             'password' => Hash::make($validatedData['password']),
@@ -100,6 +99,7 @@ class UserController extends Controller
 
         return redirect('/dashboard');
     }
+
 
 
 
@@ -119,6 +119,7 @@ class UserController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|max:255',
             'email' => 'required|email|unique:users,email,' . $id,
+            'username' => 'required|max:255|unique:users,username,' . $id,
             'phone_number' => 'required|string',
             'password' => 'nullable|string|min:8|max:255|confirmed',
             'department_id' => '',
@@ -132,17 +133,16 @@ class UserController extends Controller
         $phoneNumber = str_replace(' ', '', $phoneNumber);
 
 
-        if (strpos($phoneNumber, '+84') === 0) {
-            $phoneNumber = '0' . substr($phoneNumber, 3);
-        } else {
-            if ($phoneNumber[0] !== '0') {
-                $phoneNumber = '0' . $phoneNumber;
-            }
+        if (strpos($phoneNumber, '+') === 0) {
+            $phoneNumber = '0' . substr($phoneNumber, strpos($phoneNumber, '+') + 1);
+        } elseif ($phoneNumber[0] !== '0') {
+            $phoneNumber = '0' . $phoneNumber;
         }
 
 
         $updateData = [
             'name' => $validatedData['name'],
+            'username' => $validatedData['username'],
             'email' => $validatedData['email'],
             'phone_number' => $phoneNumber,
             'department_id' => $validatedData['department_id'],

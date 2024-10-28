@@ -42,8 +42,7 @@
                         <button type="submit" class="btn btn-danger" form="bulkDeleteForm"><i class="bi bi-x-lg"></i> Xóa
                             được chọn</button>
 
-                        <button type="submit" class="btn btn-success"
-                            onclick="window.location.href='/departmentDashboard/export-excel-all'">
+                        <button type="submit" class="btn btn-success" onclick="window.location.href='/export-excel-all'">
                             Xuất
                             file</button>
 

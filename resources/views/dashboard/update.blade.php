@@ -58,6 +58,11 @@
                 </div>
                 <div class="col-md-6">
                     <div class="mb-3">
+                        <label for="username" class="form-label">Tên tài khoản</label>
+                        <input value="{{ $user->username }}" type="text" class="form-control" id="username"
+                            name="username" placeholder="Nhập username" required>
+                    </div>
+                    <div class="mb-3">
                         <label for="phone_number" class="form-label">Số điện thoại</label>
                         <input value="{{ $user->phone_number }}" type="text" class="form-control" id="phone_number"
                             name="phone_number" placeholder="Nhập sđt" required>
@@ -98,3 +103,14 @@
 
     </div>
 @endsection
+
+
+<script>
+    const phoneInput = document.getElementById('phone_number');
+
+    phoneInput.addEventListener('keydown', function(event) {
+        if (event.key === 'Backspace' && this.value === '+') {
+            this.value = '';
+        }
+    });
+</script>
