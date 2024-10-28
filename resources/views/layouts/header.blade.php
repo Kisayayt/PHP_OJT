@@ -1,5 +1,5 @@
 <div class="header">
-    <h1 class="header-title"><i class="bi bi-kanban"></i> QUẢN LÍ NHÂN VIÊN</h1>
+    <h1 class="header-title"><i class="bi bi-kanban"></i> QUẢN LÍ NHÂN SỰ</h1>
 </div>
 
 <style>

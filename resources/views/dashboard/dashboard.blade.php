@@ -42,15 +42,20 @@
                         <button type="submit" class="btn btn-danger" form="bulkDeleteForm"><i class="bi bi-x-lg"></i> Xóa
                             được chọn</button>
 
+                        <button type="submit" class="btn btn-success"
+                            onclick="window.location.href='/departmentDashboard/export-excel-all'">
+                            Xuất
+                            file</button>
+
                         <div class="dropdown d-inline-block ml-2">
                             <button class="btn btn-success dropdown-toggle" type="button" id="dropdownMenuButton"
                                 data-bs-toggle="dropdown" aria-expanded="false">
-                                Xuất/Nhập
+                                Nhập file
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <li>
                                     <form action="{{ route('export') }}" method="GET">
-                                        <button type="submit" class="dropdown-item">Xuất file</button>
+                                        <button type="submit" class="dropdown-item">Xuất file mẫu</button>
                                     </form>
                                 </li>
                                 <li>
@@ -85,7 +90,7 @@
                             <th scope="col">Phòng ban</th>
                             <th scope="col">Cập nhật</th>
                             <th scope="col">Chi tiết</th>
-                            <th scope="col">Tình trạng</th>
+                            <th scope="col">Check-in/out</th>
                         </tr>
                     </thead>
                     <tbody>

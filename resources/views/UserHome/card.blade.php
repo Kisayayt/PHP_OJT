@@ -24,10 +24,6 @@
         <button type="submit" class="btn btn-success mt-2" id="uploadButton">Cập nhật ảnh</button>
     </form>
 
-    <!-- Hiển thị thông báo thành công -->
-    @if (session('success'))
-        <div class="alert alert-success mt-2">{{ session('success') }}</div>
-    @endif
 </div>
 
 

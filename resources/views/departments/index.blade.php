@@ -42,14 +42,19 @@
                             <i class="bi bi-x-lg"></i> Xóa được chọn
                         </button>
                         <div class="dropdown d-inline-block ml-2">
+                            <button type="submit" class="btn btn-success"
+                                onclick="window.location.href='/departmentDashboard/export-excel-all'">
+                                Xuất
+                                file</button>
                             <button class="btn btn-success dropdown-toggle" type="button" id="dropdownMenuButton"
                                 data-bs-toggle="dropdown" aria-expanded="false">
-                                Xuất/Nhập
+                                Nhập file
                             </button>
+
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <li>
                                     <form action="{{ route('exportDepartment') }}" method="GET">
-                                        <button type="submit" class="dropdown-item">Xuất file</button>
+                                        <button type="submit" class="dropdown-item">Xuất file mẫu</button>
                                     </form>
                                 </li>
                                 <li>

@@ -166,6 +166,20 @@ class UserController extends Controller
         return redirect('/dashboard')->with('success', 'Cập nhật thông tin người dùng thành công.');
     }
 
+    public function updatePassword(Request $request, $id)
+    {
+        $validatedData = $request->validate([
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = User::findOrFail($id);
+        $user->password = Hash::make($validatedData['password']);
+        $user->save();
+
+        return redirect('/dashboard')->with('success', 'Mật khẩu đã được cập nhật thành công.');
+    }
+
+
 
     public function deleteUser($id)
     {

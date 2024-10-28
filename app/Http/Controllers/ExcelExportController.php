@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Departments;
+use App\Models\User;
 use App\Models\User_Attendance;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -127,6 +129,98 @@ class ExcelExportController extends Controller
 
         $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         $response->headers->set('Content-Disposition', 'attachment;filename="user_attendances.xlsx"');
+        $response->headers->set('Cache-Control', 'max-age=0');
+
+        return $response;
+    }
+
+
+    public function exportAll()
+    {
+        // Fetch all users with related department data
+        $users = User::with('department')->get();
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Set headers for the columns
+        $sheet->setCellValue('A1', '#');
+        $sheet->setCellValue('B1', 'Ảnh');
+        $sheet->setCellValue('C1', 'Tên');
+        $sheet->setCellValue('D1', 'Email');
+        $sheet->setCellValue('E1', 'SĐT');
+        $sheet->setCellValue('F1', 'Phòng ban');
+        $sheet->setCellValue('G1', 'Ngày cập nhật');
+
+        $rowNumber = 2; // Start from the second row for data
+
+        // Populate rows with user data
+        foreach ($users as $user) {
+            $sheet->setCellValue('A' . $rowNumber, $user->id);
+            $sheet->setCellValue('B' . $rowNumber, $user->avatar);
+            $sheet->setCellValue('C' . $rowNumber, $user->name);
+            $sheet->setCellValue('D' . $rowNumber, $user->email);
+            $sheet->setCellValue('E' . $rowNumber, $user->phone_number);
+            $sheet->setCellValue('F' . $rowNumber, $user->department ? $user->department->name : 'N/A');
+            $sheet->setCellValue('G' . $rowNumber, $user->updated_at->format('d/m/Y'));
+
+            $rowNumber++;
+        }
+
+        // Write file to output
+        $writer = new Xlsx($spreadsheet);
+        $response = new StreamedResponse(function () use ($writer) {
+            $writer->save('php://output');
+        });
+
+        // Set headers to download the file as an Excel spreadsheet
+        $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $response->headers->set('Content-Disposition', 'attachment;filename="all_users.xlsx"');
+        $response->headers->set('Cache-Control', 'max-age=0');
+
+        return $response;
+    }
+
+    public function exportDepartmentAll()
+    {
+        // Lấy dữ liệu tất cả các phòng ban
+        $departments = Departments::with('parent')->get();
+
+        // Tạo file Excel mới
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Thiết lập tiêu đề cho các cột
+        $sheet->setCellValue('A1', '#');
+        $sheet->setCellValue('B1', 'Tên');
+        $sheet->setCellValue('C1', 'Phòng ban cha');
+        $sheet->setCellValue('D1', 'Trạng thái');
+        $sheet->setCellValue('E1', 'Ngày cập nhật');
+
+        $rowNumber = 2; // Dòng bắt đầu ghi dữ liệu
+
+        // Ghi dữ liệu từng phòng ban vào các dòng
+        foreach ($departments as $department) {
+            $sheet->setCellValue('A' . $rowNumber, $department->id);
+            $sheet->setCellValue('B' . $rowNumber, $department->name);
+            $sheet->setCellValue('C' . $rowNumber, $department->parent ? $department->parent->name : 'Không có');
+            $sheet->setCellValue('D' . $rowNumber, $department->status ? 'Hoạt động' : 'Đình chỉ');
+            $sheet->setCellValue('E' . $rowNumber, $department->updated_at->format('d/m/Y'));
+
+            $rowNumber++;
+        }
+
+        // Tạo writer để ghi dữ liệu ra file Excel
+        $writer = new Xlsx($spreadsheet);
+
+        // Tạo StreamedResponse để tải file về
+        $response = new StreamedResponse(function () use ($writer) {
+            $writer->save('php://output');
+        });
+
+        // Thiết lập headers để tải file dưới dạng Excel
+        $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $response->headers->set('Content-Disposition', 'attachment;filename="departments.xlsx"');
         $response->headers->set('Cache-Control', 'max-age=0');
 
         return $response;
