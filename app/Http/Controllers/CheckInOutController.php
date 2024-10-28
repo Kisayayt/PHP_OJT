@@ -23,13 +23,17 @@ class CheckInOutController extends Controller
             ->first();
 
         $lastCheckoutTime = $latestCheckout ? $latestCheckout->time : 0;
-
         $isCheckedIn = $latestAttendance && $latestAttendance->type == 'in';
         $time = $latestAttendance ? $latestAttendance->time : 0;
-        $history = User_Attendance::where('user_id', auth()->id())->orderBy('created_at', 'desc')->paginate(7);
+
+        $history = User_Attendance::where('user_id', $userId)
+            ->whereDate('created_at', now()->toDateString())
+            ->orderBy('created_at', 'desc')
+            ->paginate(7);
 
         return view('UserHome.index', compact('isCheckedIn', 'time', 'history', 'lastCheckoutTime'));
     }
+
 
     public function checkIn(Request $request)
     {
@@ -41,7 +45,7 @@ class CheckInOutController extends Controller
             ->first();
 
         if ($latestAttendance && $latestAttendance->type == 'in') {
-            return response()->json(['message' => 'Bạn đã check-in rồi!'], 400);
+            return redirect('/home')->with(['errors' => 'Bạn đã check-in rồi!'], 400);
         }
 
 
@@ -66,7 +70,7 @@ class CheckInOutController extends Controller
 
 
         if (!$latestAttendance || $latestAttendance->type == 'out') {
-            return response()->json(['message' => 'Bạn chưa check-in!'], 400);
+            return redirect('/home')->with(['errors' => 'Bạn chưa check-in!'], 400);
         }
 
 
