@@ -77,13 +77,14 @@ class DepartmentController extends Controller
     public function updateDepartmentView($id)
     {
         $department = Departments::find($id);
+        $departments = Departments::where('status', 1)->get();
 
-        $departments = Departments::all();
         return view('departments.update', [
             'department' => $department,
             'departments' => $departments
         ]);
     }
+
 
     public function updateDepartment(Request $request, $id)
     {
@@ -119,12 +120,8 @@ class DepartmentController extends Controller
         $departmentIds = $request->input('department_ids');
 
         if ($departmentIds) {
-
             User::whereIn('department_id', $departmentIds)->update(['department_id' => null]);
-
             Departments::whereIn('parent_id', $departmentIds)->update(['parent_id' => null]);
-
-
             Departments::whereIn('id', $departmentIds)->update(['is_active' => 0]);
         }
 

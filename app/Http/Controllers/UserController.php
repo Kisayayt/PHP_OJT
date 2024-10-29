@@ -53,7 +53,8 @@ class UserController extends Controller
 
     public function create()
     {
-        $departments = Departments::all();
+        $departments = Departments::where('status', 1)->get();
+
         return view('dashboard.create', [
             'departments' => $departments
         ]);
@@ -111,7 +112,7 @@ class UserController extends Controller
     {
         $user = User::find($id);
 
-        $departments = Departments::all();
+        $departments = Departments::where('status', 1)->get();
         return view('dashboard.update', [
             'user' => $user,
             'departments' => $departments

@@ -31,10 +31,12 @@
                         <select class="form-select" id="parent_id" name="parent_id">
                             <option value="">Không có</option>
                             @foreach ($departments as $departmentFor)
-                                <option value="{{ $departmentFor->id }}"
-                                    {{ $departmentFor->id == $department->parent_id ? 'selected' : '' }}>
-                                    {{ $departmentFor->name }}
-                                </option>
+                                @if ($departmentFor->status == 1)
+                                    <option value="{{ $departmentFor->id }}"
+                                        {{ $departmentFor->id == $department->parent_id ? 'selected' : '' }}>
+                                        {{ $departmentFor->name }}
+                                    </option>
+                                @endif
                             @endforeach
                         </select>
                     </div>

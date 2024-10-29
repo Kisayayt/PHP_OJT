@@ -30,7 +30,9 @@
                         <select class="form-select" id="parent_id" name="parent_id">
                             <option value="">Không có</option>
                             @foreach ($departments as $department)
-                                <option value="{{ $department->id }}">{{ $department->name }}</option>
+                                @if ($department->status == 1)
+                                    <option value="{{ $department->id }}">{{ $department->name }}</option>
+                                @endif
                             @endforeach
                         </select>
                     </div>
