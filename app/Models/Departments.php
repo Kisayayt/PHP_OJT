@@ -15,6 +15,7 @@ class Departments extends Model
     protected $fillable = [
         'name',
         'parent_id',
+        'is_active',
         'status',
     ];
 

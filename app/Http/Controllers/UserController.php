@@ -18,7 +18,10 @@ class UserController extends Controller
     public function dashboard()
     {
 
-        $users = User::with('department')->where('role', '<>', 'admin')->paginate(3);
+        $users = User::with('department')
+            ->where('role', '<>', 'admin')
+            ->Where('is_active', 1)
+            ->paginate(5);
 
 
         return view('dashboard.dashboard')->with('users', $users);
@@ -41,6 +44,7 @@ class UserController extends Controller
         $search = $request->input('search');
         $users = User::with('department')
             ->where('role', 'user')
+            ->where('is_active', 1)
             ->where('name', 'LIKE', "%{$search}%")
             ->paginate(3);
 
@@ -194,10 +198,7 @@ class UserController extends Controller
 
         if ($userIds) {
 
-            User_Attendance::whereIn('user_id', $userIds)->delete();
-
-
-            User::whereIn('id', $userIds)->delete();
+            User::whereIn('id', $userIds)->update(['is_active' => 0]);
         }
 
         return redirect('/dashboard')->with('success', 'Người dùng đã được xóa thành công.');

@@ -30,11 +30,11 @@
         <form action="{{ route('login') }}" method="POST" class="login-form">
             @csrf
             <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
+                <label for="username">Tên tài khoản:</label>
+                <input type="text" id="username" name="username" required>
             </div>
             <div class="form-group">
-                <label for="password">Password:</label>
+                <label for="password">Mật khẩu:</label>
                 <input type="password" id="password" name="password" required>
             </div>
             @if ($errors->any())

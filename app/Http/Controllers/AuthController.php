@@ -18,24 +18,27 @@ class AuthController extends Controller
     {
         // Validate dữ liệu
         $request->validate([
-            'email' => 'required|email',
+            'username' => 'required',
             'password' => 'required',
         ]);
 
         // Kiểm tra thông tin đăng nhập
-        if (Auth::attempt($request->only('email', 'password'))) {
+        if (Auth::attempt($request->only('username', 'password'))) {
             $user = Auth::user();
 
             // Kiểm tra vai trò
             if ($user->role === 'admin') {
                 return redirect()->intended('/dashboard'); // Điều hướng tới trang admin
-            } elseif ($user->role === 'user') {
+            } elseif ($user->role === 'user' && $user->is_active === 1) {
+                if ($user->is_department_active === 0) {
+                    return back()->withErrors('Phòng ban bạn đã bị đình chỉ, hãy liên hệ với admin');
+                }
                 return redirect()->intended('/home'); // Điều hướng tới trang người dùng
             }
         }
 
         return back()->withErrors([
-            'email' => 'Email hoặc mật khẩu không đúng.',
+            'username' => 'Username hoặc mật khẩu không đúng.',
         ]);
     }
 
