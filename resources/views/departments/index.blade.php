@@ -35,17 +35,16 @@
                         </form>
                     </div>
                     <div>
-                        <Button type="button" class="btn btn-primary" onclick="window.location.href='/createDepartment'">
+                        <button type="button" class="btn btn-primary" onclick="window.location.href='/createDepartment'">
                             <i class="bi bi-plus-square"></i> Thêm phòng ban
-                        </Button>
+                        </button>
                         <button type="submit" class="btn btn-danger" form="bulkDeleteForm">
                             <i class="bi bi-x-lg"></i> Xóa được chọn
                         </button>
                         <div class="dropdown d-inline-block ml-2">
-                            <button type="submit" class="btn btn-success"
+                            <button type="button" class="btn btn-success"
                                 onclick="window.location.href='/departmentDashboard/export-excel-all'">
-                                Xuất
-                                file</button>
+                                Xuất file</button>
                             <button class="btn btn-success dropdown-toggle" type="button" id="dropdownMenuButton"
                                 data-bs-toggle="dropdown" aria-expanded="false">
                                 Nhập file
@@ -77,55 +76,34 @@
                 <form action="{{ route('departments.bulkDelete') }}" method="post" id="bulkDeleteForm">
                     @csrf
                     @method('delete')
-
-                    <table class="table mt-3 mb-5 table-striped">
-                        <thead>
-                            <tr>
-                                <th scope="col"><input type="checkbox" id="selectAll"></th>
-                                <th scope="col">#</th>
-                                <th scope="col">Tên</th>
-                                <th scope="col">Phòng ban cha</th>
-                                <th scope="col">Trạng thái</th>
-                                <th scope="col">Cập nhật</th>
-                                <th scope="col">Chi tiết</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($departments as $department)
-                                <tr>
-                                    <td><input type="checkbox" name="department_ids[]" value="{{ $department->id }}"
-                                            class="department-checkbox"></td>
-                                    <td>{{ $department->id }}</td>
-                                    <td><strong>{{ $department->name }}</strong></td>
-                                    <td>{{ $department->parent ? $department->parent->name : 'Không có' }}</td>
-                                    <td>
-                                        <Button
-                                            onclick="window.location.href='/departments/{{ $department->id }}/update-status'"
-                                            type="button"
-                                            class="btn {{ $department->status ? 'btn-success' : 'btn-secondary' }}">
-                                            {{ $department->status ? 'Hoạt động' : 'Đình chỉ' }}
-                                        </Button>
-                                    </td>
-                                    <td>
-                                        <Button onclick="window.location.href='/updateDepartment/{{ $department->id }}'"
-                                            type="button" class="btn btn-success w-100">
-                                            <i class="bi bi-arrow-up-square"></i>
-                                        </Button>
-                                    </td>
-                                    <td>
-                                        <Button
-                                            onclick="window.location.href='/departmentDashboard/{{ $department->id }}/details'"
-                                            type="button" class="btn btn-info w-100">
-                                            <i class="bi bi-info-circle"></i>
-                                        </Button>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                    <!-- Accordion danh sách phòng ban -->
+                    <div class="accordion mt-3" id="departmentAccordion">
+                        @foreach ($departments as $department)
+                            <!-- Phòng ban cha -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="heading{{ $department->id }}">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapse{{ $department->id }}" aria-expanded="false"
+                                        aria-controls="collapse{{ $department->id }}">
+                                        <input type="checkbox" name="department_ids[]" value="{{ $department->id }}"
+                                            class="me-2 department-checkbox">
+                                        {{ $department->name }}
+                                    </button>
+                                </h2>
+                                <div id="collapse{{ $department->id }}" class="accordion-collapse collapse"
+                                    aria-labelledby="heading{{ $department->id }}" data-bs-parent="#departmentAccordion">
+                                    <div class="accordion-body">
+                                        @include('departments.children', [
+                                            'children' => $department->children,
+                                        ])
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
                 </form>
 
-                <div class="d-flex justify-content-center">
+                <div class="d-flex justify-content-center mt-3">
                     {{ $departments->onEachSide(2)->appends(request()->input())->links() }}
                 </div>
             </div>
@@ -133,17 +111,12 @@
     </div>
 
     <script>
-        // Lấy checkbox chính
+        // Checkbox chính để chọn tất cả
         const selectAllCheckbox = document.getElementById('selectAll');
-        // Lấy tất cả các checkbox trong tbody
         const departmentCheckboxes = document.querySelectorAll('.department-checkbox');
 
-        // Khi checkbox chính được click
         selectAllCheckbox.addEventListener('change', function() {
-            // Kiểm tra xem checkbox chính có được chọn hay không
             const isChecked = selectAllCheckbox.checked;
-
-            // Lặp qua tất cả các checkbox con và set trạng thái tương tự
             departmentCheckboxes.forEach(function(checkbox) {
                 checkbox.checked = isChecked;
             });
