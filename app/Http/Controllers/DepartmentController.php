@@ -10,7 +10,7 @@ class DepartmentController extends Controller
 {
     public function departmentDashboard()
     {
-        $departments = Departments::with('parent')
+        $departments = Departments::whereNull('parent_id')
             ->where('is_active', 1)
             ->paginate(5);
 
@@ -145,46 +145,43 @@ class DepartmentController extends Controller
         $department->status = $department->status ? 0 : 1;
         $department->save();
 
-        if ($department->status == 0) {
-            // Khi phòng ban bị đình chỉ, cập nhật user và phòng ban con thành không hoạt động
-            $users = User::where('department_id', $department->id)->get();
-            foreach ($users as $user) {
-                $user->is_department_active = 0;
-                $user->save();
-            }
+        // Cập nhật trạng thái cho các user trong phòng ban này
+        $this->updateUsersStatus($department->id, $department->status);
 
-            $subDepartments = Departments::where('parent_id', $department->id)->get();
-            foreach ($subDepartments as $subDepartment) {
-                $subDepartment->status = 0;
-                $subDepartment->save();
-
-                $subDepartmentUsers = User::where('department_id', $subDepartment->id)->get();
-                foreach ($subDepartmentUsers as $subUser) {
-                    $subUser->is_department_active = 0;
-                    $subUser->save();
-                }
-            }
-        } else {
-            // Khi phòng ban chuyển sang hoạt động, cập nhật user và phòng ban con thành hoạt động
-            $users = User::where('department_id', $department->id)->get();
-            foreach ($users as $user) {
-                $user->is_department_active = 1;
-                $user->save();
-            }
-
-            $subDepartments = Departments::where('parent_id', $department->id)->get();
-            foreach ($subDepartments as $subDepartment) {
-                $subDepartment->status = 1;
-                $subDepartment->save();
-
-                $subDepartmentUsers = User::where('department_id', $subDepartment->id)->get();
-                foreach ($subDepartmentUsers as $subUser) {
-                    $subUser->is_department_active = 1;
-                    $subUser->save();
-                }
-            }
-        }
+        // Gọi hàm đệ quy để cập nhật trạng thái cho các phòng ban con và user của chúng
+        $this->updateSubDepartmentsStatus($department->id, $department->status);
 
         return redirect()->back()->with('success', 'Cập nhật trạng thái phòng ban thành công');
+    }
+
+    /**
+     * Hàm đệ quy để cập nhật trạng thái cho phòng ban con và user của chúng.
+     */
+    private function updateSubDepartmentsStatus($parentId, $status)
+    {
+        // Lấy tất cả phòng ban con
+        $subDepartments = Departments::where('parent_id', $parentId)->get();
+        foreach ($subDepartments as $subDepartment) {
+            $subDepartment->status = $status;
+            $subDepartment->save();
+
+            // Cập nhật trạng thái cho các user trong phòng ban con này
+            $this->updateUsersStatus($subDepartment->id, $status);
+
+            // Đệ quy tiếp tục cho các cấp con của phòng ban này
+            $this->updateSubDepartmentsStatus($subDepartment->id, $status);
+        }
+    }
+
+    /**
+     * Cập nhật trạng thái cho tất cả user thuộc phòng ban.
+     */
+    private function updateUsersStatus($departmentId, $status)
+    {
+        $users = User::where('department_id', $departmentId)->get();
+        foreach ($users as $user) {
+            $user->is_department_active = $status;
+            $user->save();
+        }
     }
 }

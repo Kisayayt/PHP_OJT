@@ -89,7 +89,22 @@
                                             class="me-2 department-checkbox">
                                         {{ $department->name }}
                                     </button>
+                                    <Button type="button"
+                                        onclick="window.location.href='/updateDepartment/{{ $department->id }}'"
+                                        class="btn btn-success mb-2 btn-sm ms-2">Cập nhật</Button>
+                                    <Button
+                                        onclick="window.location.href='/departments/{{ $department->id }}/update-status'"
+                                        type="button"
+                                        class="btn mb-2 btn-sm ms-2 {{ $department->status ? 'btn-success' : 'btn-secondary' }}">
+                                        {{ $department->status ? 'Hoạt động' : 'Đình chỉ' }}
+                                    </Button>
+                                    <Button
+                                        onclick="window.location.href='/departmentDashboard/{{ $department->id }}/details'"
+                                        type="button" class="btn btn-info mb-2 btn-sm ms-2">
+                                        Chi tiết <i class="bi bi-info-circle"></i>
+                                    </Button>
                                 </h2>
+
                                 <div id="collapse{{ $department->id }}" class="accordion-collapse collapse"
                                     aria-labelledby="heading{{ $department->id }}" data-bs-parent="#departmentAccordion">
                                     <div class="accordion-body">
