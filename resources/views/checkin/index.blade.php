@@ -40,7 +40,7 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>#</th>
+                            <th>Tên tài khoản</th>
                             <th>Nhân viên</th>
                             <th>Thời gian</th>
                             <th>
@@ -69,7 +69,7 @@
                     <tbody>
                         @forelse ($attendanceRecords as $record)
                             <tr>
-                                <td>{{ $record->user->id }}</td>
+                                <td>{{ $record->user->username }}</td>
                                 <td>{{ $record->user->name }}</td>
                                 <td>{{ $record->created_at->format('H:i') }}</td>
                                 <td>{{ $record->created_at->format('d/m/Y') }}</td>

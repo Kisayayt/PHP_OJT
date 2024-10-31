@@ -9,16 +9,16 @@
                         class="me-2 department-checkbox">
                     {{ $child->name }}
                 </button>
-                <Button type="button" onclick="window.location.href='/updateDepartment/{{ $child->id }}'"
-                    class="btn btn-success mb-2 btn-sm ms-2">Cập nhật</Button>
-                <Button onclick="window.location.href='/departments/{{ $child->id }}/update-status'" type="button"
+                <button type="button" onclick="window.location.href='/updateDepartment/{{ $child->id }}'"
+                    class="btn btn-success mb-2 btn-sm ms-2">Cập nhật</button>
+                <button onclick="window.location.href='/departments/{{ $child->id }}/update-status'" type="button"
                     class="btn mb-2 btn-sm ms-2 {{ $child->status ? 'btn-success' : 'btn-secondary' }}">
                     {{ $child->status ? 'Hoạt động' : 'Đình chỉ' }}
-                </Button>
-                <Button onclick="window.location.href='/departmentDashboard/{{ $child->id }}/details'"
+                </button>
+                <button onclick="window.location.href='/departmentDashboard/{{ $child->id }}/details'"
                     type="button" class="btn btn-info mb-2 btn-sm ms-2">
                     Chi tiết <i class="bi bi-info-circle"></i>
-                </Button>
+                </button>
             </h2>
             <div id="collapseChild{{ $child->id }}" class="accordion-collapse collapse"
                 aria-labelledby="headingChild{{ $child->id }}" data-bs-parent="#childAccordion{{ $child->id }}">

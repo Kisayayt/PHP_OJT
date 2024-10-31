@@ -137,7 +137,10 @@ class ExcelExportController extends Controller
     public function exportAll()
     {
 
-        $users = User::with('department')->where('role', 'user')->get();
+        $users = User::with('department')
+            ->where('role', 'user')
+            ->where('is_active', 1)
+            ->get();
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
@@ -186,7 +189,7 @@ class ExcelExportController extends Controller
     public function exportDepartmentAll()
     {
 
-        $departments = Departments::with('parent')->get();
+        $departments = Departments::with('parent')->where('is_active', 1)->get();
 
 
         $spreadsheet = new Spreadsheet();

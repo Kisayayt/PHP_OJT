@@ -31,7 +31,7 @@ class Departments extends Model
 
     public function children()
     {
-        return $this->hasMany(Departments::class, 'parent_id');
+        return $this->hasMany(Departments::class, 'parent_id')->where('is_active', 1);
     }
 
     public $timestamps = true;

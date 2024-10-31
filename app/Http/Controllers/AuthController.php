@@ -16,24 +16,27 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        // Validate dữ liệu
+
         $request->validate([
             'username' => 'required',
             'password' => 'required',
         ]);
 
-        // Kiểm tra thông tin đăng nhập
+
         if (Auth::attempt($request->only('username', 'password'))) {
             $user = Auth::user();
 
-            // Kiểm tra vai trò
+
             if ($user->role === 'admin') {
-                return redirect()->intended('/dashboard'); // Điều hướng tới trang admin
+                return redirect()->intended('/dashboard');
             } elseif ($user->role === 'user' && $user->is_active === 1) {
                 if ($user->is_department_active === 0) {
                     return back()->withErrors('Phòng ban bạn đã bị đình chỉ, hãy liên hệ với admin');
                 }
-                return redirect()->intended('/home'); // Điều hướng tới trang người dùng
+                if ($user->department_id == null) {
+                    return back()->withErrors('Bạn hiện tại chưa nằm trong phòng ban nào để đăng nhập');
+                }
+                return redirect()->intended('/home');
             }
         }
 

@@ -19,15 +19,21 @@ class DepartmentController extends Controller
 
     public function search(Request $request)
     {
-
         $search = $request->input('search');
 
-        $departments = Departments::with('parent')
-            ->where('name', 'LIKE', "%{$search}%")
-            ->paginate(5);
+        if (empty($search)) {
+            $departments = Departments::with('parent')
+                ->whereNull('parent_id')
+                ->paginate(5);
+        } else {
+            $departments = Departments::with('parent')
+                ->where('name', 'LIKE', "%{$search}%")
+                ->paginate(5);
+        }
 
         return view('departments.index', compact('departments'));
     }
+
 
     public function getDepartmentTree()
     {

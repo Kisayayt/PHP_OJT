@@ -39,8 +39,10 @@
                         <Button type="button" class="btn btn-primary" onclick="window.location.href='/create'">
                             <i class="bi bi-person-plus"></i> Thêm người dùng
                         </Button>
-                        <button type="submit" class="btn btn-danger" form="bulkDeleteForm"><i class="bi bi-x-lg"></i> Xóa
-                            được chọn</button>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                            data-bs-target="#confirmDeleteModal">
+                            <i class="bi bi-x-lg"></i> Xóa được chọn
+                        </button>
 
                         <button type="submit" class="btn btn-success" onclick="window.location.href='/export-excel-all'">
                             Xuất
@@ -140,6 +142,25 @@
                 </table>
                 <div class="d-flex justify-content-center">
                     {{ $users->onEachSide(2)->appends(request()->input())->links() }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmDeleteModalLabel">Xác nhận xóa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn xóa các người dùng đã chọn không?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-danger" form="bulkDeleteForm">Xóa</button>
                 </div>
             </div>
         </div>
