@@ -54,6 +54,7 @@
                             </div>
                             <div class="card-body">
                                 <ul class="list-group">
+                                    <li class="list-group-item"><strong>Tên tài khoản:</strong> {{ $user->username }}</li>
                                     <li class="list-group-item"><strong>Họ và tên:</strong> {{ $user->name }}</li>
                                     <li class="list-group-item"><strong>Email:</strong> {{ $user->email }}</li>
                                     <li class="list-group-item"><strong>Phòng ban:</strong>

@@ -92,26 +92,46 @@ class DepartmentController extends Controller
             'name' => 'required|string|max:255',
             'parent_id' => 'nullable|exists:departments,id',
         ]);
+
+
         if ($request->parent_id == $id) {
             return redirect()->back()->withErrors(['parent_id' => 'Phòng ban không thể là cha của chính nó.']);
         }
-        $subDepartments = Departments::where('parent_id', $id)->pluck('id')->toArray();
-        $subDepartmentsLevel2 = Departments::whereIn('parent_id', $subDepartments)->pluck('id')->toArray();
-        $allSubDepartments = array_merge($subDepartments, $subDepartmentsLevel2);
+
+
+        $allSubDepartments = $this->getAllSubDepartments($id);
+
 
         if (in_array($request->parent_id, $allSubDepartments)) {
             return redirect()->back()->withErrors(['parent_id' => 'Phòng ban không thể thuộc vào một trong các phòng ban con của chính nó.']);
         }
+
 
         $updateData = [
             'name' => $validatedData['name'],
             'parent_id' => $validatedData['parent_id'],
         ];
 
+
         Departments::where('id', $id)->update($updateData);
 
         return redirect('/departmentDashboard')->with('success', 'Cập nhật phòng ban thành công.');
     }
+
+
+
+    private function getAllSubDepartments($departmentId)
+    {
+        $subDepartments = Departments::where('parent_id', $departmentId)->pluck('id')->toArray();
+        $allSubDepartments = $subDepartments;
+
+        foreach ($subDepartments as $subId) {
+            $allSubDepartments = array_merge($allSubDepartments, $this->getAllSubDepartments($subId));
+        }
+
+        return $allSubDepartments;
+    }
+
 
 
 
@@ -141,14 +161,14 @@ class DepartmentController extends Controller
     {
         $department = Departments::findOrFail($id);
 
-        // Chuyển đổi trạng thái của phòng ban
+
         $department->status = $department->status ? 0 : 1;
         $department->save();
 
-        // Cập nhật trạng thái cho các user trong phòng ban này
+
         $this->updateUsersStatus($department->id, $department->status);
 
-        // Gọi hàm đệ quy để cập nhật trạng thái cho các phòng ban con và user của chúng
+
         $this->updateSubDepartmentsStatus($department->id, $department->status);
 
         return redirect()->back()->with('success', 'Cập nhật trạng thái phòng ban thành công');
@@ -159,16 +179,16 @@ class DepartmentController extends Controller
      */
     private function updateSubDepartmentsStatus($parentId, $status)
     {
-        // Lấy tất cả phòng ban con
+
         $subDepartments = Departments::where('parent_id', $parentId)->get();
         foreach ($subDepartments as $subDepartment) {
             $subDepartment->status = $status;
             $subDepartment->save();
 
-            // Cập nhật trạng thái cho các user trong phòng ban con này
+
             $this->updateUsersStatus($subDepartment->id, $status);
 
-            // Đệ quy tiếp tục cho các cấp con của phòng ban này
+
             $this->updateSubDepartmentsStatus($subDepartment->id, $status);
         }
     }

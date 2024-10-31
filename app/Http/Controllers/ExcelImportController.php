@@ -36,7 +36,9 @@ class ExcelImportController extends Controller
                 continue;
             }
 
-            $email = $row[3];
+            $username = $row[1];
+            $email = $row[4];
+
 
             if (User::where('email', $email)->exists()) {
                 $failedImports[] = [
@@ -47,11 +49,12 @@ class ExcelImportController extends Controller
             }
 
             $validatedData = [
-                'name' => $row[1],
-                'email' => $email,
-                'phone_number' => $row[4],
-                'password' => bcrypt($row[2]),
                 'department_id' => $departmentId,
+                'username' => $username,
+                'name' => $row[2],
+                'password' => bcrypt($row[3]),
+                'email' => $email,
+                'phone_number' => $row[5],
                 'avatar' => '/images/defaultAvatar.jpg',
                 'role' => 'user',
             ];
@@ -60,11 +63,13 @@ class ExcelImportController extends Controller
         }
 
         if (count($failedImports) > 0) {
-            return redirect()->back();
+
+            return redirect()->back()->withErrors($failedImports);
         }
 
         return redirect()->back()->with('success', 'Dữ liệu đã được import thành công!');
     }
+
 
     public function importDepartment(Request $request)
     {

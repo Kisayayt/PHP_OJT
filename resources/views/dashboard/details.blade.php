@@ -31,8 +31,12 @@
                             <div class="card-body">
                                 <ul class="list-group">
                                     <li class="list-group-item">
+                                        <strong>Tên tài khoản:</strong> {{ $user->username }}
+                                    </li>
+                                    <li class="list-group-item">
                                         <strong>Họ và tên:</strong> {{ $user->name }}
                                     </li>
+
                                     <li class="list-group-item">
                                         <strong>Email:</strong> {{ $user->email }}
                                     </li>
@@ -46,11 +50,16 @@
                                     <li class="list-group-item">
                                         <strong>Trạng thái Check-in:</strong>
                                         @if ($user->isCheckedIn)
-                                            <span class="text-success"> Đang check-in </span>
+                                            <span class="text-success"> Đang check-in
+                                                {{ $lastCheckIn ? '(' . $lastCheckIn->created_at->format('d/m/Y H:i:s') . ')' : '' }}
+                                            </span>
                                         @else
-                                            <span class="text-danger"> Đã check-out </span>
+                                            <span class="text-danger"> Đã check-out
+                                                {{ $lastCheckOut ? '(' . $lastCheckOut->created_at->format('d/m/Y H:i:s') . ')' : '' }}
+                                            </span>
                                         @endif
                                     </li>
+
                                 </ul>
                             </div>
                         </div>

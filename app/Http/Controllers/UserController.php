@@ -31,11 +31,20 @@ class UserController extends Controller
     {
         $user = User::with('department')->findOrFail($id);
 
-        return view('dashboard.details', compact('user'));
+        // Lấy lần check-in gần nhất
+        $lastCheckIn = User_Attendance::where('user_id', $id)
+            ->where('type', 'in')
+            ->latest('created_at')
+            ->first();
+
+        // Lấy lần check-out gần nhất
+        $lastCheckOut = User_Attendance::where('user_id', $id)
+            ->where('type', 'out')
+            ->latest('created_at')
+            ->first();
+
+        return view('dashboard.details', compact('user', 'lastCheckIn', 'lastCheckOut'));
     }
-
-
-
 
 
     public function search(Request $request)
