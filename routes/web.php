@@ -9,6 +9,7 @@ use App\Http\Controllers\CheckInOutController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ExcelExportController;
 use App\Http\Controllers\ExcelImportController;
+use App\Http\Controllers\SalaryLevelController;
 
 Route::get('/', function () {
     return redirect()->route('login'); // Chuyển hướng đến trang login
@@ -90,4 +91,15 @@ Route::middleware(['auth', 'checkRole:admin'])->group(function () {
     Route::post('/departmentDashboard/import-excel', [ExcelImportController::class, 'importDepartment'])->name('importDepartment');
 
     Route::get('/checkinout/export-excel', [ExcelExportController::class, 'exportCheck'])->name('exportCheck');
+
+
+    Route::get('/salaryLevels', [SalaryLevelController::class, 'index'])->name('salaryLevels');
+
+    Route::get('/salaryLevels/create', [SalaryLevelController::class, 'create'])->name('salaryLevels.create');
+    Route::post('/salaryLevels', [SalaryLevelController::class, 'store'])->name('salaryLevels.store');
+
+    Route::get('/salaryLevels/{id}/edit', [SalaryLevelController::class, 'edit'])->name('salaryLevels.edit');
+    Route::put('/salaryLevels/{id}', [SalaryLevelController::class, 'update'])->name('salaryLevels.update');
+
+    Route::delete('/salaryLevels/soft-delete', [SalaryLevelController::class, 'softDeleteMultiple'])->name('salaryLevels.softDeleteMultiple');
 });

@@ -64,7 +64,14 @@
                         <input type="text" class="form-control" id="phone_number" name="phone_number"
                             placeholder="VD: +84 123456789" required>
                     </div>
-
+                    <div class="mb-3">
+                        <label for="salary_level" class="form-label">Bậc lương</label>
+                        <select class="form-select" id="salary_level" name="salary_level" required>
+                            @foreach ($salaryLevels as $salaryLevel)
+                                <option value="{{ $salaryLevel->id }}">{{ $salaryLevel->level_name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
             </div>
         </form>

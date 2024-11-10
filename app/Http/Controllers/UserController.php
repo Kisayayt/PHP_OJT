@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\UsersExport;
 use App\Imports\UsersImport;
 use App\Models\Departments;
+use App\Models\SalaryLevel;
 use App\Models\User;
 use App\Models\User_Attendance;
 use Illuminate\Http\Request;
@@ -63,14 +64,17 @@ class UserController extends Controller
     public function create()
     {
         $departments = Departments::where('status', 1)->get();
+        $salaryLevels = SalaryLevel::where('is_active', 1)->get();
 
         return view('dashboard.create', [
-            'departments' => $departments
+            'departments' => $departments,
+            'salaryLevels' => $salaryLevels
         ]);
     }
 
     public function insert(Request $request)
     {
+        // dd($request->all());
         $validatedData = $request->validate([
             'name' => 'required|max:255',
             'username' => 'required|max:255|unique:users',
@@ -78,15 +82,13 @@ class UserController extends Controller
             'phone_number' => 'required|string|regex:/^\+(\d{2})\s?\d{9}$/',
             'password' => 'required|string|min:8|max:255|confirmed',
             'department_id' => 'required',
+            'salary_level' => 'required',
             'avatar' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $phoneNumber = $request->input('phone_number');
-
-        // Xóa khoảng trắng khỏi số điện thoại
         $phoneNumber = str_replace(' ', '', $phoneNumber);
 
-        // Kiểm tra và chuyển đổi mã quốc gia thành số 0
         if (strpos($phoneNumber, '+') === 0) {
             $phoneNumber = '0' . substr($phoneNumber, strpos($phoneNumber, '+') + 1);
         } elseif ($phoneNumber[0] !== '0') {
@@ -108,11 +110,13 @@ class UserController extends Controller
             'phone_number' => $phoneNumber,
             'password' => Hash::make($validatedData['password']),
             'department_id' => $validatedData['department_id'],
+            'salary_level_id' => $validatedData['salary_level'], // Lưu bậc lương
             'avatar' => $avatarPath,
         ]);
 
         return redirect('/dashboard');
     }
+
 
 
 

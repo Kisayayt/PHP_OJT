@@ -113,8 +113,8 @@
                                     <td>{{ $user->department ? $user->department->name : 'N/A' }}</td>
                                     <td>
                                         <Button onclick="window.location.href='/update/{{ $user->id }}'" type="button"
-                                            class="btn btn-success w-100 h-100"><i
-                                                class="bi bi-arrow-up-square"></i></Button>
+                                            class="btn btn-success w-100 h-100">
+                                            <i class="bi bi-arrow-up-square"></i></Button>
                                     </td>
                                     <td>
                                         <Button onclick="window.location.href='/dashboard/{{ $user->id }}/details'"

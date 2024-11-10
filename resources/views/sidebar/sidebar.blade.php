@@ -11,6 +11,10 @@
         class="list-group-item list-group-item-action {{ request()->routeIs('admin.checkinout') || request()->routeIs('admin.search') || request()->is('checkinout/search*') || request()->is('checkinout/filterByDate*') ? 'active' : '' }}">
         <i class="bi bi-person-check-fill"></i> Quản lí checkout
     </a>
+    <a href="{{ route('salaryLevels') }}"
+        class="list-group-item list-group-item-action {{ request()->routeIs('salaryLevels') ? 'active' : '' }}">
+        <i class="bi bi-cash-stack"></i> Quản lí bậc lương
+    </a>
     <form action="{{ route('logout') }}" method="post">
         @csrf
         <button type="submit" class="list-group-item list-group-item-action"

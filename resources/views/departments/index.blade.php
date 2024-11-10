@@ -79,7 +79,7 @@
                         </div>
                     </div>
                 </div>
-
+                <button type="button" class="btn btn-secondary" id="selectAllBtn">Chọn tất cả</button>
                 <!-- Form xóa bulk -->
                 <form action="{{ route('departments.bulkDelete') }}" method="post" id="bulkDeleteForm">
                     @csrf
@@ -158,15 +158,16 @@
     </div>
 
     <script>
-        // Chức năng chọn tất cả
-        const selectAllCheckbox = document.getElementById('selectAll');
+        const selectAllBtn = document.getElementById('selectAllBtn');
         const departmentCheckboxes = document.querySelectorAll('.department-checkbox');
+        let allSelected = false;
 
-        selectAllCheckbox.addEventListener('change', function() {
-            const isChecked = selectAllCheckbox.checked;
+        selectAllBtn.addEventListener('click', function() {
+            allSelected = !allSelected;
             departmentCheckboxes.forEach(function(checkbox) {
-                checkbox.checked = isChecked;
+                checkbox.checked = allSelected;
             });
+            selectAllBtn.textContent = allSelected ? 'Bỏ chọn tất cả' : 'Chọn tất cả';
         });
     </script>
 @endsection

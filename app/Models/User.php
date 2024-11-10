@@ -18,6 +18,7 @@ class User extends Authenticatable
         'name',
         'avatar',
         'username',
+        'salary_level_id',
         'is_active',
         'is_department_active',
         'role',
@@ -42,6 +43,11 @@ class User extends Authenticatable
     public function isUser()
     {
         return $this->role === 'user';
+    }
+
+    public function salaryLevel()
+    {
+        return $this->belongsTo(SalaryLevel::class, 'salary_level_id');
     }
 
     public function attendances()
