@@ -30,9 +30,12 @@
                         </form>
 
                         <!-- Thêm style với margin-left để tạo khoảng cách cụ thể -->
-                        <form action="{{ route('exportCheck') }}" method="GET" style="margin-left: 20px;">
+                        <form action="{{ route('exportCheck') }}" method="GET"
+                            style="margin-left: 20px; margin-right: 10px;">
                             <button type="submit" class="btn btn-success">Xuất file</button>
                         </form>
+                        <a href="{{ route('admin.requests') }}" class="btn btn-warning">Quản lý đơn giải trình</a>
+
                     </div>
                 </div>
 

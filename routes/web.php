@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ExcelExportController;
 use App\Http\Controllers\ExcelImportController;
 use App\Http\Controllers\SalaryLevelController;
+use App\Mail\CheckInOutNotification;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 Route::get('/', function () {
     return redirect()->route('login'); // Chuyển hướng đến trang login
@@ -18,6 +21,18 @@ Route::get('/', function () {
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::get('/test-email', function () {
+    Mail::raw('Đây là email thử nghiệm.', function ($message) {
+        $message->to('kurehakisaya@gmail.com')
+            ->subject('Test Email');
+    });
+
+    return 'Đã gửi email thành công!';
+});
+
+
+
 
 
 
@@ -33,6 +48,8 @@ Route::middleware(['auth', 'checkRole:user'])->group(function () {
 
 
     Route::post('/change-password', [HomeController::class, 'changePassword'])->name('change.password');
+
+    Route::post('/submit-reason/{attendance}', [CheckInOutController::class, 'submitReason'])->name('submit-reason');
 });
 
 // ADMIN
@@ -102,4 +119,8 @@ Route::middleware(['auth', 'checkRole:admin'])->group(function () {
     Route::put('/salaryLevels/{id}', [SalaryLevelController::class, 'update'])->name('salaryLevels.update');
 
     Route::delete('/salaryLevels/soft-delete', [SalaryLevelController::class, 'softDeleteMultiple'])->name('salaryLevels.softDeleteMultiple');
+
+    Route::get('/admin/requests', [AdminCheckInOutController::class, 'pendingRequests'])->name('admin.requests');
+    Route::post('/admin/requests/{id}/accept', [AdminCheckInOutController::class, 'acceptRequest'])->name('admin.requests.accept');
+    Route::post('/admin/requests/{id}/reject', [AdminCheckInOutController::class, 'rejectRequest'])->name('admin.requests.reject');
 });

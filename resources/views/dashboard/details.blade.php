@@ -38,6 +38,12 @@
                                     </li>
 
                                     <li class="list-group-item">
+                                        <strong>Bậc lương:</strong>
+                                        {{ $user->salaryLevel ? $user->salaryLevel->level_name : 'N/A' }}
+                                    </li>
+
+
+                                    <li class="list-group-item">
                                         <strong>Email:</strong> {{ $user->email }}
                                     </li>
                                     <li class="list-group-item">

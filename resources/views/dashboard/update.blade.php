@@ -45,10 +45,14 @@
                         </select>
 
                     </div>
+
+
                     <div class="mb-3">
                         <label for="avatar" class="form-label">Chọn ảnh đại diện</label>
                         <input type="file" class="form-control" id="avatar" name="avatar" accept="image/*">
                     </div>
+
+
                     <Button type="submit" class="btn btn-primary">Cập nhật <i class="bi bi-send-plus"></i></Button>
                     <Button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#passwordModal">
                         Đổi mật khẩu
@@ -66,6 +70,19 @@
                         <label for="phone_number" class="form-label">Số điện thoại</label>
                         <input value="{{ $user->phone_number }}" type="text" class="form-control" id="phone_number"
                             name="phone_number" placeholder="Nhập sđt" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="salary_level" class="form-label">Cấp bậc lương</label>
+                        <select class="form-select" id="salary_level" name="salary_level">
+                            <option value="">Chọn cấp bậc lương</option>
+                            @foreach ($salaryLevels as $salaryLevel)
+                                <option value="{{ $salaryLevel->id }}"
+                                    {{ $salaryLevel->id == $user->salary_level_id ? 'selected' : '' }}>
+                                    {{ $salaryLevel->level_name }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
 
                 </div>

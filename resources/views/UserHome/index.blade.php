@@ -11,11 +11,9 @@
             @endif
         </div>
         <div class="row">
-
             <div class="col-md-3">
                 @include('Userhome.card')
             </div>
-
 
             <div class="col-md-9">
                 @if ($isCheckedIn)
@@ -46,10 +44,11 @@
                                 <th>Ngày/tháng/năm</th>
                                 <th>Loại</th>
                                 <th>Thời lượng</th>
+                                <th>Trạng thái</th>
+                                <th>Hành động</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {{-- @dd($history); --}}
                             @foreach ($history as $record)
                                 <tr>
                                     <td>{{ $record->created_at->format('H:i') }}</td>
@@ -60,6 +59,55 @@
                                             {{ $record->time }} tiếng
                                         @else
                                             --
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($record->status == 1)
+                                            <p class="text-success">Hợp lệ</p>
+                                        @elseif ($record->status == 0)
+                                            <p class="text-danger">Không hợp lệ</p>
+                                        @elseif ($record->status == 3)
+                                            <p>Đang xem xét</p>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($record->status == 0 && $record->type == 'out')
+                                            <!-- Button trigger modal -->
+                                            <button type="button" class="btn btn-warning" data-bs-toggle="modal"
+                                                data-bs-target="#modalReason{{ $record->id }}">
+                                                Giải trình
+                                            </button>
+
+                                            <!-- Modal -->
+                                            <div class="modal fade" id="modalReason{{ $record->id }}" tabindex="-1"
+                                                aria-labelledby="modalReasonLabel{{ $record->id }}" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title"
+                                                                id="modalReasonLabel{{ $record->id }}">Nhập lý do giải
+                                                                trình</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                        </div>
+                                                        <form action="{{ route('submit-reason', $record->id) }}"
+                                                            method="POST">
+                                                            @csrf
+                                                            <div class="modal-body">
+                                                                <div class="form-group">
+                                                                    <label for="reason">Lý do:</label>
+                                                                    <textarea name="reason" id="reason" class="form-control" required></textarea>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                    data-bs-dismiss="modal">Đóng</button>
+                                                                <button type="submit" class="btn btn-primary">Gửi</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         @endif
                                     </td>
                                 </tr>

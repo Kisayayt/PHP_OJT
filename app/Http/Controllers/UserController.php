@@ -30,8 +30,8 @@ class UserController extends Controller
 
     public function userDetails($id)
     {
-        $user = User::with('department')->findOrFail($id);
-
+        $user = User::with('department', 'salaryLevel')->findOrFail($id);
+        // dd($user);
         // Lấy lần check-in gần nhất
         $lastCheckIn = User_Attendance::where('user_id', $id)
             ->where('type', 'in')
@@ -126,9 +126,11 @@ class UserController extends Controller
         $user = User::find($id);
 
         $departments = Departments::where('status', 1)->get();
+        $salaryLevels = SalaryLevel::where('is_active', 1)->get();
         return view('dashboard.update', [
             'user' => $user,
-            'departments' => $departments
+            'departments' => $departments,
+            'salaryLevels' => $salaryLevels
         ]);
     }
 
@@ -139,6 +141,7 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email,' . $id,
             'username' => 'required|max:255|unique:users,username,' . $id,
             'phone_number' => 'required|string',
+            'salary_level' => 'required',
             'password' => 'nullable|string|min:8|max:255|confirmed',
             'department_id' => '',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -160,6 +163,7 @@ class UserController extends Controller
 
         $updateData = [
             'name' => $validatedData['name'],
+            'salary_level_id' => $validatedData['salary_level'],
             'username' => $validatedData['username'],
             'email' => $validatedData['email'],
             'phone_number' => $phoneNumber,

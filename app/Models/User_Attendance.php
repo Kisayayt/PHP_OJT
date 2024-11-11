@@ -13,7 +13,7 @@ class User_Attendance extends Model
     protected $table = 'user_attendance';
     protected $primaryKey = 'id';
 
-    protected $fillable = ['user_id', 'time', 'type'];
+    protected $fillable = ['user_id', 'time', 'type', 'status',];
 
     public function user()
     {

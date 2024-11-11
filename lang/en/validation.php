@@ -171,7 +171,13 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'salary_level' => [
+            'required' => 'Bậc lương là bắt buộc.',
+            'numeric' => 'Bậc lương phải là một số.',
+            'min' => 'Bậc lương phải lớn hơn hoặc bằng :min.',
+        ],
     ],
+
 
     /*
     |--------------------------------------------------------------------------
