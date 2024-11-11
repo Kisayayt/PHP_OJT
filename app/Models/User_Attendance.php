@@ -19,4 +19,18 @@ class User_Attendance extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function checkInRecord()
+    {
+        return $this->hasOne(User_Attendance::class, 'user_id', 'user_id')
+            ->where('type', 'in')
+            ->where('created_at', '<', function ($query) {
+                $query->select('created_at')
+                    ->from('user_attendance')
+                    ->whereColumn('user_id', 'user_id')
+                    ->orderBy('created_at', 'desc')
+                    ->limit(1);
+            })
+            ->orderBy('created_at', 'desc');
+    }
 }

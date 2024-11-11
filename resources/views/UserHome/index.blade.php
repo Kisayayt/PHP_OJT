@@ -56,7 +56,12 @@
                                     <td>{{ $record->type == 'in' ? 'Check-in' : 'Check-out' }}</td>
                                     <td>
                                         @if ($record->type == 'out')
-                                            {{ $record->time }} tiếng
+                                            {{-- Chuyển đổi phút thành giờ và phút để hiển thị --}}
+                                            @php
+                                                $hours = floor($record->time / 60); // Tính giờ
+                                                $minutes = $record->time % 60; // Tính phút
+                                            @endphp
+                                            {{ $hours }} giờ {{ $minutes }} phút
                                         @else
                                             --
                                         @endif
@@ -68,6 +73,8 @@
                                             <p class="text-danger">Không hợp lệ</p>
                                         @elseif ($record->status == 3)
                                             <p>Đang xem xét</p>
+                                        @elseif ($record->status == 4)
+                                            <p class="text-danger">Từ chối</p>
                                         @endif
                                     </td>
                                     <td>

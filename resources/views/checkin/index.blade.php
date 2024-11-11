@@ -65,7 +65,7 @@
                                 </a>
                             </th>
 
-                            <th>Tổng thời gian (giờ)</th>
+                            <th>Giờ làm việc</th>
                             <th>Trạng thái</th>
                         </tr>
                     </thead>
@@ -76,7 +76,13 @@
                                 <td>{{ $record->user->name }}</td>
                                 <td>{{ $record->created_at->format('H:i') }}</td>
                                 <td>{{ $record->created_at->format('d/m/Y') }}</td>
-                                <td>{{ $record->type === 'in' ? '--' : $record->time }} giờ</td>
+                                <td>
+                                    @if ($record->type === 'in')
+                                        --
+                                    @else
+                                        {{ intdiv($record->time, 60) }} giờ {{ $record->time % 60 }} phút
+                                    @endif
+                                </td>
                                 <td>{{ $record->type === 'in' ? 'Đang check-in' : 'Đã check-out' }}</td>
                             </tr>
                         @empty

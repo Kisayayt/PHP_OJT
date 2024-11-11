@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ExcelExportController;
 use App\Http\Controllers\ExcelImportController;
 use App\Http\Controllers\SalaryLevelController;
+use App\Http\Controllers\WorkTimeController;
 use App\Mail\CheckInOutNotification;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -123,4 +124,7 @@ Route::middleware(['auth', 'checkRole:admin'])->group(function () {
     Route::get('/admin/requests', [AdminCheckInOutController::class, 'pendingRequests'])->name('admin.requests');
     Route::post('/admin/requests/{id}/accept', [AdminCheckInOutController::class, 'acceptRequest'])->name('admin.requests.accept');
     Route::post('/admin/requests/{id}/reject', [AdminCheckInOutController::class, 'rejectRequest'])->name('admin.requests.reject');
+
+    Route::get('/work-time', [WorkTimeController::class, 'showWorkTime'])->name('admin.workTime');
+    Route::post('/work-time/update', [WorkTimeController::class, 'updateWorkTime'])->name('admin.updateWorkTime');
 });

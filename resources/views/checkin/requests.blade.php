@@ -25,10 +25,18 @@
                     <div id="collapse{{ $request->id }}" class="accordion-collapse collapse"
                         aria-labelledby="heading{{ $request->id }}" data-bs-parent="#pendingRequestsAccordion">
                         <div class="accordion-body">
+                            @if ($request->checkInRecord)
+                                <p><strong>Thời gian Check-in:</strong>
+                                    {{ $request->checkInRecord->created_at->format('H:i d/m/Y') }}</p>
+                            @else
+                                <p><strong>Thời gian Check-in:</strong> Không xác định</p>
+                            @endif
+                            <p><strong>Thời gian Check-out:</strong> {{ $request->created_at->format('H:i d/m/Y') }}</p>
                             <p><strong>Lý do:</strong> {{ $request->explanation }}</p>
+
                             <div class="d-flex">
                                 <form action="{{ route('admin.requests.accept', $request->id) }}" method="POST"
-                                    class="mr-2">
+                                    class="mr-2" style="margin-right: 10px;">
                                     @csrf
                                     <button type="submit" class="btn btn-success btn-sm">Chấp nhận</button>
                                 </form>

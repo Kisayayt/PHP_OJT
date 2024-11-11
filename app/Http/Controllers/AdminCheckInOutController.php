@@ -80,9 +80,16 @@ class AdminCheckInOutController extends Controller
 
     public function pendingRequests()
     {
-        $pendingRequests = User_Attendance::where('status', 3)->paginate(5);
+        // Lấy các bản ghi `check-out` có `status = 3`
+        $pendingRequests = User_Attendance::where('status', 3)
+            ->where('type', 'out')
+            ->with(['checkInRecord'])
+            ->paginate(5);
+
         return view('checkin.requests', compact('pendingRequests'));
     }
+
+
 
     public function acceptRequest($id)
     {
@@ -96,7 +103,7 @@ class AdminCheckInOutController extends Controller
     public function rejectRequest($id)
     {
         $request = User_Attendance::findOrFail($id);
-        $request->status = 0; // Đặt status về không hợp lệ
+        $request->status = 4; // Đặt status về không hợp lệ
         $request->save();
 
         return redirect()->route('admin.requests')->with('error', 'Đơn đã bị từ chối.');
