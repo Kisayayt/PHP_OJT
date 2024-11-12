@@ -5,9 +5,13 @@
         <div>
             <h2 style="font-weight: bold"><i class="bi bi-house"></i> Trang chủ</h2>
             @if ($lastCheckoutTime)
-                <p>Tổng thời gian gần đây nhất: <strong>{{ $lastCheckoutTime }} giờ</strong></p>
+                @php
+                    $hour = floor($lastCheckoutTime / 60);
+                    $minute = $lastCheckoutTime % 60;
+                @endphp
+                <p>Thời gian gần đây nhất: <strong>{{ $hour }} giờ {{ $minute }} phút</strong></p>
             @else
-                <p>Tổng thời gian gần đây nhất: <strong>0 giờ</strong></p>
+                <p>Thời gian gần đây nhất: <strong>0 giờ</strong></p>
             @endif
         </div>
         <div class="row">

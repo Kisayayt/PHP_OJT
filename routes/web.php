@@ -6,6 +6,7 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CheckInOutController;
+use App\Http\Controllers\CheckInOutNotificationController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ExcelExportController;
 use App\Http\Controllers\ExcelImportController;
@@ -23,14 +24,8 @@ Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::get('/test-email', function () {
-    Mail::raw('Đây là email thử nghiệm.', function ($message) {
-        $message->to('kurehakisaya@gmail.com')
-            ->subject('Test Email');
-    });
+Route::get('/test-mail', [CheckInOutNotificationController::class, 'testEmail'])->name('testEmail');
 
-    return 'Đã gửi email thành công!';
-});
 
 
 

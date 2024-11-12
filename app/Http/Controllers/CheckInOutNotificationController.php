@@ -40,4 +40,13 @@ class CheckInOutNotificationController extends Controller
 
         return response()->json(['message' => 'Gửi thông báo thành công.'], 200);
     }
+
+    public function testEmail()
+    {
+        $name = 'đồng chí nhắc nhở';
+        Mail::send('emails.checkinout', compact('name'), function ($email) {
+            $email->subject('Nhắc nhở Check-in/Check-out');
+            $email->to('kurehakisaya@gmail.com', 'Vui thế thôi');
+        });
+    }
 }
