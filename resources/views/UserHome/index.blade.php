@@ -79,6 +79,8 @@
                                             <p>Đang xem xét</p>
                                         @elseif ($record->status == 4)
                                             <p class="text-danger">Từ chối</p>
+                                        @elseif ($record->status == 5)
+                                            <p class="text-success">Hợp lệ</p>
                                         @endif
                                     </td>
                                     <td>
@@ -90,14 +92,16 @@
                                             </button>
 
                                             <!-- Modal -->
+                                            <!-- Modal -->
                                             <div class="modal fade" id="modalReason{{ $record->id }}" tabindex="-1"
                                                 aria-labelledby="modalReasonLabel{{ $record->id }}" aria-hidden="true">
                                                 <div class="modal-dialog" role="document">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
                                                             <h5 class="modal-title"
-                                                                id="modalReasonLabel{{ $record->id }}">Nhập lý do giải
-                                                                trình</h5>
+                                                                id="modalReasonLabel{{ $record->id }}">
+                                                                Nhập lý do giải trình
+                                                            </h5>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                                 aria-label="Close"></button>
                                                         </div>
@@ -105,15 +109,64 @@
                                                             method="POST">
                                                             @csrf
                                                             <div class="modal-body">
+                                                                <!-- Danh sách lựa chọn lý do -->
                                                                 <div class="form-group">
-                                                                    <label for="reason">Lý do:</label>
-                                                                    <textarea name="reason" id="reason" class="form-control" required></textarea>
+                                                                    <label><strong>Chọn lý do:</strong></label>
+                                                                    <div class="form-check mt-2">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="reason" id="reason1" value="Tắc đường"
+                                                                            required>
+                                                                        <label class="form-check-label" for="reason1">Tắc
+                                                                            đường</label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="reason" id="reason2"
+                                                                            value="Có chuyện nhà">
+                                                                        <label class="form-check-label" for="reason2">Có
+                                                                            chuyện nhà</label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="reason" id="reason3"
+                                                                            value="Được bảo kê">
+                                                                        <label class="form-check-label" for="reason3">Được
+                                                                            bảo kê</label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="reason" id="reason4"
+                                                                            value="Xe tôi hỏng">
+                                                                        <label class="form-check-label" for="reason4">Xe
+                                                                            tôi hỏng</label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="reason" id="reason5"
+                                                                            value="Tôi có việc gấp">
+                                                                        <label class="form-check-label" for="reason5">Tôi
+                                                                            có việc gấp</label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="reason" id="otherReason" value="other">
+                                                                        <label class="form-check-label" for="otherReason">Lý
+                                                                            do khác</label>
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Textarea lý do khác (ẩn mặc định) -->
+                                                                <div class="form-group mt-3" id="otherReasonText"
+                                                                    style="display: none;">
+                                                                    <label for="customReason">Nhập lý do:</label>
+                                                                    <textarea name="custom_reason" id="customReason" class="form-control"></textarea>
                                                                 </div>
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-secondary"
                                                                     data-bs-dismiss="modal">Đóng</button>
-                                                                <button type="submit" class="btn btn-primary">Gửi</button>
+                                                                <button type="submit"
+                                                                    class="btn btn-primary">Gửi</button>
                                                             </div>
                                                         </form>
                                                     </div>
@@ -133,3 +186,22 @@
         </div>
     </div>
 @endsection
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const otherReasonRadio = document.querySelectorAll("input[name='reason']");
+        const otherReasonText = document.getElementById("otherReasonText");
+
+        otherReasonRadio.forEach(radio => {
+            radio.addEventListener("change", function() {
+                if (this.value === "other") {
+                    otherReasonText.style.display = "block";
+                } else {
+                    otherReasonText.style.display = "none";
+                    document.getElementById("customReason").value =
+                        "";
+                }
+            });
+        });
+    });
+</script>

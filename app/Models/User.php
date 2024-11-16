@@ -76,6 +76,10 @@ class User extends Authenticatable
         return !$lastCheckOut;
     }
 
+    public function payrolls()
+    {
+        return $this->hasMany(Payroll::class);
+    }
 
 
     public $timestamps = true;

@@ -29,13 +29,13 @@ class SalaryLevelController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'salary_coefficient' => 'required|numeric',
-            'daily_salary' => 'required|numeric',
+            'monthly_salary' => 'required|numeric',
         ]);
 
         SalaryLevel::create([
             'level_name' => $request->name,
             'salary_coefficient' => $request->salary_coefficient,
-            'daily_salary' => $request->daily_salary,
+            'monthly_salary' => $request->monthly_salary,
         ]);
 
         return redirect()->route('salaryLevels')->with('success', 'Bậc lương đã được thêm.');
@@ -54,13 +54,13 @@ class SalaryLevelController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'salary_coefficient' => 'required|numeric',
-            'daily_salary' => 'required|numeric',
+            'monthly_salary' => 'required|numeric',
         ]);
 
         $salaryLevel = SalaryLevel::findOrFail($id);
         $salaryLevel->level_name = $request->name;
         $salaryLevel->salary_coefficient = $request->salary_coefficient;
-        $salaryLevel->daily_salary = $request->daily_salary;
+        $salaryLevel->monthly_salary = $request->monthly_salary;
 
         $salaryLevel->save();
 

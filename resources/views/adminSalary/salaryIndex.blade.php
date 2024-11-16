@@ -68,7 +68,7 @@
                                 <th>#</th>
                                 <th>Tên Bậc Lương</th>
                                 <th>Hệ Số Bậc Lương</th>
-                                <th>Lương ngày</th>
+                                <th>Lương tháng</th>
                                 <th>Cập nhật</th>
                             </tr>
                         </thead>
@@ -83,7 +83,7 @@
                                     <td>{{ $salaryLevel->id }}</td>
                                     <td>{{ $salaryLevel->level_name }}</td>
                                     <td>{{ $salaryLevel->salary_coefficient }}</td>
-                                    <td>{{ number_format($salaryLevel->daily_salary, 0, ',', '.') }} VND</td>
+                                    <td>{{ number_format($salaryLevel->monthly_salary, 0, ',', '.') }} VND</td>
                                     <td>
                                         <a href="{{ route('salaryLevels.edit', $salaryLevel->id) }}"
                                             class="btn btn-success">

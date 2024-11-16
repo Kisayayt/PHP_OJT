@@ -8,14 +8,17 @@
         <i class="bi bi-door-closed"></i> Quản lí phòng ban
     </a>
     <a href="{{ route('admin.checkinout') }}"
-        class="list-group-item list-group-item-action {{ request()->routeIs('admin.checkinout') || request()->routeIs('admin.search') || request()->is('checkinout/search*') || request()->is('checkinout/filterByDate*') ? 'active' : '' }}">
+        class="list-group-item list-group-item-action {{ request()->routeIs('admin.checkinout') || request()->routeIs('admin.search') || request()->routeIs('admin.requests') || request()->routeIs('payroll.form') || request()->routeIs('payroll.calculate') || request()->is('checkinout/search*') || request()->is('checkinout/filterByDate*') ? 'active' : '' }}">
         <i class="bi bi-person-check-fill"></i> Quản lí checkout
     </a>
     <a href="{{ route('salaryLevels') }}"
         class="list-group-item list-group-item-action {{ request()->routeIs('salaryLevels') ? 'active' : '' }}">
         <i class="bi bi-cash-stack"></i> Quản lí bậc lương
     </a>
-
+    <a href="{{ route('payrolls.index') }}"
+        class="list-group-item list-group-item-action {{ request()->routeIs('payrolls.index') ? 'active' : '' }}">
+        <i class="bi bi-cash-stack"></i> Quản lí trả lương
+    </a>
     <a href="{{ route('admin.workTime') }}"
         class="list-group-item list-group-item-action {{ request()->routeIs('admin.workTime') ? 'active' : '' }}">
         <i class="bi bi-alarm-fill"></i> Đổi thời gian làm việc

@@ -36,10 +36,12 @@
                         </form>
                         <a href="{{ route('admin.requests') }}" class="btn btn-warning">Quản lý đơn giải trình</a>
 
+
                     </div>
                 </div>
-
-
+                <div class="d-flex justify-content-end">
+                    <a href="{{ route('payroll.form') }}" class="btn btn-success">Tính lương</a>
+                </div>
                 <table class="table table-striped">
                     <thead>
                         <tr>

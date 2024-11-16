@@ -94,7 +94,7 @@ class AdminCheckInOutController extends Controller
     public function acceptRequest($id)
     {
         $request = User_Attendance::findOrFail($id);
-        $request->status = 1; // Đặt status về hợp lệ
+        $request->status = 5; // Đặt status về hợp lệ
         $request->save();
 
         return redirect()->route('admin.requests')->with('success', 'Đơn đã được chấp nhận.');

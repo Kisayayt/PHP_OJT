@@ -10,6 +10,7 @@ use App\Http\Controllers\CheckInOutNotificationController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ExcelExportController;
 use App\Http\Controllers\ExcelImportController;
+use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\SalaryLevelController;
 use App\Http\Controllers\WorkTimeController;
 use App\Mail\CheckInOutNotification;
@@ -122,4 +123,10 @@ Route::middleware(['auth', 'checkRole:admin'])->group(function () {
 
     Route::get('/work-time', [WorkTimeController::class, 'showWorkTime'])->name('admin.workTime');
     Route::post('/work-time/update', [WorkTimeController::class, 'updateWorkTime'])->name('admin.updateWorkTime');
+
+    Route::get('/payroll/calculate', [PayrollController::class, 'showPayrollForm'])->name('payroll.form');
+    Route::post('/payroll/calculate', [PayrollController::class, 'calculatePayroll'])->name('payroll.calculate');
+    Route::post('/payroll/store', [PayrollController::class, 'storePayroll'])->name('payroll.store');
+
+    Route::get('/payrolls', [PayrollController::class, 'showPayrolls'])->name('payrolls.index');
 });

@@ -7,6 +7,7 @@ use App\Models\User_Attendance;
 use Carbon\Carbon;
 use Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class CheckInOutController extends Controller
 {
@@ -25,7 +26,6 @@ class CheckInOutController extends Controller
         $lastCheckoutTime = $latestCheckout ? $latestCheckout->time : 0;
         $isCheckedIn = $latestAttendance && $latestAttendance->type == 'in';
         $time = $latestAttendance ? $latestAttendance->time : 0;
-
 
         $workStart = DB::table('configurations')->where('name', 'work_start')->value('time');
         $workEnd = DB::table('configurations')->where('name', 'work_end')->value('time');
@@ -126,10 +126,28 @@ class CheckInOutController extends Controller
 
     public function submitReason(Request $request, User_Attendance $attendance)
     {
-        $attendance->explanation = $request->reason;
-        $attendance->status = 3;
+        // Xử lý lý do giải trình
+        $reason = $request->reason; // Lý do từ radio button
+
+        // Nếu lý do là "other", sử dụng nội dung từ custom_reason
+        if ($reason === 'other') {
+            $reason = $request->custom_reason;
+        }
+
+        // Lưu lý do giải trình và cập nhật trạng thái
+        $attendance->explanation = $reason;
+        $attendance->status = 3; // Đang xem xét
         $attendance->save();
 
+        // Gửi email xác nhận
+        $name = auth()->user()->name;
+        Mail::send('emails.checkinout', compact('name'), function ($email) {
+            $user_email = auth()->user()->email;
+            $email->subject('Đơn bạn đã nộp thành công!');
+            $email->to($user_email, 'Vui thế thôi');
+        });
+
+        // Điều hướng lại và hiển thị thông báo
         return redirect()->back()->with('success', 'Lý do đã được gửi!');
     }
 }

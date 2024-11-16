@@ -22,9 +22,9 @@
             </div>
 
             <div class="mb-3">
-                <label for="daily_salary" class="form-label">Lương ngày (VND)</label>
-                <input type="text" class="form-control" id="daily_salary" name="daily_salary"
-                    value="{{ old('daily_salary', $salaryLevel->daily_salary) }}" oninput="formatMoney(this)" required>
+                <label for="monthly_salary" class="form-label">Lương tháng (VND)</label>
+                <input type="text" class="form-control" id="monthly_salary" name="monthly_salary"
+                    value="{{ old('monthly_salary', $salaryLevel->monthly_salary) }}" oninput="formatMoney(this)" required>
             </div>
 
             <button type="submit" class="btn btn-primary">Cập Nhật Bậc Lương</button>
