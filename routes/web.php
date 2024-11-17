@@ -105,7 +105,7 @@ Route::middleware(['auth', 'checkRole:admin'])->group(function () {
     Route::post('/departmentDashboard/import-excel', [ExcelImportController::class, 'importDepartment'])->name('importDepartment');
 
     Route::get('/checkinout/export-excel', [ExcelExportController::class, 'exportCheck'])->name('exportCheck');
-
+    Route::get('/payrolls/export', [ExcelExportController::class, 'exportPayrolls'])->name('payrolls.export');
 
     Route::get('/salaryLevels', [SalaryLevelController::class, 'index'])->name('salaryLevels');
 
@@ -129,4 +129,6 @@ Route::middleware(['auth', 'checkRole:admin'])->group(function () {
     Route::post('/payroll/store', [PayrollController::class, 'storePayroll'])->name('payroll.store');
 
     Route::get('/payrolls', [PayrollController::class, 'showPayrolls'])->name('payrolls.index');
+    Route::post('/send-reminders', [WorkTimeController::class, 'sendReminders'])
+        ->name('send.reminders');
 });

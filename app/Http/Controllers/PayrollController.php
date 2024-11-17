@@ -6,6 +6,7 @@ use App\Models\Payroll;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class PayrollController extends Controller
 {
@@ -55,7 +56,6 @@ class PayrollController extends Controller
 
     public function storePayroll(Request $request)
     {
-
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'salary_received' => 'required|numeric',
@@ -64,21 +64,21 @@ class PayrollController extends Controller
             'salary_coefficient' => 'required|numeric',
         ]);
 
-
+        // Kiểm tra xem nhân viên đã có bảng lương trong tháng này chưa
         $existingPayroll = Payroll::where('user_id', $request->user_id)
             ->whereMonth('created_at', now()->month)
             ->whereYear('created_at', now()->year)
             ->first();
 
         if ($existingPayroll) {
-
+            // Cập nhật bảng lương nếu đã có
             $existingPayroll->salary_received = $request->salary_received;
             $existingPayroll->valid_days = $request->valid_days;
             $existingPayroll->invalid_days = $request->invalid_days;
             $existingPayroll->salary_coefficient = $request->salary_coefficient;
             $existingPayroll->save();
         } else {
-
+            // Tạo mới bảng lương nếu chưa có
             Payroll::create([
                 'user_id' => $request->user_id,
                 'salary_received' => $request->salary_received,
@@ -88,7 +88,24 @@ class PayrollController extends Controller
             ]);
         }
 
-        return redirect()->route('payroll.calculate')->with('success', 'Lương đã được lưu thành công.');
+        // Lấy thông tin nhân viên để gửi email
+        $user = User::find($request->user_id);
+        $day = now()->format('d/m/Y');
+        // dd($user);
+        // Gửi email thông báo cho nhân viên
+        Mail::send('emails.salary_notification', [
+            'day' => $day,
+            'user' => $user->name,
+            'salary_received' => $request->salary_received,
+            'valid_days' => $request->valid_days,
+            'invalid_days' => $request->invalid_days,
+            'salary_coefficient' => $request->salary_coefficient,
+        ], function ($email) use ($user) {
+            $email->subject('Thông báo lương tháng ' . now()->format('m/Y'));
+            $email->to($user->email, $user->name);
+        });
+
+        return redirect()->route('payroll.calculate')->with('success', 'Lương đã được lưu thành công và thông báo đã được gửi.');
     }
 
     public function showPayrolls(Request $request)

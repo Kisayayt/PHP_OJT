@@ -40,7 +40,11 @@
                     </div>
                 </div>
                 <div class="d-flex justify-content-end">
-                    <a href="{{ route('payroll.form') }}" class="btn btn-success">Tính lương</a>
+                    <a href="{{ route('payroll.form') }}" class="btn btn-success me-2">Tính lương</a>
+                    <form action="{{ route('send.reminders') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-primary">Nhắc nhở chấm công</button>
+                    </form>
                 </div>
                 <table class="table table-striped">
                     <thead>

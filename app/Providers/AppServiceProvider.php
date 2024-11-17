@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\ServiceProvider;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -26,5 +27,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::useBootstrap();
+        Artisan::call('schedule:run');
     }
 }

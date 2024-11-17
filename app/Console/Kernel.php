@@ -2,30 +2,31 @@
 
 namespace App\Console;
 
-use App\Http\Controllers\CheckInOutNotificationController;
+use App\Console\Commands\SendReminderEmails;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Support\Facades\Log;
 
 class Kernel extends ConsoleKernel
 {
-    /**
-     * Define the application's command schedule.
-     */
+    protected $commands = [
+        SendReminderEmails::class,
+    ];
+
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->command('email:send-attendance-reminder')->dailyAt(env('CHECKIN_TIME', '08:00'));
-        $schedule->command('email:send-attendance-reminder')->dailyAt(env('CHECKOUT_TIME', '17:00'));
+        // Đặt lịch cho lệnh gửi email vào thời gian định kỳ
+        $schedule->command('emails:send-reminders')->dailyAt('08:00');
+
+        // Log để kiểm tra lịch trình chạy
+        $schedule->call(function () {
+            Log::info('Schedule is running at ' . now());
+        })->everyMinute();  // Kiểm tra cron job chạy mỗi phút
     }
 
-
-    /**
-     * Register the commands for the application.
-     */
     protected function commands(): void
     {
         $this->load(__DIR__ . '/Commands');
-
         require base_path('routes/console.php');
     }
 }
