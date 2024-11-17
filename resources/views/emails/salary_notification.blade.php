@@ -15,7 +15,7 @@
         }
 
         .header {
-            background-image: url('https://nationalsecuritynews.com/wp-content/uploads/2024/07/Background-Verification-Process-in-MNCs.jpeg');
+            background-image: url('https://img.freepik.com/premium-photo/finance-money-technology-background-concept-business-prosperity-asset_31965-38533.jpg');
             background-size: cover;
             background-position: center;
             height: 200px;
