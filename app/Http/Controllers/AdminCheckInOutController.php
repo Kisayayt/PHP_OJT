@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User_Attendance;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class AdminCheckInOutController extends Controller
 {
@@ -80,7 +81,7 @@ class AdminCheckInOutController extends Controller
 
     public function pendingRequests()
     {
-        // Lấy các bản ghi `check-out` có `status = 3`
+
         $pendingRequests = User_Attendance::where('status', 3)
             ->where('type', 'out')
             ->with(['checkInRecord'])
@@ -94,16 +95,37 @@ class AdminCheckInOutController extends Controller
     public function acceptRequest($id)
     {
         $request = User_Attendance::findOrFail($id);
-        $request->status = 5; // Đặt status về hợp lệ
+        $user = $request->user;
+        $request->status = 5;
         $request->save();
+        $reason = $request->explanation;
+        $name = $user->name;
+
+
+        Mail::send('emails.accepted', compact('reason', 'name'), function ($email) use ($user) {
+            $email->subject('Đơn bạn đã được chấp nhận!');
+            $email->to($user->email);
+        });
 
         return redirect()->route('admin.requests')->with('success', 'Đơn đã được chấp nhận.');
     }
 
+
     public function rejectRequest($id)
     {
         $request = User_Attendance::findOrFail($id);
-        $request->status = 4; // Đặt status về không hợp lệ
+        $user = $request->user;
+
+        $reason = $request->explanation;
+        $name = $user->name;
+
+
+        Mail::send('emails.rejected', compact('reason', 'name'), function ($email) use ($user) {
+            $email->subject('Đơn bạn đã bị từ chối');
+            $email->to($user->email, $user->name);
+        });
+
+        $request->status = 0;
         $request->save();
 
         return redirect()->route('admin.requests')->with('error', 'Đơn đã bị từ chối.');

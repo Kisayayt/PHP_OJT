@@ -17,7 +17,7 @@
     </a>
     <a href="{{ route('payrolls.index') }}"
         class="list-group-item list-group-item-action {{ request()->routeIs('payrolls.index') ? 'active' : '' }}">
-        <i class="bi bi-cash-stack"></i> Quản lí trả lương
+        <i class="bi bi-wallet"></i> Quản lí trả lương
     </a>
     <a href="{{ route('admin.workTime') }}"
         class="list-group-item list-group-item-action {{ request()->routeIs('admin.workTime') ? 'active' : '' }}">

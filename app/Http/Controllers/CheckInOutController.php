@@ -95,27 +95,27 @@ class CheckInOutController extends Controller
             return redirect('/home')->with(['errors' => 'Bạn chưa check-in!'], 400);
         }
 
-        // Tính toán thời gian chênh lệch giữa check-in và check-out
+
         $checkInTime = $latestAttendance->created_at;
         $checkOutTime = now();
-        $timeDifferenceInMinutes = $checkInTime->diffInMinutes($checkOutTime);  // Tính bằng phút
+        $timeDifferenceInMinutes = $checkInTime->diffInMinutes($checkOutTime);
 
-        // Kiểm tra trạng thái (hợp lệ hay không hợp lệ)
-        $status = 1;  // Mặc định là hợp lệ
+
+        $status = 1;
         $workStart = Carbon::parse(DB::table('configurations')->where('name', 'work_start')->value('time'));
         $workEnd = Carbon::parse(DB::table('configurations')->where('name', 'work_end')->value('time'));
 
         if ($checkInTime->lt($workStart) && $checkOutTime->gt($workEnd)) {
-            $status = 1;  // Hợp lệ nếu check-in trước giờ làm việc và check-out sau giờ làm việc
+            $status = 1;
         } else {
-            $status = 0;  // Không hợp lệ
+            $status = 0;
         }
 
-        // Lưu vào cơ sở dữ liệu (lưu số phút)
+
         $attendance = new User_Attendance();
         $attendance->user_id = $userId;
         $attendance->type = 'out';
-        $attendance->time = $timeDifferenceInMinutes;  // Lưu số phút
+        $attendance->time = $timeDifferenceInMinutes;
         $attendance->status = $status;
         $attendance->created_at = $checkOutTime;
         $attendance->save();
@@ -126,28 +126,25 @@ class CheckInOutController extends Controller
 
     public function submitReason(Request $request, User_Attendance $attendance)
     {
-        // Xử lý lý do giải trình
-        $reason = $request->reason; // Lý do từ radio button
 
-        // Nếu lý do là "other", sử dụng nội dung từ custom_reason
+        $reason = $request->reason;
+
+
         if ($reason === 'other') {
             $reason = $request->custom_reason;
         }
 
-        // Lưu lý do giải trình và cập nhật trạng thái
         $attendance->explanation = $reason;
-        $attendance->status = 3; // Đang xem xét
+        $attendance->status = 3;
         $attendance->save();
 
-        // Gửi email xác nhận
         $name = auth()->user()->name;
-        Mail::send('emails.checkinout', compact('name'), function ($email) {
+        Mail::send('emails.submitreason', compact('reason', 'name'), function ($email) {
             $user_email = auth()->user()->email;
             $email->subject('Đơn bạn đã nộp thành công!');
             $email->to($user_email, 'Vui thế thôi');
         });
 
-        // Điều hướng lại và hiển thị thông báo
         return redirect()->back()->with('success', 'Lý do đã được gửi!');
     }
 }

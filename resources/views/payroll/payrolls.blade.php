@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container pt-5 mb-5">
-        <h2 style="font-weight: bold">Danh Sách Tính Lương</h2>
+        <h2 style="font-weight: bold">Trang chủ</h2>
 
         <!-- Flash messages -->
         @if (session('success'))
