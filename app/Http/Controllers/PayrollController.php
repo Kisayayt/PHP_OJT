@@ -48,7 +48,7 @@ class PayrollController extends Controller
         $effectiveValidDays = $validDays - $deductionPercentage;
 
 
-        $salaryReceived = (($monthlySalary * $salaryCoefficient) / 30) * $effectiveValidDays;
+        $salaryReceived = (($monthlySalary * $salaryCoefficient) / 23) * $effectiveValidDays;
 
 
         return view('payroll.result', compact('user', 'validDays', 'invalidDays', 'salaryCoefficient', 'salaryReceived'));

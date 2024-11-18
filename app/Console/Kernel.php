@@ -16,12 +16,9 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // Đặt lịch cho lệnh gửi email vào thời gian định kỳ
-        $schedule->command('emails:send-reminders')->dailyAt('08:00');
 
         // Log để kiểm tra lịch trình chạy
-        $schedule->call(function () {
-            Log::info('Schedule is running at ' . now());
-        })->everyMinute();  // Kiểm tra cron job chạy mỗi phút
+        $schedule->command('emails:send-reminders')->everyMinute();
     }
 
     protected function commands(): void
