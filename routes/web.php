@@ -123,6 +123,7 @@ Route::middleware(['auth', 'checkRole:admin'])->group(function () {
 
     Route::get('/work-time', [WorkTimeController::class, 'showWorkTime'])->name('admin.workTime');
     Route::post('/work-time/update', [WorkTimeController::class, 'updateWorkTime'])->name('admin.updateWorkTime');
+    Route::post('/work-time/update-reminder', [WorkTimeController::class, 'updateReminder'])->name('admin.updateReminder');
 
     Route::get('/payroll/calculate', [PayrollController::class, 'showPayrollForm'])->name('payroll.form');
     Route::post('/payroll/calculate', [PayrollController::class, 'calculatePayroll'])->name('payroll.calculate');

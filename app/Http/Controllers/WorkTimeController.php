@@ -16,8 +16,9 @@ class WorkTimeController extends Controller
     {
         $workStart = Configuration::where('name', 'work_start')->value('time');
         $workEnd = Configuration::where('name', 'work_end')->value('time');
+        $reminder = Configuration::where('name', 'reminder')->value('time');
 
-        return view('workTime.index', compact('workStart', 'workEnd'));
+        return view('workTime.index', compact('workStart', 'workEnd', 'reminder'));
     }
 
     public function updateWorkTime(Request $request)
@@ -41,15 +42,38 @@ class WorkTimeController extends Controller
         return redirect()->route('admin.workTime')->with('success', 'Thời gian làm việc đã được cập nhật!');
     }
 
+    public function updateReminder(Request $request)
+    {
+
+        $reminderTime = strlen($request->reminder) === 5 ? $request->reminder . ':00' : $request->reminder;
+
+
+        $request->merge([
+            'reminder' => $reminderTime,
+        ]);
+
+
+        $request->validate([
+            'reminder' => 'required|date_format:H:i:s',
+        ]);
+
+
+        Configuration::where('name', 'reminder')->update(['time' => $reminderTime]);
+
+
+        return redirect()->route('admin.workTime')->with('success', 'Thời gian reminder đã được cập nhật!');
+    }
+
+
     public function sendReminders(Request $request)
     {
-        // Lấy danh sách người dùng cần nhắc nhở
-        $users = User::all(); // Hoặc thêm điều kiện lọc nếu cần
+
+        $users = User::all();
 
         Log::info("Start sending reminders to users...");
 
         foreach ($users as $user) {
-            Log::info("Sending reminder to {$user->email}");  // Log để kiểm tra xem email có đang được gửi không
+            Log::info("Sending reminder to {$user->email}");
             Mail::to($user->email)->send(new ReminderCheckinCheckout($user));
         }
 

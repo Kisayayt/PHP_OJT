@@ -19,6 +19,7 @@ class Kernel extends ConsoleKernel
 
         // Log để kiểm tra lịch trình chạy
         $schedule->command('emails:send-reminders')->everyMinute();
+        $schedule->command('payroll:calculate')->everyMinute();
     }
 
     protected function commands(): void

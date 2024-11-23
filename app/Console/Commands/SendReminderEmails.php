@@ -8,6 +8,7 @@ use App\Mail\ReminderCheckinCheckout;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class SendReminderEmails extends Command
 {
@@ -19,11 +20,12 @@ class SendReminderEmails extends Command
         parent::__construct();
     }
 
+
+
     public function handle()
     {
-        $currentTime = now()->format('H:i:s');
-
-        // Lấy cấu hình thời gian reminder
+        $testCurrentTime = Carbon::createFromFormat('H:i:s', '8:30:00');
+        $currentTime = Carbon::now();
         $configuration = Configuration::where('name', 'reminder')->first();
 
         if (!$configuration) {
@@ -31,17 +33,20 @@ class SendReminderEmails extends Command
             return;
         }
 
-        $reminderTime = $configuration->time;
+        $reminderTime = Carbon::createFromFormat('H:i:s', $configuration->time);
 
-        // Chỉ gửi email nếu thời gian hiện tại >= thời gian reminder
-        if ($currentTime < $reminderTime) {
-            Log::info("Current time ({$currentTime}) has not reached reminder time ({$reminderTime}). No emails sent.");
+        Log::info("Reminder time from configuration: {$reminderTime->toTimeString()}");
+        Log::info("Test time: {$testCurrentTime->toTimeString()}");
+        Log::info("Current time: {$currentTime->toTimeString()}");
+
+        // So sánh thời gian test
+        if ($currentTime->lt($reminderTime)) {
+            Log::info("Test time ({$currentTime->toTimeString()}) has not reached reminder time ({$reminderTime->toTimeString()}). No emails sent.");
             return;
         }
 
         // Lấy tất cả nhân viên
         $users = User::all();
-
         Log::info("Start sending reminders to users...");
 
         foreach ($users as $user) {
