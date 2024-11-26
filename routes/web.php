@@ -14,6 +14,7 @@ use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\SalaryLevelController;
 use App\Http\Controllers\WorkTimeController;
 use App\Mail\CheckInOutNotification;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
@@ -53,6 +54,11 @@ Route::middleware(['auth', 'checkRole:user'])->group(function () {
 Route::middleware(['auth', 'checkRole:admin'])->group(function () {
     // test
     Route::get('/departments/tree', [DepartmentController::class, 'getDepartmentTree']);
+
+    Route::get('/run-payroll-calculate', function () {
+        $exitCode = Artisan::call('payroll:calculate', ['--testTime' => '24:00:00']);
+        return redirect()->back()->with('success', 'Tính lương cho tất cả nhân viên thành công!');
+    })->name('run.payroll.calculate');
 
     //test
 

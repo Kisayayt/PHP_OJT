@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Payroll;
 use App\Models\User;
+use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -25,12 +26,21 @@ class PayrollController extends Controller
             'user_id' => 'required|exists:users,id',
         ]);
 
+        $monthStart = now()->startOfMonth();
+        $monthEnd = now()->endOfMonth();
 
         $user = User::with('salaryLevel')->findOrFail($request->user_id);
 
         $salaryCoefficient = $user->salaryLevel->salary_coefficient ?? 1;
         $monthlySalary = $user->salaryLevel->monthly_salary ?? 0;
 
+        $workDays = CarbonPeriod::create($monthStart, $monthEnd)
+            ->filter(function ($date) {
+
+                return !$date->isWeekend();
+            });
+
+        $totalWorkDays = $workDays->count();
 
         $attendances = DB::table('user_attendance')
             ->where('user_id', $user->id)
@@ -48,7 +58,7 @@ class PayrollController extends Controller
         $effectiveValidDays = $validDays - $deductionPercentage;
 
 
-        $salaryReceived = (($monthlySalary * $salaryCoefficient) / 23) * $effectiveValidDays;
+        $salaryReceived = (($monthlySalary * $salaryCoefficient) / $totalWorkDays) * $effectiveValidDays;
 
 
         return view('payroll.result', compact('user', 'validDays', 'invalidDays', 'salaryCoefficient', 'salaryReceived'));

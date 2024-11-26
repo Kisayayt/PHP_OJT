@@ -20,7 +20,8 @@
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#collapse{{ $request->id }}" aria-expanded="false"
                                     aria-controls="collapse{{ $request->id }}">
-                                    {{ $request->user->name }} ({{ $request->user->username }})
+                                    {{ $request->user->name }} ({{ $request->updated_at->format('H:i d/m/Y') }} -
+                                    {{ $request->user->username }})
                                 </button>
                             </h2>
                             <div id="collapse{{ $request->id }}" class="accordion-collapse collapse"
