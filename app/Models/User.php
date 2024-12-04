@@ -45,10 +45,14 @@ class User extends Authenticatable
         return $this->role === 'user';
     }
 
-    public function salaryLevel()
+    public function salaryLevels()
     {
-        return $this->belongsTo(SalaryLevel::class, 'salary_level_id');
+        return $this->belongsToMany(SalaryLevel::class, 'salary_level_user')
+            ->withPivot('start_date', 'end_date', 'salary_level_id') // Lấy thêm dữ liệu từ bảng trung gian
+            ->withTimestamps();
     }
+
+
 
     public function attendances()
     {
@@ -74,6 +78,14 @@ class User extends Authenticatable
             ->first();
 
         return !$lastCheckOut;
+    }
+
+    public function recentSalaryLevel()
+    {
+        return $this->belongsToMany(SalaryLevel::class, 'salary_level_user')
+            ->withPivot('start_date', 'end_date')
+            ->orderByDesc('start_date') // Sắp xếp theo ngày bắt đầu giảm dần
+            ->limit(1); // Chỉ lấy bản ghi mới nhất
     }
 
     public function payrolls()

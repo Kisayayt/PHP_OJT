@@ -166,6 +166,9 @@
         </div>
     </div>
 
+    <canvas id="employeeRatioChart" width="400" height="300"></canvas>
+
+
     <script>
         const selectAllCheckbox = document.getElementById('selectAll');
 
@@ -181,5 +184,62 @@
                 checkbox.checked = isChecked;
             });
         });
+
+
+
+        async function loadEmployeeRatioChart() {
+            const response = await fetch('/api/employee-ratio-by-department');
+            const data = await response.json();
+
+            new Chart(document.getElementById('employeeRatioChart'), {
+                type: 'bar', // Chuyển sang biểu đồ cột
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Tỉ lệ nhân sự',
+                        data: data.counts,
+                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
+                        borderColor: '#000',
+                        borderWidth: 1,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false, // Không giữ tỉ lệ để tùy chỉnh kích thước
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Phòng ban',
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Số lượng nhân sự',
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        loadEmployeeRatioChart();
     </script>
 @endsection
+
+<style>
+    /* Giảm kích thước canvas bằng CSS */
+    #employeeRatioChart {
+        max-width: 600px;
+        max-height: 400px;
+        margin: 0 auto;
+        /* Căn giữa biểu đồ */
+    }
+</style>

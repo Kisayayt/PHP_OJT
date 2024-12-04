@@ -23,6 +23,10 @@
         class="list-group-item list-group-item-action {{ request()->routeIs('admin.workTime') ? 'active' : '' }}">
         <i class="bi bi-alarm-fill"></i> Đổi thời gian làm việc
     </a>
+    <a href="{{ route('chart.view') }}"
+        class="list-group-item list-group-item-action {{ request()->routeIs('chart.view') ? 'active' : '' }}">
+        <i class="bi bi-bar-chart-fill"></i> Biểu đồ
+    </a>
     <form action="{{ route('logout') }}" method="post">
         @csrf
         <button type="submit" class="list-group-item list-group-item-action"

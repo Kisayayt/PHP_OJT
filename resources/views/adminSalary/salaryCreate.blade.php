@@ -32,15 +32,14 @@
 
 {{-- <script>
     function formatMoney(input) {
-        let value = input.value.replace(/\D/g, '');
-        value = value.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+        let value = input.value.replace(/\D/g, ''); // Xóa các ký tự không phải số
+        value = value.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.'); // Định dạng lại số
         input.value = value;
     }
 
-
     document.querySelector('form').addEventListener('submit', function(e) {
-        let dailySalaryInput = document.getElementById('daily_salary');
-        let value = dailySalaryInput.value.replace(/\./g, '');
-        dailySalaryInput.value = value;
+        let monthlySalaryInput = document.getElementById('monthly_salary');
+        let value = monthlySalaryInput.value.replace(/\./g, ''); // Xóa dấu chấm trước khi gửi
+        monthlySalaryInput.value = value;
     });
 </script> --}}

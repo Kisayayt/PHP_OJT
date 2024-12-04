@@ -16,12 +16,14 @@ class SalaryLevel extends Model
     protected $fillable = [
         'level_name',
         'salary_coefficient',
-        'daily_salary',
+        'monthly_salary',
     ];
 
 
     public function users()
     {
-        return $this->hasMany(User::class, 'salary_level_id');
+        return $this->belongsToMany(User::class, 'salary_level_user')
+            ->withPivot('start_date', 'end_date')
+            ->withTimestamps();
     }
 }

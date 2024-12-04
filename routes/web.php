@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminCheckInOutController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ChartController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
@@ -27,6 +28,9 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/test-mail', [CheckInOutNotificationController::class, 'testEmail'])->name('testEmail');
+
+
+
 
 
 
@@ -138,4 +142,12 @@ Route::middleware(['auth', 'checkRole:admin'])->group(function () {
     Route::get('/payrolls', [PayrollController::class, 'showPayrolls'])->name('payrolls.index');
     Route::post('/send-reminders', [WorkTimeController::class, 'sendReminders'])
         ->name('send.reminders');
+
+
+
+    Route::get('/chart-view', [ChartController::class, 'chartView'])->name('chart.view');
+
+    Route::get('/api/employee-ratio-by-department', [ChartController::class, 'getEmployeeRatioByDepartment']);
+    Route::get('/api/age-gender-stats-by-department', [ChartController::class, 'getAgeGenderStatsByDepartment']);
+    Route::get('/api/attendance-stats', [ChartController::class, 'getAttendanceStats']);
 });

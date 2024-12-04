@@ -21,7 +21,6 @@ class PayrollController extends Controller
 
     public function calculatePayroll(Request $request)
     {
-
         $request->validate([
             'user_id' => 'required|exists:users,id',
         ]);
@@ -29,19 +28,28 @@ class PayrollController extends Controller
         $monthStart = now()->startOfMonth();
         $monthEnd = now()->endOfMonth();
 
-        $user = User::with('salaryLevel')->findOrFail($request->user_id);
+        // Lấy thông tin người dùng
+        $user = User::findOrFail($request->user_id);
 
-        $salaryCoefficient = $user->salaryLevel->salary_coefficient ?? 1;
-        $monthlySalary = $user->salaryLevel->monthly_salary ?? 0;
+        // Lấy thông tin mức lương của người dùng từ bảng salary_level_user
+        $salaryLevel = DB::table('salary_level_user')
+            ->join('salary_levels', 'salary_level_user.salary_level_id', '=', 'salary_levels.id')
+            ->where('salary_level_user.user_id', $user->id)
+            ->whereNull('salary_level_user.end_date') // Nếu bạn muốn lấy mức lương hiện tại, bỏ filter này nếu bạn muốn xem lịch sử
+            ->first();
 
+        $salaryCoefficient = $salaryLevel->salary_coefficient ?? 1;
+        $monthlySalary = $salaryLevel->monthly_salary ?? 0;
+
+        // Tính số ngày công trong tháng
         $workDays = CarbonPeriod::create($monthStart, $monthEnd)
             ->filter(function ($date) {
-
                 return !$date->isWeekend();
             });
 
         $totalWorkDays = $workDays->count();
 
+        // Lấy thông tin về thời gian đi làm của người dùng
         $attendances = DB::table('user_attendance')
             ->where('user_id', $user->id)
             ->where('type', 'out')
@@ -49,20 +57,22 @@ class PayrollController extends Controller
             ->whereYear('created_at', now()->year)
             ->get();
 
-
+        // Tính số ngày công hợp lệ và không hợp lệ
         $validDays = $attendances->whereIn('status', [1, 5])->count();
         $invalidDays = $attendances->where('status', 0)->count();
 
-
+        // Tính số ngày công hợp lệ sau khi trừ đi phần trăm giảm trừ
         $deductionPercentage = $attendances->where('status', 5)->count() * 0.1;
         $effectiveValidDays = $validDays - $deductionPercentage;
 
-
+        // Tính lương nhận được
         $salaryReceived = (($monthlySalary * $salaryCoefficient) / $totalWorkDays) * $effectiveValidDays;
 
-
+        // Truyền dữ liệu vào view
         return view('payroll.result', compact('user', 'validDays', 'invalidDays', 'salaryCoefficient', 'salaryReceived'));
     }
+
+
 
     public function storePayroll(Request $request)
     {
@@ -74,21 +84,21 @@ class PayrollController extends Controller
             'salary_coefficient' => 'required|numeric',
         ]);
 
-        // Kiểm tra xem nhân viên đã có bảng lương trong tháng này chưa
+
         $existingPayroll = Payroll::where('user_id', $request->user_id)
             ->whereMonth('created_at', now()->month)
             ->whereYear('created_at', now()->year)
             ->first();
 
         if ($existingPayroll) {
-            // Cập nhật bảng lương nếu đã có
+
             $existingPayroll->salary_received = $request->salary_received;
             $existingPayroll->valid_days = $request->valid_days;
             $existingPayroll->invalid_days = $request->invalid_days;
             $existingPayroll->salary_coefficient = $request->salary_coefficient;
             $existingPayroll->save();
         } else {
-            // Tạo mới bảng lương nếu chưa có
+
             Payroll::create([
                 'user_id' => $request->user_id,
                 'salary_received' => $request->salary_received,
@@ -98,11 +108,11 @@ class PayrollController extends Controller
             ]);
         }
 
-        // Lấy thông tin nhân viên để gửi email
+
         $user = User::find($request->user_id);
         $day = now()->format('d/m/Y');
-        // dd($user);
-        // Gửi email thông báo cho nhân viên
+
+
         Mail::send('emails.salary_notification', [
             'day' => $day,
             'user' => $user->name,
@@ -120,14 +130,14 @@ class PayrollController extends Controller
 
     public function showPayrolls(Request $request)
     {
-        // Lấy từ input tìm kiếm
+
         $search = $request->input('search');
 
-        // Lọc payrolls theo tên nhân viên
+
         $payrolls = Payroll::with('user')
             ->when($search, function ($query, $search) {
                 return $query->whereHas('user', function ($q) use ($search) {
-                    $q->where('name', 'like', '%' . $search . '%'); // Tìm kiếm theo tên nhân viên
+                    $q->where('name', 'like', '%' . $search . '%');
                 });
             })
             ->paginate(10);

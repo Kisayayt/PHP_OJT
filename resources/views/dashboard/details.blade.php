@@ -39,7 +39,11 @@
 
                                     <li class="list-group-item">
                                         <strong>Bậc lương:</strong>
-                                        {{ $user->salaryLevel ? $user->salaryLevel->level_name : 'N/A' }}
+                                        @if ($lastSalaryLevel)
+                                            {{ $lastSalaryLevel->level_name }}
+                                        @else
+                                            N/A
+                                        @endif
                                     </li>
 
 

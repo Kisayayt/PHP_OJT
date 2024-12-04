@@ -30,22 +30,23 @@ class UserController extends Controller
 
     public function userDetails($id)
     {
-        $user = User::with('department', 'salaryLevel')->findOrFail($id);
-        // dd($user);
-        // Lấy lần check-in gần nhất
+        $user = User::with('department', 'recentSalaryLevel')->findOrFail($id);
+
+        $lastSalaryLevel = $user->recentSalaryLevel()->orderBy('created_at', 'desc')->first();
+
         $lastCheckIn = User_Attendance::where('user_id', $id)
             ->where('type', 'in')
             ->latest('created_at')
             ->first();
 
-        // Lấy lần check-out gần nhất
         $lastCheckOut = User_Attendance::where('user_id', $id)
             ->where('type', 'out')
             ->latest('created_at')
             ->first();
 
-        return view('dashboard.details', compact('user', 'lastCheckIn', 'lastCheckOut'));
+        return view('dashboard.details', compact('user', 'lastSalaryLevel', 'lastCheckIn', 'lastCheckOut'));
     }
+
 
 
     public function search(Request $request)
@@ -74,7 +75,6 @@ class UserController extends Controller
 
     public function insert(Request $request)
     {
-        // dd($request->all());
         $validatedData = $request->validate([
             'name' => 'required|max:255',
             'username' => 'required|max:255|unique:users',
@@ -82,18 +82,19 @@ class UserController extends Controller
             'phone_number' => 'required|string|regex:/^\+(\d{2})\s?\d{9}$/',
             'password' => 'required|string|min:8|max:255|confirmed',
             'department_id' => 'required',
-            'salary_level' => 'required',
+            'salary_level' => 'required|exists:salary_levels,id',
             'avatar' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
+
         $phoneNumber = $request->input('phone_number');
         $phoneNumber = str_replace(' ', '', $phoneNumber);
-
         if (strpos($phoneNumber, '+') === 0) {
             $phoneNumber = '0' . substr($phoneNumber, strpos($phoneNumber, '+') + 1);
         } elseif ($phoneNumber[0] !== '0') {
             $phoneNumber = '0' . $phoneNumber;
         }
+
 
         $avatarPath = 'images/defaultAvatar.jpg';
         if ($request->hasFile('avatar')) {
@@ -103,6 +104,7 @@ class UserController extends Controller
             $request->file('avatar')->move(public_path('images'), $avatarPath);
         }
 
+
         $user = User::create([
             'name' => $validatedData['name'],
             'username' => $validatedData['username'],
@@ -110,12 +112,18 @@ class UserController extends Controller
             'phone_number' => $phoneNumber,
             'password' => Hash::make($validatedData['password']),
             'department_id' => $validatedData['department_id'],
-            'salary_level_id' => $validatedData['salary_level'], // Lưu bậc lương
             'avatar' => $avatarPath,
         ]);
 
-        return redirect('/dashboard');
+
+        $user->salaryLevels()->attach($validatedData['salary_level'], [
+            'start_date' => now(),
+            'end_date' => null,
+        ]);
+
+        return redirect('/dashboard')->with('success', 'Tạo người dùng mới thành công.');
     }
+
 
 
 
@@ -141,19 +149,15 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email,' . $id,
             'username' => 'required|max:255|unique:users,username,' . $id,
             'phone_number' => 'required|string',
-            'salary_level' => 'required',
+            'salary_level' => 'required|exists:salary_levels,id',
             'password' => 'nullable|string|min:8|max:255|confirmed',
-            'department_id' => '',
+            'department_id' => 'nullable',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
 
         $phoneNumber = $request->input('phone_number');
-
-
         $phoneNumber = str_replace(' ', '', $phoneNumber);
-
-
         if (strpos($phoneNumber, '+') === 0) {
             $phoneNumber = '0' . substr($phoneNumber, strpos($phoneNumber, '+') + 1);
         } elseif ($phoneNumber[0] !== '0') {
@@ -163,7 +167,6 @@ class UserController extends Controller
 
         $updateData = [
             'name' => $validatedData['name'],
-            'salary_level_id' => $validatedData['salary_level'],
             'username' => $validatedData['username'],
             'email' => $validatedData['email'],
             'phone_number' => $phoneNumber,
@@ -183,10 +186,24 @@ class UserController extends Controller
             $updateData['avatar'] = $avatarPath;
         }
 
-        User::where('id', $id)->update($updateData);
+
+        $user = User::findOrFail($id);
+        $user->update($updateData);
+
+
+        $user->salaryLevels()
+            ->wherePivot('end_date', null)
+            ->update(['end_date' => now()]);
+
+
+        $user->salaryLevels()->attach($validatedData['salary_level'], [
+            'start_date' => now(),
+            'end_date' => null,
+        ]);
 
         return redirect('/dashboard')->with('success', 'Cập nhật thông tin người dùng thành công.');
     }
+
 
     public function updatePassword(Request $request, $id)
     {
