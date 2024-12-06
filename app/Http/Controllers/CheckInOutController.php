@@ -27,6 +27,8 @@ class CheckInOutController extends Controller
         $isCheckedIn = $latestAttendance && $latestAttendance->type == 'in';
         $time = $latestAttendance ? $latestAttendance->time : 0;
 
+        $reasons = DB::table('reasons')->get();
+
         $workStart = DB::table('configurations')->where('name', 'work_start')->value('time');
         $workEnd = DB::table('configurations')->where('name', 'work_end')->value('time');
 
@@ -35,7 +37,7 @@ class CheckInOutController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(7);
 
-        return view('UserHome.index', compact('isCheckedIn', 'time', 'history', 'lastCheckoutTime', 'workStart', 'workEnd'));
+        return view('UserHome.index', compact('isCheckedIn', 'time', 'history', 'lastCheckoutTime', 'workStart', 'workEnd', 'reasons'));
     }
 
     public function checkIn(Request $request)

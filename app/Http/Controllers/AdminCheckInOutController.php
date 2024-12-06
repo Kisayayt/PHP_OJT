@@ -79,16 +79,25 @@ class AdminCheckInOutController extends Controller
         return view('checkin.index', compact('attendanceRecords', 'sortBy', 'sortDirection'));
     }
 
-    public function pendingRequests()
+    public function pendingRequests(Request $request)
     {
-
-        $pendingRequests = User_Attendance::where('status', 3)
+        $query = User_Attendance::where('status', 3)
             ->where('type', 'out')
-            ->with(['checkInRecord'])
-            ->paginate(5);
+            ->with(['checkInRecord']);
+
+        // Kiểm tra nếu có giá trị tìm kiếm
+        if ($search = $request->input('search')) {
+            $query->whereHas('user', function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%');
+            });
+        }
+
+        // Phân trang kết quả
+        $pendingRequests = $query->paginate(5);
 
         return view('checkin.requests', compact('pendingRequests'));
     }
+
 
 
 

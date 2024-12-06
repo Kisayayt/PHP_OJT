@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ExcelExportController;
 use App\Http\Controllers\ExcelImportController;
 use App\Http\Controllers\PayrollController;
+use App\Http\Controllers\ReasonController;
 use App\Http\Controllers\SalaryLevelController;
 use App\Http\Controllers\WorkTimeController;
 use App\Mail\CheckInOutNotification;
@@ -139,6 +140,9 @@ Route::middleware(['auth', 'checkRole:admin'])->group(function () {
     Route::post('/payroll/calculate', [PayrollController::class, 'calculatePayroll'])->name('payroll.calculate');
     Route::post('/payroll/store', [PayrollController::class, 'storePayroll'])->name('payroll.store');
 
+    Route::get('/departmentDashboard/search', [AdminCheckInOutController::class, 'pendingRequests'])->name('admin.requests.search');
+
+
     Route::get('/payrolls', [PayrollController::class, 'showPayrolls'])->name('payrolls.index');
     Route::post('/send-reminders', [WorkTimeController::class, 'sendReminders'])
         ->name('send.reminders');
@@ -150,4 +154,8 @@ Route::middleware(['auth', 'checkRole:admin'])->group(function () {
     Route::get('/api/employee-ratio-by-department', [ChartController::class, 'getEmployeeRatioByDepartment']);
     Route::get('/api/age-gender-stats-by-department', [ChartController::class, 'getAgeGenderStatsByDepartment']);
     Route::get('/api/attendance-stats', [ChartController::class, 'getAttendanceStats']);
+    Route::get('/api/contract-type-by-department', [ChartController::class, 'getContractTypeByDepartment']);
+
+    Route::resource('reasons', ReasonController::class);
+    Route::get('/reasons', [ReasonController::class, 'index'])->name('reasons.index');
 });

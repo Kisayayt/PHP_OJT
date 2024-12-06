@@ -112,41 +112,16 @@
                                                                 <!-- Danh sách lựa chọn lý do -->
                                                                 <div class="form-group">
                                                                     <label><strong>Chọn lý do:</strong></label>
-                                                                    <div class="form-check mt-2">
-                                                                        <input class="form-check-input" type="radio"
-                                                                            name="reason" id="reason1" value="Tắc đường"
-                                                                            required>
-                                                                        <label class="form-check-label" for="reason1">Tắc
-                                                                            đường</label>
-                                                                    </div>
-                                                                    <div class="form-check">
-                                                                        <input class="form-check-input" type="radio"
-                                                                            name="reason" id="reason2"
-                                                                            value="Có chuyện nhà">
-                                                                        <label class="form-check-label" for="reason2">Có
-                                                                            chuyện nhà</label>
-                                                                    </div>
-                                                                    <div class="form-check">
-                                                                        <input class="form-check-input" type="radio"
-                                                                            name="reason" id="reason3"
-                                                                            value="Được bảo kê">
-                                                                        <label class="form-check-label" for="reason3">Được
-                                                                            bảo kê</label>
-                                                                    </div>
-                                                                    <div class="form-check">
-                                                                        <input class="form-check-input" type="radio"
-                                                                            name="reason" id="reason4"
-                                                                            value="Xe tôi hỏng">
-                                                                        <label class="form-check-label" for="reason4">Xe
-                                                                            tôi hỏng</label>
-                                                                    </div>
-                                                                    <div class="form-check">
-                                                                        <input class="form-check-input" type="radio"
-                                                                            name="reason" id="reason5"
-                                                                            value="Tôi có việc gấp">
-                                                                        <label class="form-check-label" for="reason5">Tôi
-                                                                            có việc gấp</label>
-                                                                    </div>
+                                                                    @foreach ($reasons as $reason)
+                                                                        <div class="form-check mt-2">
+                                                                            <input class="form-check-input" type="radio"
+                                                                                name="reason"
+                                                                                id="reason{{ $reason->id }}"
+                                                                                value="{{ $reason->reason }}" required>
+                                                                            <label class="form-check-label"
+                                                                                for="reason{{ $reason->id }}">{{ $reason->reason }}</label>
+                                                                        </div>
+                                                                    @endforeach
                                                                     <div class="form-check">
                                                                         <input class="form-check-input" type="radio"
                                                                             name="reason" id="otherReason" value="other">
@@ -162,11 +137,11 @@
                                                                     <textarea name="custom_reason" id="customReason" class="form-control"></textarea>
                                                                 </div>
                                                             </div>
+
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-secondary"
                                                                     data-bs-dismiss="modal">Đóng</button>
-                                                                <button type="submit"
-                                                                    class="btn btn-primary">Gửi</button>
+                                                                <button type="submit" class="btn btn-primary">Gửi</button>
                                                             </div>
                                                         </form>
                                                     </div>

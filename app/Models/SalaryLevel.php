@@ -17,6 +17,7 @@ class SalaryLevel extends Model
         'level_name',
         'salary_coefficient',
         'monthly_salary',
+        'daily_salary',
     ];
 
 

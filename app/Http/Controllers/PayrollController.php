@@ -40,6 +40,7 @@ class PayrollController extends Controller
 
         $salaryCoefficient = $salaryLevel->salary_coefficient ?? 1;
         $monthlySalary = $salaryLevel->monthly_salary ?? 0;
+        $dailySalary = $salaryLevel->daily_salary ?? 0;
 
         // Tính số ngày công trong tháng
         $workDays = CarbonPeriod::create($monthStart, $monthEnd)
@@ -66,7 +67,13 @@ class PayrollController extends Controller
         $effectiveValidDays = $validDays - $deductionPercentage;
 
         // Tính lương nhận được
-        $salaryReceived = (($monthlySalary * $salaryCoefficient) / $totalWorkDays) * $effectiveValidDays;
+        if ($user->employee_role === 'official') {
+            // Tính lương theo monthly_salary
+            $salaryReceived = (($monthlySalary * $salaryCoefficient) / $totalWorkDays) * $effectiveValidDays;
+        } else {
+            // Tính lương theo daily_salary
+            $salaryReceived = $dailySalary * $validDays;
+        }
 
         // Truyền dữ liệu vào view
         return view('payroll.result', compact('user', 'validDays', 'invalidDays', 'salaryCoefficient', 'salaryReceived'));

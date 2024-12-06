@@ -47,4 +47,19 @@ class ChartController extends Controller
 
         return response()->json($data);
     }
+
+    public function getContractTypeByDepartment()
+    {
+        $data = DB::table('users')
+            ->join('departments', 'users.department_id', '=', 'departments.id')
+            ->select(
+                'departments.name as department_name',
+                'users.employee_role',
+                DB::raw('COUNT(users.id) as total')
+            )
+            ->groupBy('departments.name', 'users.employee_role')
+            ->get();
+
+        return response()->json($data);
+    }
 }

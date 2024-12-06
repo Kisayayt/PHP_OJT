@@ -233,13 +233,3 @@
         loadEmployeeRatioChart();
     </script>
 @endsection
-
-<style>
-    /* Giảm kích thước canvas bằng CSS */
-    #employeeRatioChart {
-        max-width: 600px;
-        max-height: 400px;
-        margin: 0 auto;
-        /* Căn giữa biểu đồ */
-    }
-</style>

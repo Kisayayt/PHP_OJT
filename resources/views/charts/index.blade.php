@@ -8,8 +8,20 @@
                 @include('sidebar.sidebar')
             </div>
             <div class="col-md-9">
-                <canvas id="employeeRatioChart" width="400" height="300"></canvas>
-                <canvas id="ageGenderChart" width="400" height="300"></canvas>
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <canvas id="employeeRatioChart"></canvas>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <canvas id="ageGenderChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <canvas id="contractTypeChart"></canvas>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -17,15 +29,18 @@
 
 <style>
     #employeeRatioChart,
+    #contractTypeChart,
     #ageGenderChart {
-        max-width: 600px;
-        max-height: 400px;
+        max-width: 100%;
+        height: 400px;
+        /* Giới hạn chiều cao */
         background-color: #f8f9fa;
         padding: 20px;
         border-radius: 20px;
         margin-top: 20px;
     }
 </style>
+
 
 <script>
     async function loadEmployeeRatioChart() {
@@ -137,6 +152,80 @@
         });
     }
 
+    async function loadContractTypeChart() {
+        const response = await fetch('/api/contract-type-by-department');
+        const data = await response.json();
+
+        const departments = [...new Set(data.map(item => item.department_name))];
+        const officialCounts = departments.map(dept => {
+            const entry = data.find(item => item.department_name === dept && item.employee_role ===
+                'official');
+            return entry ? entry.total : 0;
+        });
+        const partTimeCounts = departments.map(dept => {
+            const entry = data.find(item => item.department_name === dept && item.employee_role ===
+                'part_time');
+            return entry ? entry.total : 0;
+        });
+
+        new Chart(document.getElementById('contractTypeChart'), {
+            type: 'bar', // Biểu đồ dạng cột ngang
+            data: {
+                labels: departments,
+                datasets: [{
+                        label: 'Chính thức (Official)',
+                        data: officialCounts,
+                        backgroundColor: '#36A2EB',
+                        borderColor: '#000',
+                        borderWidth: 1,
+                    },
+                    {
+                        label: 'Bán thời gian (Part-time)',
+                        data: partTimeCounts,
+                        backgroundColor: '#FF6384',
+                        borderColor: '#000',
+                        borderWidth: 1,
+                    }
+                ]
+            },
+            options: {
+                indexAxis: 'y', // Chuyển trục X và Y
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Số lượng nhân sự',
+                        },
+                        ticks: {
+                            stepSize: 1,
+                            precision: 0, // Không hiển thị số thập phân
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Phòng ban',
+                        },
+                        ticks: {
+                            autoSkip: false,
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+
+    loadContractTypeChart();
     loadEmployeeRatioChart();
     loadAgeGenderChart();
 </script>

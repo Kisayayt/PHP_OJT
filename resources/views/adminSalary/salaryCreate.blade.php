@@ -24,6 +24,13 @@
                     oninput="formatMoney(this)" required>
             </div>
 
+            <div class="mb-3">
+                <label for="daily_salary" class="f
+                orm-label">Lương Ngày (VND)</label>
+                <input type="text" class="form-control" id="daily_salary" name="daily_salary" oninput="formatMoney(this)"
+                    required>
+            </div>
+
             <button type="submit" class="btn btn-primary">Thêm Bậc Lương</button>
         </form>
 

@@ -13,6 +13,15 @@
                 @include('sidebar.sidebar')
             </div>
             <div class="col-md-9">
+                <form action="{{ route('admin.requests.search') }}" method="GET" class="form-inline mb-4">
+                    <div class="input-group">
+                        <input type="text" name="search" class="form-control"
+                            placeholder="Tìm kiếm tên người làm đơn..." value="{{ request('search') }}"
+                            style="max-width: 200px;">
+                        <button type="submit" class="btn btn-primary ml-2">Tìm kiếm</button>
+                    </div>
+                </form>
+
                 <div class="accordion" id="pendingRequestsAccordion">
                     @forelse ($pendingRequests as $request)
                         <div class="accordion-item">

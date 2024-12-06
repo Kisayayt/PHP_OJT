@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container pt-5">
+    <div class="container pt-5 mb-5">
         <h2 style="font-weight: bold">Sửa Bậc Lương</h2>
         <Button onclick="window.location.href='/salaryLevels'" class="btn btn-primary mb-3"><i class="bi bi-house"></i> Trở về
             trang chủ</Button>
@@ -24,9 +24,16 @@
             <div class="mb-3">
                 <label for="monthly_salary" class="form-label">Lương tháng (VND)</label>
                 <input type="text" class="form-control" id="monthly_salary" name="monthly_salary"
-                    value="{{ old('monthly_salary', $salaryLevel->monthly_salary) }}" oninput="formatMoney(this)" required>
-            </div>
+                    value="{{ old('monthly_salary', number_format($salaryLevel->monthly_salary, 0, '', '')) }}"
+                    oninput="formatMoney(this)" required>
 
+            </div>
+            <div class="mb-3">
+                <label for="monthly_salary" class="form-label">Lương ngày (VND)</label>
+                <input type="text" class="form-control" id="daily_salary" name="daily_salary"
+                    value="{{ old('daily_salary', number_format($salaryLevel->daily_salary, 0, '', '')) }}"
+                    oninput="formatMoney(this)" required>
+            </div>
             <button type="submit" class="btn btn-primary">Cập Nhật Bậc Lương</button>
         </form>
     </div>
