@@ -34,7 +34,21 @@
                             style="margin-left: 20px; margin-right: 10px;">
                             <button type="submit" class="btn btn-success">Xuất file</button>
                         </form>
-                        <a href="{{ route('admin.requests') }}" class="btn btn-warning">Quản lý đơn giải trình</a>
+                        <div class="dropdown">
+                            <button class="btn btn-warning dropdown-toggle" type="button" id="dropdownMenuButton"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                Quản lý các đơn
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('admin.requests') }}">Quản lý đơn giải trình</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('leave_requests.index') }}">Quản lý đơn xin
+                                        nghỉ</a>
+                                </li>
+                            </ul>
+                        </div>
 
 
                     </div>

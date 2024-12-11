@@ -54,8 +54,7 @@
                 datasets: [{
                     label: 'Tỉ lệ nhân sự',
                     data: data.counts,
-                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
-                    borderColor: '#000',
+                    backgroundColor: ['#FF6384'],
                     borderWidth: 1,
                 }]
             },

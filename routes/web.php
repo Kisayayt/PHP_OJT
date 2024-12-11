@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminCheckInOutController;
+use App\Http\Controllers\AdminLeaveRequestController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChartController;
 use App\Http\Controllers\DepartmentController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\CheckInOutNotificationController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ExcelExportController;
 use App\Http\Controllers\ExcelImportController;
+use App\Http\Controllers\LeaveRequestController;
 use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\ReasonController;
 use App\Http\Controllers\SalaryLevelController;
@@ -48,6 +50,15 @@ Route::middleware(['auth', 'checkRole:user'])->group(function () {
     Route::post('/checkout', [CheckInOutController::class, 'checkOut'])->name('checkout');
     Route::get('/home/details', [HomeController::class, 'details'])->name('details');
     Route::post('/update-avatar', [HomeController::class, 'updateAvatar'])->name('update.avatar');
+    Route::post('/leave-request', [LeaveRequestController::class, 'store'])->name('leave.request');
+
+    // quan li don xin nghi
+    Route::get('/leave-requests/view', [LeaveRequestController::class, 'index'])->name('leave_requests.index');
+    Route::get('/leave-requests/create', [LeaveRequestController::class, 'create'])->name('leave_requests.create');
+    // Route::post('/leave-requests', [LeaveRequestController::class, 'store'])->name('leave_requests.store');
+    Route::get('/leave-requests/{id}/edit', [LeaveRequestController::class, 'edit'])->name('leave_requests.edit');
+    Route::put('/leave-requests/{id}', [LeaveRequestController::class, 'update'])->name('leave_requests.update');
+    Route::delete('/leave-requests/{id}', [LeaveRequestController::class, 'destroy'])->name('leave_requests.destroy');
 
 
     Route::post('/change-password', [HomeController::class, 'changePassword'])->name('change.password');
@@ -158,4 +169,7 @@ Route::middleware(['auth', 'checkRole:admin'])->group(function () {
 
     Route::resource('reasons', ReasonController::class);
     Route::get('/reasons', [ReasonController::class, 'index'])->name('reasons.index');
+
+    Route::get('/manage-leave_requests', [AdminLeaveRequestController::class, 'index'])->name('leave_requests.index');
+    Route::put('/manage-leave_requests/{id}/status', [AdminLeaveRequestController::class, 'updateStatus'])->name('leave_requests.updateStatus');
 });

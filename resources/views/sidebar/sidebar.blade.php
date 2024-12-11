@@ -8,7 +8,7 @@
         <i class="bi bi-door-closed"></i> Quản lí phòng ban
     </a>
     <a href="{{ route('admin.checkinout') }}"
-        class="list-group-item list-group-item-action {{ request()->routeIs('admin.checkinout') || request()->routeIs('admin.search') || request()->routeIs('admin.requests') || request()->routeIs('payroll.form') || request()->routeIs('payroll.calculate') || request()->is('checkinout/search*') || request()->is('checkinout/filterByDate*') ? 'active' : '' }}">
+        class="list-group-item list-group-item-action {{ request()->routeIs('admin.checkinout') || request()->routeIs('admin.search') || request()->routeIs('admin.requests') || request()->routeIs('payroll.form') || request()->routeIs('payroll.calculate') || request()->routeIs('leave_requests.index') || request()->is('checkinout/search*') || request()->is('checkinout/filterByDate*') ? 'active' : '' }}">
         <i class="bi bi-person-check-fill"></i> Quản lí chấm công
     </a>
     <a href="{{ route('salaryLevels') }}"

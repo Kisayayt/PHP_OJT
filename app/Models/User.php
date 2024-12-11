@@ -20,6 +20,7 @@ class User extends Authenticatable
         'username',
         'salary_level_id',
         'is_active',
+        'leave_balance',
         'is_department_active',
         'role',
         'email',
@@ -91,6 +92,11 @@ class User extends Authenticatable
     public function payrolls()
     {
         return $this->hasMany(Payroll::class);
+    }
+
+    public function leaveRequests()
+    {
+        return $this->hasMany(LeaveRequest::class);
     }
 
 
