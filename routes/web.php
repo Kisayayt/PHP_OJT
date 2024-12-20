@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminCheckInOutController;
 use App\Http\Controllers\AdminLeaveRequestController;
+use App\Http\Controllers\AnotherChartController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChartController;
 use App\Http\Controllers\DepartmentController;
@@ -53,7 +54,7 @@ Route::middleware(['auth', 'checkRole:user'])->group(function () {
     Route::post('/leave-request', [LeaveRequestController::class, 'store'])->name('leave.request');
 
     // quan li don xin nghi
-    Route::get('/leave-requests/view', [LeaveRequestController::class, 'index'])->name('leave_requests.index');
+    Route::get('/leave-requests/view', [LeaveRequestController::class, 'index'])->name('leave_requests_user.index');
     Route::get('/leave-requests/create', [LeaveRequestController::class, 'create'])->name('leave_requests.create');
     // Route::post('/leave-requests', [LeaveRequestController::class, 'store'])->name('leave_requests.store');
     Route::get('/leave-requests/{id}/edit', [LeaveRequestController::class, 'edit'])->name('leave_requests.edit');
@@ -159,13 +160,20 @@ Route::middleware(['auth', 'checkRole:admin'])->group(function () {
         ->name('send.reminders');
 
 
+    Route::get('/charts-another', [AnotherChartController::class, 'index'])->name('charts.index');
 
     Route::get('/chart-view', [ChartController::class, 'chartView'])->name('chart.view');
+    Route::get('/chart-view-test', [ChartController::class, 'view'])->name('view.view');
 
     Route::get('/api/employee-ratio-by-department', [ChartController::class, 'getEmployeeRatioByDepartment']);
     Route::get('/api/age-gender-stats-by-department', [ChartController::class, 'getAgeGenderStatsByDepartment']);
     Route::get('/api/attendance-stats', [ChartController::class, 'getAttendanceStats']);
     Route::get('/api/contract-type-by-department', [ChartController::class, 'getContractTypeByDepartment']);
+    Route::get('/api/gender-statistics', [ChartController::class, 'genderStatistics']);
+    Route::get('/api/departments', [ChartController::class, 'getDepartments']);
+    Route::get('/attendance-stats', [ChartController::class, 'getAttendanceStats']);
+
+
 
     Route::resource('reasons', ReasonController::class);
     Route::get('/reasons', [ReasonController::class, 'index'])->name('reasons.index');

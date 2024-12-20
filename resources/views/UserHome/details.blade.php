@@ -4,10 +4,14 @@
     <div class="container mt-5 mb-5">
         <div>
             <h2 style="font-weight: bold"><i class="bi bi-house"></i> Chi tiết</h2>
-            @if ($lastCheckoutTime > 0)
-                <p>Tổng thời gian gần đây nhất: <strong>{{ $lastCheckoutTime }} giờ</strong></p>
+            @if ($lastCheckoutTime)
+                @php
+                    $hour = floor($lastCheckoutTime / 60);
+                    $minute = $lastCheckoutTime % 60;
+                @endphp
+                <p>Thời gian gần đây nhất: <strong>{{ $hour }} giờ {{ $minute }} phút</strong></p>
             @else
-                <p>Tổng thời gian gần đây nhất: <strong>0 giờ</strong></p>
+                <p>Thời gian gần đây nhất: <strong>0 giờ</strong></p>
             @endif
         </div>
         @if (session('success'))

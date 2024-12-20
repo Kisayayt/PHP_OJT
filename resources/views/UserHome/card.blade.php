@@ -25,9 +25,8 @@
                 data-bs-target="#leaveRequestModal">
                 Gửi đơn xin nghỉ
             </a>
-            <a href="{{ route('leave_requests.index') }}" class="btn btn-secondary btn-block mt-2 w-100">Quản lí các đơn
-                xin
-                nghỉ</a>
+            <a href="{{ route('leave_requests_user.index') }}" class="btn btn-secondary btn-block mt-2 w-100">Các đơn
+                nghỉ phép</a>
 
             <a href="{{ route('checkinout') }}" class="btn btn-secondary btn-block mt-2 w-100">Lịch sử
                 check-in/check-out</a>

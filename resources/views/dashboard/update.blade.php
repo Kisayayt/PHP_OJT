@@ -24,6 +24,7 @@
                         <input value="{{ $user->name }}" type="text" class="form-control" id="name" name="name"
                             placeholder="Nhập họ và tên" required>
                     </div>
+
                     <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
                         <input value="{{ $user->email }}" type="text" class="form-control" id="email" name="email"
@@ -51,7 +52,17 @@
                         <label for="avatar" class="form-label">Chọn ảnh đại diện</label>
                         <input type="file" class="form-control" id="avatar" name="avatar" accept="image/*">
                     </div>
-
+                    <!-- Vai trò nhân viên -->
+                    <div class="mb-3">
+                        <label for="employee_role" class="form-label">Vai trò nhân viên</label>
+                        <select class="form-select" id="employee_role" name="employee_role" required>
+                            <option value="">Chọn vai trò</option>
+                            <option value="official" {{ $user->employee_role === 'official' ? 'selected' : '' }}>Chính
+                                thức</option>
+                            <option value="part_time" {{ $user->employee_role === 'part_time' ? 'selected' : '' }}>Bán
+                                thời gian</option>
+                        </select>
+                    </div>
 
                     <Button type="submit" class="btn btn-primary">Cập nhật <i class="bi bi-send-plus"></i></Button>
                     <Button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#passwordModal">
@@ -71,6 +82,26 @@
                         <input value="{{ $user->phone_number }}" type="text" class="form-control" id="phone_number"
                             name="phone_number" placeholder="Nhập sđt" required>
                     </div>
+                    <div class="col-md-12">
+                        <!-- Tuổi -->
+                        <div class="mb-3">
+                            <label for="age" class="form-label">Tuổi</label>
+                            <input value="{{ $user->age }}" type="number" class="form-control" id="age"
+                                name="age" placeholder="Nhập tuổi" required>
+                        </div>
+
+                        <!-- Giới tính -->
+                        <div class="mb-3">
+                            <label for="gender" class="form-label">Giới tính</label>
+                            <select class="form-select" id="gender" name="gender" required>
+                                <option value="">Chọn giới tính</option>
+                                <option value="male" {{ $user->gender === 'male' ? 'selected' : '' }}>Nam</option>
+                                <option value="female" {{ $user->gender === 'female' ? 'selected' : '' }}>Nữ</option>
+                            </select>
+                        </div>
+
+
+                    </div>
 
                     <div class="mb-3">
                         <label for="salary_level" class="form-label">Cấp bậc lương</label>
@@ -78,17 +109,19 @@
                             <option value="">Chọn cấp bậc lương</option>
                             @foreach ($salaryLevels as $salaryLevel)
                                 <option value="{{ $salaryLevel->id }}"
-                                    {{ $salaryLevel->id == $user->salary_level_id ? 'selected' : '' }}>
+                                    {{ $currentSalaryLevel && $salaryLevel->id == $currentSalaryLevel->id ? 'selected' : '' }}>
                                     {{ $salaryLevel->level_name }}
                                 </option>
                             @endforeach
                         </select>
                     </div>
 
+
                 </div>
             </div>
         </form>
-        <div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
+        <div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <form id="passwordForm" action="{{ route('user.updatePassword', $user->id) }}" method="POST">
@@ -96,7 +129,8 @@
                         @method('PUT')
                         <div class="modal-header">
                             <h5 class="modal-title" id="passwordModalLabel">Đổi mật khẩu</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <div class="mb-3">

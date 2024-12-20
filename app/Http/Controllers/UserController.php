@@ -75,6 +75,7 @@ class UserController extends Controller
 
     public function insert(Request $request)
     {
+        // Validate input data
         $validatedData = $request->validate([
             'name' => 'required|max:255',
             'username' => 'required|max:255|unique:users',
@@ -83,10 +84,13 @@ class UserController extends Controller
             'password' => 'required|string|min:8|max:255|confirmed',
             'department_id' => 'required',
             'salary_level' => 'required|exists:salary_levels,id',
+            'age' => 'required|integer|min:18|max:100',
+            'gender' => 'required|in:male,female',
+            'employee_role' => 'required|in:official,part_time',
             'avatar' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-
+        // Process phone number
         $phoneNumber = $request->input('phone_number');
         $phoneNumber = str_replace(' ', '', $phoneNumber);
         if (strpos($phoneNumber, '+') === 0) {
@@ -95,7 +99,7 @@ class UserController extends Controller
             $phoneNumber = '0' . $phoneNumber;
         }
 
-
+        // Handle avatar upload
         $avatarPath = 'images/defaultAvatar.jpg';
         if ($request->hasFile('avatar')) {
             $originalName = $request->file('avatar')->getClientOriginalName();
@@ -104,7 +108,10 @@ class UserController extends Controller
             $request->file('avatar')->move(public_path('images'), $avatarPath);
         }
 
+        // Default leave balance (adjust based on role)
+        $defaultLeaveBalance = $validatedData['employee_role'] === 'official' ? 12 : 6;
 
+        // Create new user
         $user = User::create([
             'name' => $validatedData['name'],
             'username' => $validatedData['username'],
@@ -112,15 +119,20 @@ class UserController extends Controller
             'phone_number' => $phoneNumber,
             'password' => Hash::make($validatedData['password']),
             'department_id' => $validatedData['department_id'],
+            'age' => $validatedData['age'],
+            'gender' => $validatedData['gender'],
+            'employee_role' => $validatedData['employee_role'],
             'avatar' => $avatarPath,
+            'leave_balance' => $defaultLeaveBalance,
         ]);
 
-
+        // Attach salary level with start date
         $user->salaryLevels()->attach($validatedData['salary_level'], [
             'start_date' => now(),
             'end_date' => null,
         ]);
 
+        // Redirect with success message
         return redirect('/dashboard')->with('success', 'Tạo người dùng mới thành công.');
     }
 
@@ -129,33 +141,43 @@ class UserController extends Controller
 
 
 
+
+
     public function updateView($id)
     {
-        $user = User::find($id);
-
+        $user = User::findOrFail($id);
         $departments = Departments::where('status', 1)->get();
         $salaryLevels = SalaryLevel::where('is_active', 1)->get();
+
+        // Lấy salary_level hiện tại
+        $currentSalaryLevel = $user->currentSalaryLevel();
+
         return view('dashboard.update', [
             'user' => $user,
             'departments' => $departments,
-            'salaryLevels' => $salaryLevels
+            'salaryLevels' => $salaryLevels,
+            'currentSalaryLevel' => $currentSalaryLevel, // Truyền vào view
         ]);
     }
 
     public function update(Request $request, $id)
     {
+        // Validate input data
         $validatedData = $request->validate([
             'name' => 'required|max:255',
             'email' => 'required|email|unique:users,email,' . $id,
             'username' => 'required|max:255|unique:users,username,' . $id,
-            'phone_number' => 'required|string',
+            'phone_number' => 'required|string|regex:/^\+(\d{2})\s?\d{9}$/',
             'salary_level' => 'required|exists:salary_levels,id',
             'password' => 'nullable|string|min:8|max:255|confirmed',
             'department_id' => 'nullable',
+            'age' => 'required|integer|min:18|max:100',
+            'gender' => 'required|in:male,female',
+            'employee_role' => 'required|in:official,part_time',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-
+        // Process phone number
         $phoneNumber = $request->input('phone_number');
         $phoneNumber = str_replace(' ', '', $phoneNumber);
         if (strpos($phoneNumber, '+') === 0) {
@@ -164,19 +186,24 @@ class UserController extends Controller
             $phoneNumber = '0' . $phoneNumber;
         }
 
-
+        // Prepare update data
         $updateData = [
             'name' => $validatedData['name'],
             'username' => $validatedData['username'],
             'email' => $validatedData['email'],
             'phone_number' => $phoneNumber,
             'department_id' => $validatedData['department_id'],
+            'age' => $validatedData['age'],
+            'gender' => $validatedData['gender'],
+            'employee_role' => $validatedData['employee_role'],
         ];
 
+        // Update password if provided
         if ($request->filled('password')) {
             $updateData['password'] = Hash::make($validatedData['password']);
         }
 
+        // Handle avatar upload
         if ($request->hasFile('avatar')) {
             $originalName = $request->file('avatar')->getClientOriginalName();
             $shortName = Str::limit($originalName, 50, '');
@@ -186,23 +213,27 @@ class UserController extends Controller
             $updateData['avatar'] = $avatarPath;
         }
 
-
+        // Update user
         $user = User::findOrFail($id);
         $user->update($updateData);
 
-
+        // Update salary level (end current and attach new one)
         $user->salaryLevels()
             ->wherePivot('end_date', null)
             ->update(['end_date' => now()]);
-
 
         $user->salaryLevels()->attach($validatedData['salary_level'], [
             'start_date' => now(),
             'end_date' => null,
         ]);
 
+        // Adjust leave balance based on role
+        $defaultLeaveBalance = $validatedData['employee_role'] === 'official' ? 12 : 6;
+        $user->update(['leave_balance' => $defaultLeaveBalance]);
+
         return redirect('/dashboard')->with('success', 'Cập nhật thông tin người dùng thành công.');
     }
+
 
 
     public function updatePassword(Request $request, $id)

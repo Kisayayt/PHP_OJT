@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('userlayouts.app')
 
 @section('content')
     <div class="container pt-5 mb-5">
@@ -46,7 +46,7 @@
                     </div>
 
                     <div class="d-flex justify-content-between">
-                        <a href="{{ route('leave_requests.index') }}" class="btn btn-secondary">Hủy</a>
+                        <a href="{{ route('leave_requests_user.index') }}" class="btn btn-secondary">Hủy</a>
                         <button type="submit" class="btn btn-primary">Cập nhật</button>
                     </div>
                 </form>
@@ -63,15 +63,14 @@
 
         // Kiểm tra loại nghỉ
         if (leaveType === 'multiple_days') {
-            endDateLabel.style.display = 'block'; // Hiện label "Đến ngày"
-            endDateInput.style.display = 'block'; // Hiện trường "end_date"
-            endDateInput.required = true; // Đặt bắt buộc nhập cho trường này
+            endDateLabel.style.display = '';
+            endDateInput.style.display = '';
+            endDateInput.required = true;
         } else {
-            endDateLabel.style.display = 'none'; // Ẩn label "Đến ngày"
-            endDateInput.style.display = 'none'; // Ẩn trường "end_date"
-            endDateInput.required = false; // Bỏ bắt buộc nhập cho trường này
+            endDateLabel.style.display = 'none';
+            endDateInput.style.display = 'none';
+            endDateInput.required = false;
+            endDateInput.value = '';
         }
     });
-    // Chạy kiểm tra ngay khi tải trang để đảm bảo trạng thái chính xác
-    document.getElementById('leave_type').dispatchEvent(new Event('change'));
 </script>

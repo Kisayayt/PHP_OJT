@@ -53,6 +53,12 @@ class User extends Authenticatable
             ->withTimestamps();
     }
 
+    public function currentSalaryLevel()
+    {
+        return $this->salaryLevels()
+            ->wherePivot('end_date', null) // Hoặc có thể dùng thứ tự `start_date` nếu cần
+            ->first();
+    }
 
 
     public function attendances()

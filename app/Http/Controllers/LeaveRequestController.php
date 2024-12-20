@@ -108,12 +108,12 @@ class LeaveRequestController extends Controller
         $leaveRequest = DB::table('leave_requests')->find($id);
 
         if (!$leaveRequest || $leaveRequest->user_id !== auth()->id()) {
-            return redirect()->route('leave_requests.index')->withErrors('Không tìm thấy đơn nghỉ phép!');
+            return redirect()->route('leave_requests_user.index')->withErrors('Không tìm thấy đơn nghỉ phép!');
         }
 
         DB::table('leave_requests')->delete($id);
 
-        return redirect()->route('leave_requests.index')->with('success', 'Đơn nghỉ phép đã được xóa!');
+        return redirect()->route('leave_requests_user.index')->with('success', 'Đơn nghỉ phép đã được xóa!');
     }
 
     public function edit($id)
@@ -127,7 +127,7 @@ class LeaveRequestController extends Controller
             ->first();
 
         if (!$leaveRequest) {
-            return redirect()->route('leave_requests.index')->withErrors(['error' => 'Không tìm thấy đơn nghỉ phép.']);
+            return redirect()->route('leave_requests_user.index')->withErrors(['error' => 'Không tìm thấy đơn nghỉ phép.']);
         }
 
         return view('leave_requests.edit', compact('leaveRequest'));
@@ -153,7 +153,7 @@ class LeaveRequestController extends Controller
             ->first();
 
         if (!$leaveRequest) {
-            return redirect()->route('leave_requests.index')->withErrors(['error' => 'Không tìm thấy đơn nghỉ phép.']);
+            return redirect()->route('leave_requests_user.index')->withErrors(['error' => 'Không tìm thấy đơn nghỉ phép.']);
         }
 
         // Kiểm tra điều kiện logic
@@ -176,6 +176,6 @@ class LeaveRequestController extends Controller
                 'updated_at' => now(),
             ]);
 
-        return redirect()->route('leave_requests.index')->with('success', 'Đơn nghỉ phép đã được cập nhật thành công!');
+        return redirect()->route('leave_requests_user.index')->with('success', 'Đơn nghỉ phép đã được cập nhật thành công!');
     }
 }

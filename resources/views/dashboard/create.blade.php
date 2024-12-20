@@ -24,6 +24,28 @@
                             placeholder="Nhập họ và tên" required>
                     </div>
                     <div class="mb-3">
+                        <label for="age" class="form-label">Tuổi</label>
+                        <input type="text" class="form-control" id="age" name="age"
+                            placeholder="Nhập tuổi của người dùng" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="gender" class="form-label">Giới tính</label>
+                        <select class="form-select" id="gender" name="gender" required>
+                            <option value="">Chọn giới tính</option>
+                            <option value="male">Nam</option>
+                            <option value="female">Nữ</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="employee_role" class="form-label">Vai trò nhân viên</label>
+                        <select class="form-select" id="employee_role" name="employee_role" required>
+                            <option value="">Chọn vai trò</option>
+                            <option value="official">Chính thức</option>
+                            <option value="part_time">Bán thời gian</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
                         <input type="text" class="form-control" id="email" name="email" placeholder="Nhập email"
                             required>
