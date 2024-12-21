@@ -20,20 +20,25 @@ class ExcelExportController extends Controller
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-
+        // Cấu hình tiêu đề cho các cột
         $sheet->setCellValue('A1', 'department_id');
         $sheet->setCellValue('B1', 'username');
         $sheet->setCellValue('C1', 'name');
         $sheet->setCellValue('D1', 'password');
         $sheet->setCellValue('E1', 'email');
         $sheet->setCellValue('F1', 'phone_number');
+        $sheet->setCellValue('G1', 'gender');
+        $sheet->setCellValue('H1', 'age');
+        $sheet->setCellValue('I1', 'role'); // admin / user
+        $sheet->setCellValue('J1', 'employee_role'); // official / part_time
 
-
+        // Dữ liệu mẫu (có thể lấy từ database)
         $data = [
-            [9, 'nguyenvana', 'Nguyễn Văn A', '12345678', 'a@example.com', '0876543345'],
-            [10, 'nguyenvanb', 'Nguyễn Văn B', '12345678', 'b@example.com', '8657482929'],
+            [9, 'nguyenvana', 'Nguyễn Văn A', '12345678', 'a@example.com', '+84 987654321', 'Nam', 25, 'admin', 'official'],
+            [10, 'nguyenvanb', 'Nguyễn Văn B', '12345678', 'b@example.com', '+84 912345678', 'Nữ', 30, 'user', 'part_time'],
         ];
 
+        // Ghi dữ liệu vào file Excel
         $row = 2;
         foreach ($data as $user) {
             $sheet->setCellValue('A' . $row, $user[0]);
@@ -42,12 +47,17 @@ class ExcelExportController extends Controller
             $sheet->setCellValue('D' . $row, $user[3]);
             $sheet->setCellValue('E' . $row, $user[4]);
             $sheet->setCellValue('F' . $row, $user[5]);
+            $sheet->setCellValue('G' . $row, $user[6]);
+            $sheet->setCellValue('H' . $row, $user[7]);
+            $sheet->setCellValue('I' . $row, $user[8]); // admin / user
+            $sheet->setCellValue('J' . $row, $user[9]); // official / part_time
             $row++;
         }
 
+        // Xuất file Excel
         $writer = new Xlsx($spreadsheet);
 
-        $fileName = 'users.xlsx';
+        $fileName = 'user_template.xlsx';
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment; filename="' . $fileName . '"');
         header('Cache-Control: max-age=0');
@@ -55,6 +65,8 @@ class ExcelExportController extends Controller
         $writer->save('php://output');
         exit;
     }
+
+
 
 
     public function exportDepartment()
@@ -165,24 +177,21 @@ class ExcelExportController extends Controller
             ->where('is_active', 1)
             ->get();
 
-
         $batchSize = 5;
-
 
         $tempDir = storage_path('app/temp_exports/');
         if (!file_exists($tempDir)) {
             mkdir($tempDir, 0777, true);
         }
 
-
         $chunks = $users->chunk($batchSize);
-
 
         $filePaths = [];
         foreach ($chunks as $index => $chunk) {
             $spreadsheet = new Spreadsheet();
             $sheet = $spreadsheet->getActiveSheet();
 
+            // Thêm các cột tiêu đề mới
             $sheet->setCellValue('A1', '#');
             $sheet->setCellValue('B1', 'Ảnh');
             $sheet->setCellValue('C1', 'Tên');
@@ -191,6 +200,9 @@ class ExcelExportController extends Controller
             $sheet->setCellValue('F1', 'SĐT');
             $sheet->setCellValue('G1', 'Phòng ban');
             $sheet->setCellValue('H1', 'Ngày cập nhật');
+            $sheet->setCellValue('I1', 'Giới tính');  // Cột giới tính
+            $sheet->setCellValue('J1', 'Tuổi');      // Cột tuổi
+            $sheet->setCellValue('K1', 'Vai trò nhân viên'); // Cột vai trò nhân viên
 
             $rowNumber = 2;
             foreach ($chunk as $user) {
@@ -202,6 +214,17 @@ class ExcelExportController extends Controller
                 $sheet->setCellValue('F' . $rowNumber, $user->phone_number);
                 $sheet->setCellValue('G' . $rowNumber, $user->department ? $user->department->name : 'N/A');
                 $sheet->setCellValue('H' . $rowNumber, $user->updated_at->format('d/m/Y'));
+
+                // Thay đổi giá trị giới tính sang tiếng Việt
+                $gender = $user->gender == 'male' ? 'Nam' : ($user->gender == 'female' ? 'Nữ' : '');
+
+                // Thay đổi vai trò nhân viên sang tiếng Việt
+                $employeeRole = $user->employee_role == 'official' ? 'Chính thức' : ($user->employee_role == 'part_time' ? 'Bán thời gian' : '');
+
+                // Điền dữ liệu cho các cột mới
+                $sheet->setCellValue('I' . $rowNumber, $gender);  // Giới tính
+                $sheet->setCellValue('J' . $rowNumber, $user->age);     // Tuổi
+                $sheet->setCellValue('K' . $rowNumber, $employeeRole); // Vai trò nhân viên
 
                 $rowNumber++;
             }
@@ -221,14 +244,15 @@ class ExcelExportController extends Controller
             $zip->close();
         }
 
-
+        // Xóa các file tạm sau khi đã thêm vào zip
         foreach ($filePaths as $filePath) {
             unlink($filePath);
         }
 
-
         return response()->download($zipFilePath)->deleteFileAfterSend(true);
     }
+
+
 
 
 

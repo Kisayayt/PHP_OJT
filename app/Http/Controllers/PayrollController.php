@@ -7,6 +7,7 @@ use App\Models\User;
 use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class PayrollController extends Controller
@@ -31,24 +32,34 @@ class PayrollController extends Controller
         // Lấy thông tin người dùng
         $user = User::findOrFail($request->user_id);
 
+        Log::info("Lấy thông tin người dùng: {$user->name} (ID: {$user->id})");
+
         // Lấy thông tin mức lương của người dùng từ bảng salary_level_user
         $salaryLevel = DB::table('salary_level_user')
             ->join('salary_levels', 'salary_level_user.salary_level_id', '=', 'salary_levels.id')
             ->where('salary_level_user.user_id', $user->id)
-            ->whereNull('salary_level_user.end_date') // Nếu bạn muốn lấy mức lương hiện tại, bỏ filter này nếu bạn muốn xem lịch sử
+            ->whereNull('salary_level_user.end_date') // Lấy mức lương hiện tại
             ->first();
+
+        if (!$salaryLevel) {
+            Log::warning("Không tìm thấy mức lương cho người dùng: {$user->name}");
+            return;
+        }
 
         $salaryCoefficient = $salaryLevel->salary_coefficient ?? 1;
         $monthlySalary = $salaryLevel->monthly_salary ?? 0;
         $dailySalary = $salaryLevel->daily_salary ?? 0;
 
-        // Tính số ngày công trong tháng
+        Log::info("Mức lương của người dùng: Hệ số lương: {$salaryCoefficient}, Lương tháng: {$monthlySalary}, Lương ngày: {$dailySalary}");
+
+        // Tính số ngày làm việc trong tháng (không tính cuối tuần)
         $workDays = CarbonPeriod::create($monthStart, $monthEnd)
             ->filter(function ($date) {
                 return !$date->isWeekend();
             });
 
         $totalWorkDays = $workDays->count();
+        Log::info("Số ngày làm việc trong tháng: {$totalWorkDays}");
 
         // Lấy thông tin về thời gian đi làm của người dùng
         $attendances = DB::table('user_attendance')
@@ -58,26 +69,68 @@ class PayrollController extends Controller
             ->whereYear('created_at', now()->year)
             ->get();
 
+        Log::info("Lấy thông tin thời gian đi làm của người dùng: {$attendances->count()} bản ghi");
+
         // Tính số ngày công hợp lệ và không hợp lệ
         $validDays = $attendances->whereIn('status', [1, 5])->count();
         $invalidDays = $attendances->where('status', 0)->count();
 
+        Log::info("Số ngày công hợp lệ: {$validDays}, Số ngày công không hợp lệ: {$invalidDays}");
+
+
+
+
+
+        // Lấy thông tin các ngày nghỉ có lương trong tháng
+        $paidLeaveRequests = DB::table('leave_requests')
+            ->where('user_id', $user->id)
+            ->whereMonth('start_date', now()->month)
+            ->whereYear('start_date', now()->year)
+            ->where('is_paid', true)
+            ->where('status', 1) // Chỉ tính các ngày nghỉ có lương
+            ->get();
+
+        Log::info("Lấy thông tin các ngày nghỉ có lương: {$paidLeaveRequests->count()} bản ghi");
+
+        // Tính tổng số ngày nghỉ có lương
+        $paidLeaveDays = 0;
+        foreach ($paidLeaveRequests as $leaveRequest) {
+            // Nếu leave_type là 'morning' hoặc 'afternoon', thì tính 50% ngày nghỉ
+            if ($leaveRequest->leave_type == 'morning' || $leaveRequest->leave_type == 'afternoon') {
+                $paidLeaveDays += 0.5; // Thêm 0.5 ngày cho nghỉ buổi sáng hoặc chiều
+            } else {
+                // Nếu là nghỉ cả ngày, cộng số ngày đầy đủ (duration)
+                $paidLeaveDays += $leaveRequest->duration;
+            }
+
+            Log::info("Ngày nghỉ có lương: ID: {$leaveRequest->id}, Loại nghỉ: {$leaveRequest->leave_type}, Số ngày: {$leaveRequest->duration}, Tổng số ngày nghỉ có lương hiện tại: {$paidLeaveDays}");
+        }
+
+        // Cộng thêm số ngày nghỉ có lương vào ngày công hợp lệ
+        $validDays += $paidLeaveDays;
         // Tính số ngày công hợp lệ sau khi trừ đi phần trăm giảm trừ
-        $deductionPercentage = $attendances->where('status', 5)->count() * 0.1;
-        $effectiveValidDays = $validDays - $deductionPercentage;
+        $deductionPercentage = $attendances->where('status', 5)->count() * 0.1; // Trừ 10% cho các đơn giải trình
+        $effectiveValidDays = max(0, $validDays - $deductionPercentage); // Số ngày công hợp lệ sau giảm trừ
+        Log::info("Ngày công hợp lệ hiệu quả (sau giảm trừ): {$effectiveValidDays}");
+        Log::info("Ngày công hợp lệ sau khi cộng ngày nghỉ có lương: {$validDays}");
 
         // Tính lương nhận được
         if ($user->employee_role === 'official') {
-            // Tính lương theo monthly_salary
+            // Tính lương theo monthly_salary cho nhân viên chính thức
             $salaryReceived = (($monthlySalary * $salaryCoefficient) / $totalWorkDays) * $effectiveValidDays;
         } else {
-            // Tính lương theo daily_salary
+            // Tính lương theo daily_salary cho nhân viên part-time
             $salaryReceived = $dailySalary * $validDays;
         }
+
+        Log::info("Lương nhận được: {$salaryReceived}");
 
         // Truyền dữ liệu vào view
         return view('payroll.result', compact('user', 'validDays', 'invalidDays', 'salaryCoefficient', 'salaryReceived'));
     }
+
+
+
 
 
 

@@ -159,9 +159,13 @@
 <script>
     const phoneInput = document.getElementById('phone_number');
 
-    phoneInput.addEventListener('keydown', function(event) {
-        if (event.key === 'Backspace' && this.value === '+') {
-            this.value = '';
+    phoneInput.addEventListener('blur', function() {
+        // Chuyển đổi số điện thoại khi người dùng rời khỏi trường nhập
+        let phoneValue = phoneInput.value.trim();
+
+        // Nếu số điện thoại bắt đầu bằng '0', chuyển thành +84
+        if (phoneValue.startsWith('0')) {
+            phoneInput.value = '+84 ' + phoneValue.substring(1);
         }
     });
 </script>
