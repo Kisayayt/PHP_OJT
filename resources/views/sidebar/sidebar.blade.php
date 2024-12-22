@@ -29,7 +29,7 @@
     </a>
     <a href="{{ route('chart.view') }}"
         class="list-group-item list-group-item-action {{ request()->routeIs('chart.view') ? 'active' : '' }}">
-        <i class="bi bi-bar-chart-fill"></i> Biểu đồ
+        <i class="bi bi-bar-chart-fill"></i> Bảng tổng quan
     </a>
 
     <form action="{{ route('logout') }}" method="post">

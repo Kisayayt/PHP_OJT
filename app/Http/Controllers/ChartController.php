@@ -67,22 +67,41 @@ class ChartController extends Controller
         return response()->json($data);
     }
 
-    public function getAttendanceStats()
+    public function getTotalEmployees()
     {
-        // Lấy dữ liệu theo tháng, nhóm theo tháng và tính tổng số ngày công hợp lệ và không hợp lệ
-        $stats = DB::table('user_attendance')
+        $totalEmployees = DB::table('users')
+            ->where('is_active', 1)
+            ->where('role', 'user')
+            ->count();
+
+        return response()->json(['totalEmployees' => $totalEmployees]);
+    }
+
+    public function getAttendanceStats(Request $request)
+    {
+        $filterDays = $request->query('filter');
+        $query = DB::table('user_attendance')
             ->select(
-                DB::raw("DATE_FORMAT(created_at, '%Y-%m') as month"), // Lấy tháng dưới dạng YYYY-MM
+                DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d') as day"), // Nhóm theo ngày
                 DB::raw("SUM(CASE WHEN status IN (1, 5) THEN 1 ELSE 0 END) as valid_days"), // Ngày hợp lệ
                 DB::raw("SUM(CASE WHEN status = 0 THEN 1 ELSE 0 END) as invalid_days") // Ngày không hợp lệ
             )
-            ->where('type', 'out')
-            ->groupBy('month')
-            ->orderBy('month', 'ASC')
+            ->where('type', 'out');
+
+        // Áp dụng bộ lọc ngày nếu có
+        if ($filterDays) {
+            $startDate = now()->subDays($filterDays)->startOfDay();
+            $query->where('created_at', '>=', $startDate);
+        }
+
+        $stats = $query->groupBy('day') // Nhóm theo ngày
+            ->orderBy('day', 'ASC')
             ->get();
 
         return response()->json($stats);
     }
+
+
 
 
     public function getAgeGenderStatsByDepartment()

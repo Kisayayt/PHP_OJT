@@ -1,13 +1,19 @@
-<div class="col-md-6 mb-4">
-    <label for="departmentSelect">Chọn phòng ban:</label>
-    <select id="departmentSelect" class="form-select mb-3">
-        <option value="">-- Tất cả phòng ban --</option>
-        @foreach ($departments as $department)
-            <option value="{{ $department->id }}">{{ $department->name }}</option>
-        @endforeach
-    </select>
-    <canvas id="genderChart"></canvas>
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <h2 style="font-weight: bold">Biểu đồ hiển thị tỉ lệ giới tính giữa các phòng ban</h2>
+    </div>
+    <div class="col-md-6 mb-4">
+        <label for="departmentSelect">Chọn phòng ban:</label>
+        <select id="departmentSelect" class="form-select mb-3">
+            {{-- <option value="">-- Tất cả phòng ban --</option> --}}
+            @foreach ($departments as $department)
+                <option value="{{ $department->id }}">{{ $department->name }}</option>
+            @endforeach
+        </select>
+        <canvas id="genderChart"></canvas>
+    </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 
 <script>

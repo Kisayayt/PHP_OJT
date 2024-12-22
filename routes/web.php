@@ -164,6 +164,8 @@ Route::middleware(['auth', 'checkRole:admin'])->group(function () {
 
     Route::get('/chart-view', [ChartController::class, 'chartView'])->name('chart.view');
     Route::get('/chart-view-test', [ChartController::class, 'view'])->name('view.view');
+    Route::get('/api/total-employees', [ChartController::class, 'getTotalEmployees']);
+
 
     Route::get('/api/employee-ratio-by-department', [ChartController::class, 'getEmployeeRatioByDepartment']);
     Route::get('/api/age-gender-stats-by-department', [ChartController::class, 'getAgeGenderStatsByDepartment']);
