@@ -36,7 +36,7 @@
                         {{-- <option value="">Select Department</option> --}}
 
                         <select class="form-select" id="department_id" name="department_id">
-                            <option value="">Select Department</option>
+                            <option value="">Chọn phòng ban</option>
                             @foreach ($departments as $department)
                                 <option value="{{ $department->id }}"
                                     {{ $department->id == $user->department_id ? 'selected' : '' }}>

@@ -16,16 +16,14 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-
         $request->validate([
             'username' => 'required',
             'password' => 'required',
         ]);
 
-
+        // dd(Auth::attempt($request->only('username', 'password')));
         if (Auth::attempt($request->only('username', 'password'))) {
             $user = Auth::user();
-
 
             if ($user->role === 'admin') {
                 return redirect()->intended('/dashboard');

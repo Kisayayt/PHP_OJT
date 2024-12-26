@@ -64,7 +64,7 @@ class UserController extends Controller
 
     public function create()
     {
-        $departments = Departments::where('status', 1)->get();
+        $departments = Departments::where('is_active', 1)->get();
         $salaryLevels = SalaryLevel::where('is_active', 1)->get();
 
         return view('dashboard.create', [
@@ -75,22 +75,22 @@ class UserController extends Controller
 
     public function insert(Request $request)
     {
-        // Validate input data
+
         $validatedData = $request->validate([
             'name' => 'required|max:255',
             'username' => 'required|max:255|unique:users',
             'email' => 'required|email|unique:users',
             'phone_number' => 'required|string|regex:/^\+(\d{2})\s?\d{9}$/',
             'password' => 'required|string|min:8|max:255|confirmed',
-            'department_id' => 'required',
-            'salary_level' => 'required|exists:salary_levels,id',
+            'department_id' => 'nullable',
+            'salary_level' => 'nullable',
             'age' => 'required|integer|min:18|max:100',
             'gender' => 'required|in:male,female',
             'employee_role' => 'required|in:official,part_time',
             'avatar' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // Process phone number
+
         $phoneNumber = $request->input('phone_number');
         $phoneNumber = str_replace(' ', '', $phoneNumber);
         if (strpos($phoneNumber, '+') === 0) {
@@ -99,7 +99,7 @@ class UserController extends Controller
             $phoneNumber = '0' . $phoneNumber;
         }
 
-        // Handle avatar upload
+
         $avatarPath = 'images/defaultAvatar.jpg';
         if ($request->hasFile('avatar')) {
             $originalName = $request->file('avatar')->getClientOriginalName();
@@ -108,10 +108,10 @@ class UserController extends Controller
             $request->file('avatar')->move(public_path('images'), $avatarPath);
         }
 
-        // Default leave balance (adjust based on role)
+
         $defaultLeaveBalance = $validatedData['employee_role'] === 'official' ? 12 : 6;
 
-        // Create new user
+
         $user = User::create([
             'name' => $validatedData['name'],
             'username' => $validatedData['username'],
@@ -126,13 +126,13 @@ class UserController extends Controller
             'leave_balance' => $defaultLeaveBalance,
         ]);
 
-        // Attach salary level with start date
+
         $user->salaryLevels()->attach($validatedData['salary_level'], [
             'start_date' => now(),
             'end_date' => null,
         ]);
 
-        // Redirect with success message
+
         return redirect('/dashboard')->with('success', 'Tạo người dùng mới thành công.');
     }
 
@@ -146,13 +146,13 @@ class UserController extends Controller
     public function updateView($id)
     {
         $user = User::findOrFail($id);
-        $departments = Departments::where('status', 1)->get();
+        $departments = Departments::where('is_active', 1)->get();
         $salaryLevels = SalaryLevel::where('is_active', 1)->get();
 
-        // Lấy salary_level hiện tại
+
         $currentSalaryLevel = $user->currentSalaryLevel();
 
-        // Chuyển đổi số điện thoại sang định dạng +84 nếu bắt đầu bằng '0'
+
         if (substr($user->phone_number, 0, 1) === '0') {
             $user->phone_number = '+84 ' . substr($user->phone_number, 1);
         }
@@ -161,45 +161,45 @@ class UserController extends Controller
             'user' => $user,
             'departments' => $departments,
             'salaryLevels' => $salaryLevels,
-            'currentSalaryLevel' => $currentSalaryLevel, // Truyền vào view
+            'currentSalaryLevel' => $currentSalaryLevel,
         ]);
     }
 
 
     public function update(Request $request, $id)
     {
-        // dd($request->all());
-        // Validate input data
+
+
         $validatedData = $request->validate([
             'name' => 'required|max:255',
             'email' => 'required|email|unique:users,email,' . $id,
             'username' => 'required|max:255|unique:users,username,' . $id,
-            'phone_number' => 'required|string|regex:/^\+(\d{2})\s?\d{9}$/',  // Validating the phone number format
-            'salary_level' => 'required|exists:salary_levels,id',
-            'password' => 'nullable|string|min:8|max:255|confirmed',  // Password is optional but must meet criteria if provided
+            'phone_number' => 'required|string|regex:/^\+(\d{2})\s?\d{9}$/',
+            'salary_level' => 'nullable',
+            'password' => 'nullable|string|min:8|max:255|confirmed',
             'department_id' => 'nullable',
             'age' => 'required|integer|min:18|max:100',
             'gender' => 'required|in:male,female',
-            'employee_role' => 'required|in:official,part_time',  // Employee role must be either 'official' or 'part_time'
+            'employee_role' => 'required|in:official,part_time',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // Process phone number
-        $phoneNumber = $request->input('phone_number');
-        $phoneNumber = str_replace(' ', '', $phoneNumber);  // Remove any spaces from phone number
 
-        // If phone number starts with '+84', convert it to '0'
+        $phoneNumber = $request->input('phone_number');
+        $phoneNumber = str_replace(' ', '', $phoneNumber);
+
+
         if (strpos($phoneNumber, '+84') === 0) {
-            $phoneNumber = '0' . substr($phoneNumber, 3);  // Replace '+84' with '0'
+            $phoneNumber = '0' . substr($phoneNumber, 3);
         } elseif ($phoneNumber[0] !== '0') {
-            // If phone number does not start with '0', prepend '0'
+
             $phoneNumber = '0' . $phoneNumber;
         }
 
-        // Now validate again after processing the phone number
-        $validatedData['phone_number'] = $phoneNumber; // Ensure the processed phone number is validated
 
-        // Prepare data for updating
+        $validatedData['phone_number'] = $phoneNumber;
+
+
         $updateData = [
             'name' => $validatedData['name'],
             'username' => $validatedData['username'],
@@ -211,40 +211,40 @@ class UserController extends Controller
             'employee_role' => $validatedData['employee_role'],
         ];
 
-        // Update password if provided
+
         if ($request->filled('password')) {
             $updateData['password'] = Hash::make($validatedData['password']);
         }
 
-        // Handle avatar upload
+
         if ($request->hasFile('avatar')) {
             $originalName = $request->file('avatar')->getClientOriginalName();
-            $shortName = Str::limit($originalName, 50, '');  // Shorten file name to prevent long file names
-            $avatarPath = 'images/' . uniqid() . '_' . $shortName;  // Create unique path for image
-            $request->file('avatar')->move(public_path('images'), $avatarPath);  // Move file to the public directory
+            $shortName = Str::limit($originalName, 50, '');
+            $avatarPath = 'images/' . uniqid() . '_' . $shortName;
+            $request->file('avatar')->move(public_path('images'), $avatarPath);
 
             $updateData['avatar'] = $avatarPath;
         }
 
-        // Update user information
+
         $user = User::findOrFail($id);
         $user->update($updateData);
 
-        // Update salary level (end current one and attach new one)
+
         $user->salaryLevels()
             ->wherePivot('end_date', null)
-            ->update(['end_date' => now()]);  // Mark current salary level as ended
+            ->update(['end_date' => now()]);
 
         $user->salaryLevels()->attach($validatedData['salary_level'], [
             'start_date' => now(),
             'end_date' => null,
         ]);
 
-        // Adjust leave balance based on role
-        $defaultLeaveBalance = $validatedData['employee_role'] === 'official' ? 12 : 6;  // 12 days for official, 6 for part-time
+
+        $defaultLeaveBalance = $validatedData['employee_role'] === 'official' ? 12 : 6;
         $user->update(['leave_balance' => $defaultLeaveBalance]);
 
-        // Redirect back with success message
+
         return redirect('/dashboard')->with('success', 'Cập nhật thông tin người dùng thành công.');
     }
 

@@ -152,7 +152,7 @@ Route::middleware(['auth', 'checkRole:admin'])->group(function () {
     Route::post('/payroll/calculate', [PayrollController::class, 'calculatePayroll'])->name('payroll.calculate');
     Route::post('/payroll/store', [PayrollController::class, 'storePayroll'])->name('payroll.store');
 
-    Route::get('/departmentDashboard/search', [AdminCheckInOutController::class, 'pendingRequests'])->name('admin.requests.search');
+    Route::get('/requests-form/search', [AdminCheckInOutController::class, 'pendingRequests'])->name('admin.requests.search');
 
 
     Route::get('/payrolls', [PayrollController::class, 'showPayrolls'])->name('payrolls.index');

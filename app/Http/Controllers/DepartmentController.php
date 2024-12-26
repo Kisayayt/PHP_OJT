@@ -44,7 +44,7 @@ class DepartmentController extends Controller
 
     public function insertDepartmentView()
     {
-        $departments = Departments::all();
+        $departments = Departments::where('is_active', 1)->get();
         return view('departments.create', [
             'departments' => $departments
         ]);
@@ -53,7 +53,7 @@ class DepartmentController extends Controller
     public function insertDepartment(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255|unique:departments',
+            'name' => 'required|string|max:255',
             'parent_id' => 'nullable|exists:departments,id',
         ]);
 

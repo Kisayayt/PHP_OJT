@@ -32,21 +32,51 @@
                     <tbody>
                         @foreach ($leaveRequests as $leave)
                             <tr>
-                                <td>{{ $leave->leave_type }}</td>
+                                <td>
+                                    @php
+                                        $leaveTypeMapping = [
+                                            'morning' => 'Buổi sáng',
+                                            'afternoon' => 'Buổi chiều',
+                                            'full_day' => 'Cả ngày',
+                                            'multiple_days' => 'Nhiều ngày',
+                                        ];
+                                    @endphp
+                                    {{ $leaveTypeMapping[$leave->leave_type] ?? 'Không xác định' }}
+                                </td>
+
                                 <td>{{ $leave->start_date }}</td>
                                 <td>{{ $leave->end_date }}</td>
                                 <td>{{ $leave->reason }}</td>
-                                <td>{{ $leave->status == 0 ? 'Đang chờ duyệt' : 'Đã duyệt' }}</td>
                                 <td>
-                                    <a href="{{ route('leave_requests.edit', $leave->id) }}" class="btn btn-warning">Sửa</a>
-                                    <form action="{{ route('leave_requests.destroy', $leave->id) }}" method="POST"
-                                        class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="btn btn-danger"
-                                            onclick="return confirm('Bạn có chắc chắn muốn xóa?')">Xóa</button>
-                                    </form>
+                                    @if ($leave->status == 0)
+                                        <span class="badge bg-warning text-dark">Đang chờ duyệt</span>
+                                    @elseif ($leave->status == 1)
+                                        <span class="badge bg-success text-white">Đã duyệt</span>
+                                    @elseif ($leave->status == 2)
+                                        <span class="badge bg-danger text-white">Từ chối</span>
+                                    @else
+                                        <span class="badge bg-secondary text-white">Không xác định</span>
+                                    @endif
                                 </td>
+
+
+                                <td>
+                                    @if ($leave->status == 0)
+                                        <a href="{{ route('leave_requests.edit', $leave->id) }}"
+                                            class="btn btn-warning">Sửa</a>
+                                        <form action="{{ route('leave_requests.destroy', $leave->id) }}" method="POST"
+                                            class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="btn btn-danger"
+                                                onclick="return confirm('Bạn có chắc chắn muốn xóa?')">Xóa</button>
+                                        </form>
+                                    @else
+                                        <span class="text-muted">----</span>
+                                    @endif
+                                </td>
+
+
                             </tr>
                         @endforeach
                     </tbody>

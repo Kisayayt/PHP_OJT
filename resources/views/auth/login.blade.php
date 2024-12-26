@@ -40,7 +40,8 @@
             @if ($errors->any())
 
                 @foreach ($errors->all() as $error)
-                    <p style="color: red;"><Strong>{{ $error }}</Strong></p>
+                    <p style="color: rgb(255, 45, 45); shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);">
+                        <Strong>{{ $error }}</Strong></p>
                 @endforeach
             @endif
             <button type="submit">Login</button>

@@ -40,7 +40,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <Button type="submit" class="btn btn-primary">Thêm phòng ban <i class="bi bi-send-plus"></i></Button>
+                    <Button type="submit" class="btn btn-primary">Lưu <i class="bi bi-send-plus"></i></Button>
 
 
                 </div>

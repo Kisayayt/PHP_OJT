@@ -15,7 +15,7 @@
 
                     <div class="mb-3">
                         <label for="leave_type" class="form-label">Loại nghỉ</label>
-                        <select class="form-select" id="leave_type" name="leave_type" required>
+                        <select class="form-select" id="leave_type_wat" name="leave_type" required>
                             <option value="morning" {{ $leaveRequest->leave_type == 'morning' ? 'selected' : '' }}>Nghỉ buổi
                                 sáng</option>
                             <option value="afternoon" {{ $leaveRequest->leave_type == 'afternoon' ? 'selected' : '' }}>Nghỉ
@@ -34,7 +34,7 @@
                             value="{{ $leaveRequest->start_date }}" required>
                     </div>
 
-                    <div class="mb-3">
+                    <div class="mb-3" id="end_date_div" style="display: none;">
                         <label id="end_date_label" for="end_date" class="form-label">Đến ngày</label>
                         <input type="date" class="form-control" id="end_date" name="end_date"
                             value="{{ $leaveRequest->end_date }}">
@@ -49,28 +49,45 @@
                         <a href="{{ route('leave_requests_user.index') }}" class="btn btn-secondary">Hủy</a>
                         <button type="submit" class="btn btn-primary">Cập nhật</button>
                     </div>
+                    {{-- //example
+                    <select id="myDropdown">
+                        <option value="option1">Tùy chọn 1</option>
+                        <option value="option2">Tùy chọn 2</option>
+                    </select> --}}
+
                 </form>
             </div>
         </div>
     </div>
-@endsection
 
-<script>
-    document.getElementById('leave_type').addEventListener('change', function() {
-        const leaveType = this.value;
-        const endDateLabel = document.getElementById('end_date_label');
+    <script>
+        // //examplee
+        // document.getElementById("myDropdown").addEventListener("change", function() {
+        //     // Code xử lý khi thay đổi giá trị của dropdown
+        //     console.log(this.value);
+        // });
+        document.getElementById("leave_type_wat").addEventListener("change", function() {
+            // Khi thay đổi giá trị dropdown, in giá trị ra console
+            console.log(this.value); // In ra giá trị đã chọn
+            toggleEndDate(); // Cập nhật hiển thị trường "Đến ngày" nếu cần
+        });
+
+        const leaveTypeSelect = document.getElementById('leave_type_wat');
+        const endDateDiv = document.getElementById('end_date_div');
         const endDateInput = document.getElementById('end_date');
 
-        // Kiểm tra loại nghỉ
-        if (leaveType === 'multiple_days') {
-            endDateLabel.style.display = '';
-            endDateInput.style.display = '';
-            endDateInput.required = true;
-        } else {
-            endDateLabel.style.display = 'none';
-            endDateInput.style.display = 'none';
-            endDateInput.required = false;
-            endDateInput.value = '';
+        // Hàm điều khiển việc hiển thị trường "Đến ngày"
+        function toggleEndDate() {
+            console.log('Leave type selected:', leaveTypeSelect.value); // In ra giá trị khi thay đổi
+            if (leaveTypeSelect.value === 'multiple_days') {
+                endDateDiv.style.display = 'block'; // Hiển thị trường "Đến ngày"
+            } else {
+                endDateDiv.style.display = 'none'; // Ẩn trường "Đến ngày"
+                endDateInput.value = ''; // Xóa giá trị trường "Đến ngày"
+            }
         }
-    });
-</script>
+
+        // Gọi hàm toggle ngay khi tải trang để điều chỉnh trạng thái ban đầu của trường "Đến ngày"
+        toggleEndDate();
+    </script>
+@endsection

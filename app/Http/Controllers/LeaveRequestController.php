@@ -125,7 +125,7 @@ class LeaveRequestController extends Controller
             ->where('id', $id)
             ->where('user_id', $user->id) // Đảm bảo chỉ chỉnh sửa đơn của chính mình
             ->first();
-
+        // dd($leaveRequest);
         if (!$leaveRequest) {
             return redirect()->route('leave_requests_user.index')->withErrors(['error' => 'Không tìm thấy đơn nghỉ phép.']);
         }

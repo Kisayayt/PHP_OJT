@@ -14,6 +14,15 @@
                 @if (session('success'))
                     <div class="alert alert-success">{{ session('success') }}</div>
                 @endif
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <p style="color: red;">{{ $error }}</p>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
                 <div style="background-color: rgb(54, 71, 221); display: flex; justify-content: center; align-items: center "
                     class="row p-3 m-1">
                     <h3 style="font-weight: bold ; color: white; text-align: center; margin-bottom: 0px">Quản lý thời gian

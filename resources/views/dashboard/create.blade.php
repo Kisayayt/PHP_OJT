@@ -54,6 +54,7 @@
                     <div class="mb-3">
                         <label for="department_id" class="form-label">Phòng ban</label>
                         <select class="form-select" id="department_id" name="department_id">
+                            <option value="">Chọn phòng ban</option>
                             @foreach ($departments as $department)
                                 <option value="{{ $department->id }}">{{ $department->name }}</option>
                             @endforeach
@@ -88,7 +89,8 @@
                     </div>
                     <div class="mb-3">
                         <label for="salary_level" class="form-label">Bậc lương</label>
-                        <select class="form-select" id="salary_level" name="salary_level" required>
+                        <select class="form-select" id="salary_level" name="salary_level">
+                            <option value="">Chọn bậc lương</option>
                             @foreach ($salaryLevels as $salaryLevel)
                                 <option value="{{ $salaryLevel->id }}">{{ $salaryLevel->level_name }}</option>
                             @endforeach
